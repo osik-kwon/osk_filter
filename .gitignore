@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+#Folders
+.vs/
+Debug/
+Release/
+x64/
+filter/Debug/
+filter/Release/
+filter/x64/
+
+#Visual Studio files
+*.user
