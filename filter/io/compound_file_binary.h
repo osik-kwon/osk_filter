@@ -15,11 +15,10 @@ namespace filter
 		cfb_t() = default;
 		static buffer_t extract_stream(std::unique_ptr<storage_t>& storage, const std::string& name);
 		static void make_stream(std::unique_ptr<storage_t>& storage, const std::string& name, const buffer_t& buffer);
-		static void copy_streams(std::unique_ptr<storage_t>& import_storage, std::unique_ptr<storage_t>& export_storage,
-			const std::vector<std::string>& all_streams_except_sections);
+		static void copy_streams(std::unique_ptr<storage_t>& import_storage, std::unique_ptr<storage_t>& export_storage, const std::vector<std::string>& all_streams_except_sections);
 
-		static std::vector<std::string> make_all_streams_except(std::unique_ptr<storage_t>& import_storage,
-			const std::vector<std::string>& others);
+		static std::vector<std::string> make_all_streams_except(std::unique_ptr<storage_t>& import_storage, const std::vector<std::string>& others);
+		static std::vector<std::string> make_all_streams_except(std::unique_ptr<storage_t>& import_storage, const std::string& other);
 		static std::vector<std::string> make_full_entries(std::unique_ptr<storage_t>& storage, const std::string root);
 
 		static std::unique_ptr<storage_t> make_read_only_storage(const std::string& path) {

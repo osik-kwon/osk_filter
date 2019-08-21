@@ -52,7 +52,7 @@ void test_replace_privacy()
 
 int main()
 {
-	//test_decompress_save();
+	test_decompress_save();
 	test_extract_all_texts();
 	//test_replace_all_texts();
 	//test_replace_privacy();

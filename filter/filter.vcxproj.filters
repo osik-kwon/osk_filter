@@ -38,6 +38,9 @@
       <Filter>io</Filter>
     </ClCompile>
     <ClCompile Include="filter_pch.cpp" />
+    <ClCompile Include="hwp\hwp50_syntax.cpp">
+      <Filter>hwp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -68,5 +71,8 @@
       <Filter>define</Filter>
     </ClInclude>
     <ClInclude Include="filter_pch.h" />
+    <ClInclude Include="hwp\hwp50_syntax.h">
+      <Filter>hwp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

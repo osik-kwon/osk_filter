@@ -27,8 +27,7 @@ namespace filter
 		stream->flush();
 	}
 
-	void cfb_t::copy_streams(std::unique_ptr<storage_t>& import_storage, std::unique_ptr<storage_t>& export_storage,
-		const std::vector<std::string>& all_streams_except_sections)
+	void cfb_t::copy_streams(std::unique_ptr<storage_t>& import_storage, std::unique_ptr<storage_t>& export_storage, const std::vector<std::string>& all_streams_except_sections)
 	{
 		for (auto& stream : all_streams_except_sections)
 		{
@@ -36,8 +35,7 @@ namespace filter
 		}
 	}
 
-	std::vector<std::string> cfb_t::make_all_streams_except(std::unique_ptr<storage_t>& import_storage,
-		const std::vector<std::string>& others)
+	std::vector<std::string> cfb_t::make_all_streams_except(std::unique_ptr<storage_t>& import_storage, const std::vector<std::string>& others)
 	{
 		auto all_streams_others = make_full_entries(import_storage, "/");
 		for (const auto& other : others)
@@ -48,6 +46,17 @@ namespace filter
 			if (found_other != all_streams_others.end())
 				all_streams_others.erase(found_other);
 		}
+		return all_streams_others;
+	}
+
+	std::vector<std::string> cfb_t::make_all_streams_except(std::unique_ptr<storage_t>& import_storage, const std::string& other)
+	{
+		auto all_streams_others = make_full_entries(import_storage, "/");
+		auto found_other = std::find_if(all_streams_others.begin(),
+			all_streams_others.end(), [&other](const std::string& name) {
+			return name == other; });
+		if (found_other != all_streams_others.end())
+			all_streams_others.erase(found_other);
 		return all_streams_others;
 	}
 
