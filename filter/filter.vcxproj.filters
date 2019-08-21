@@ -4,16 +4,55 @@
     <Filter Include="pole">
       <UniqueIdentifier>{7db16ef5-9c52-4acc-bd91-27a786957694}</UniqueIdentifier>
     </Filter>
+    <Filter Include="define">
+      <UniqueIdentifier>{cb10ea69-7969-4329-9f10-6bfe23a758db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{7e27ee26-5909-49a2-9d0f-76eb33a16938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="locale">
+      <UniqueIdentifier>{fc4f7e73-41a6-4719-990f-9f52cec93ef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hwp">
+      <UniqueIdentifier>{9ec87380-1e88-4826-8bc8-df6ec573f90b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
       <Filter>pole</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="hwp\hwp50_filter.cpp">
+      <Filter>hwp</Filter>
+    </ClCompile>
+    <ClCompile Include="locale\charset_encoder.cpp">
+      <Filter>locale</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
       <Filter>pole</Filter>
+    </ClInclude>
+    <ClInclude Include="define\filter_traits.h">
+      <Filter>define</Filter>
+    </ClInclude>
+    <ClInclude Include="io\binary_iostream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\compound_file_binary.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\endianness.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\zlib.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\charset_encoder.h">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="hwp\hwp50_filter.h">
+      <Filter>hwp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
