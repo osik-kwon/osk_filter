@@ -42,7 +42,7 @@
    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
    THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+#include "filter_pch.h"
 #include <fstream>
 #include <iostream>
 #include <list>
@@ -946,7 +946,7 @@ void DirTree::load( unsigned char* buffer, uint64 size )
       
     // first char isn't printable ? remove it...
     /*
-	// larry
+	// IMPORTANT! osk-filter
 	if( buffer[p] < 32 )
     { 
       prefix = buffer[0]; 

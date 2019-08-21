@@ -1,4 +1,4 @@
-#include <algorithm>
+#include "filter_pch.h"
 #include "io/compound_file_binary.h"
 
 namespace filter

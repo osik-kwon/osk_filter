@@ -37,6 +37,7 @@
     <ClCompile Include="io\compound_file_binary.cpp">
       <Filter>io</Filter>
     </ClCompile>
+    <ClCompile Include="filter_pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -66,5 +67,6 @@
     <ClInclude Include="define\binary_traits.h">
       <Filter>define</Filter>
     </ClInclude>
+    <ClInclude Include="filter_pch.h" />
   </ItemGroup>
 </Project>
