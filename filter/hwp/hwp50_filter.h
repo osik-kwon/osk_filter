@@ -241,7 +241,6 @@ namespace hwp50
 			return false;
 		}
 	private:
-		// TODO: move to IO
 		file_header_t read_file_header(std::unique_ptr<storage_t>& storage)
 		{
 			buffer_t buffer = cfb_t::extract_stream(storage, "/FileHeader");
@@ -255,54 +254,13 @@ namespace hwp50
 		void write_file_header(std::unique_ptr<storage_t>& storage, const file_header_t& file_header)
 		{
 			buffer_t buffer;
-			buffer.resize(256); // TODO: implement sizeof
+			buffer.resize(file_header.size());
 			bufferstream stream(&buffer[0], buffer.size());
 			stream << file_header;
 			cfb_t::make_stream(storage, "/FileHeader", buffer);
 		}
 
-		header_t read_header(bufferstream& stream)
-		{
-			header_t header;
-			uint32_t plain = binary_stream_t::read_uint32(stream);
-			header.tag = plain & 0x3FF;
-			header.level = (plain >> 10) & 0x3FF;
-			header.body_size = (plain >> 20) & 0xFFF;
-
-			if (header.body_size == 0xFFF)
-			{
-				header.body_size = binary_stream_t::read_uint32(stream);
-			}
-			return header;
-		}
-
-		void write_header(bufferstream& stream, const header_t& header)
-		{
-			uint32_t plain = header.tag;
-			plain += (header.level << 10);
-			if (header.body_size >= 0xFFF)
-			{
-				plain += (0xFFF << 20);
-				binary_stream_t::write_uint32(stream, plain);
-				binary_stream_t::write_uint32(stream, header.body_size);
-			}
-			else
-			{
-				plain += (header.body_size << 20);
-				binary_stream_t::write_uint32(stream, plain);
-			}
-		}
-
-		buffer_t read_body(bufferstream& stream, streamsize size)
-		{
-			return binary_stream_t::read(stream, size);
-		}
-
-		void write_body(bufferstream& stream, const buffer_t& buffer)
-		{
-			return binary_stream_t::write(stream, buffer);
-		}
-
+		// TODO: remove
 		std::vector<record_t> read_records(bufferstream& stream)
 		{
 			std::vector<record_t> records;
@@ -312,8 +270,7 @@ namespace hwp50
 				do
 				{
 					record_t record;
-					record.header = read_header(stream);
-					record.body = read_body(stream, record.header.body_size);
+					stream >> record;
 					records.push_back(std::move(record));
 				} while (!stream.eof());
 			}
@@ -330,8 +287,7 @@ namespace hwp50
 		{
 			for (auto& record : records)
 			{
-				write_header(stream, record.header);
-				write_body(stream, record.body);
+				stream << record;
 			}
 		}
 

@@ -6,6 +6,10 @@
 #include "define/compound_file_binary_traits.h"
 #include "io/binary_iostream.h"
 
+#define DECLARE_BINARY_SERIALIZER(T) \
+friend bufferstream& operator >> (bufferstream& , T& ); \
+friend bufferstream& operator << (bufferstream&, const T& );
+
 namespace filter
 {
 namespace hwp50
@@ -22,24 +26,10 @@ namespace hwp50
 			std::fill(std::begin(reserved), std::end(reserved), 0);
 		}
 
-		friend bufferstream& operator >> (bufferstream& stream, file_header_t& file_header)
-		{
-			file_header.signature = binary_stream_t::read_string(stream, file_header.signature_size);
-			file_header.version = binary_stream_t::read_uint32(stream);
-			file_header.options = binary_stream_t::read_uint32(stream);
-			file_header.extended_options = binary_stream_t::read_uint32(stream);
-			file_header.kogl = binary_stream_t::read_uint8(stream);
-			return stream;
-		}
-
-		friend bufferstream& operator << (bufferstream& stream, const file_header_t& file_header)
-		{
-			binary_stream_t::write_string(stream, file_header.signature);
-			binary_stream_t::write_uint32(stream, file_header.version);
-			binary_stream_t::write_uint32(stream, file_header.options.to_ulong());
-			binary_stream_t::write_uint32(stream, file_header.extended_options.to_ulong());
-			binary_stream_t::write_uint8(stream, file_header.kogl);
-			return stream;
+		DECLARE_BINARY_SERIALIZER(file_header_t);
+		
+		std::size_t size() const {
+			return 256; // 256 bytes
 		}
 
 		bool is_compressed() const {
@@ -67,6 +57,7 @@ namespace hwp50
 		header_t() : tag(0), level(0), body_size(0)
 		{}
 
+		DECLARE_BINARY_SERIALIZER(header_t);
 		std::size_t size() const {
 			return sizeof(uint32_t);
 		}
@@ -81,6 +72,8 @@ namespace hwp50
 		typedef binary_traits::buffer_t buffer_t;
 		record_t()
 		{}
+
+		DECLARE_BINARY_SERIALIZER(record_t);
 
 		std::size_t size() const {
 			return header.size() + body.size();
@@ -104,6 +97,8 @@ namespace hwp50
 			control_t() : type(is_char_control)
 			{}
 
+			DECLARE_BINARY_SERIALIZER(control_t);
+
 			std::size_t size() const {
 				return body.size() * sizeof(value_type);
 			}
@@ -114,6 +109,8 @@ namespace hwp50
 
 		para_text_t()
 		{}
+
+		DECLARE_BINARY_SERIALIZER(para_text_t);
 
 		std::size_t size() const
 		{
