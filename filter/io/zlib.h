@@ -5,28 +5,22 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 
-#include "define/filter_traits.h"
+#include "define/binary_traits.h"
 
 namespace filter
 {
+namespace zip
+{
 	struct RFC1521
 	{
-		static boost::iostreams::zlib_params make_param()
-		{
-			// NOTE! https://www.ietf.org/rfc/rfc1521.txt
-			boost::iostreams::zlib_params params;
-			params.window_bits = 15;
-			params.noheader = true;
-			params.calculate_crc = false;
-			return params;
-		}
+		static boost::iostreams::zlib_params make_param();
 	};
-	
+
 	template <class algorithm_t>
-	class zip
+	class zip_impl
 	{
 	public:
-		zip() {}
+		zip_impl() = default;
 		typedef binary_traits::buffer_t buffer_t;
 
 		static buffer_t compress(const buffer_t& data) {
@@ -109,6 +103,7 @@ namespace filter
 		}
 	private:
 	};
+}
 
-	typedef zip<RFC1521> hwp_zip;
+	typedef ::filter::zip::zip_impl<::filter::zip::RFC1521> hwp_zip;
 }

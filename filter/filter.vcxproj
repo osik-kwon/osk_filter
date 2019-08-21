@@ -141,12 +141,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="hwp\hwp50_filter.cpp" />
+    <ClCompile Include="io\binary_iostream.cpp" />
+    <ClCompile Include="io\compound_file_binary.cpp" />
+    <ClCompile Include="io\zlib.cpp" />
     <ClCompile Include="locale\charset_encoder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pole\pole.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="define\filter_traits.h" />
+    <ClInclude Include="define\compound_file_binary_traits.h" />
+    <ClInclude Include="define\binary_traits.h" />
     <ClInclude Include="hwp\hwp50_filter.h" />
     <ClInclude Include="io\binary_iostream.h" />
     <ClInclude Include="io\compound_file_binary.h" />

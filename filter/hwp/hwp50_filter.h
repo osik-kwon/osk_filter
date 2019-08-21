@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <functional>
 #include <bitset>
 #include <numeric>
@@ -22,9 +23,9 @@ namespace hwp50
 		typedef binary_traits::buffer_t buffer_t;
 		typedef binary_traits::bufferstream bufferstream;
 		typedef binary_traits::streamsize streamsize;
-		typedef syntax_traits::texts_t texts_t;
-		typedef syntax_traits::text_t text_t;
-		filter_t() {}
+		typedef std::wstring text_t;
+		typedef std::vector<text_t>texts_t;
+		filter_t() = default;
 
 		struct file_header_t
 		{

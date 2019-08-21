@@ -28,13 +28,19 @@
     <ClCompile Include="locale\charset_encoder.cpp">
       <Filter>locale</Filter>
     </ClCompile>
+    <ClCompile Include="io\zlib.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\binary_iostream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\compound_file_binary.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
       <Filter>pole</Filter>
-    </ClInclude>
-    <ClInclude Include="define\filter_traits.h">
-      <Filter>define</Filter>
     </ClInclude>
     <ClInclude Include="io\binary_iostream.h">
       <Filter>io</Filter>
@@ -53,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="hwp\hwp50_filter.h">
       <Filter>hwp</Filter>
+    </ClInclude>
+    <ClInclude Include="define\compound_file_binary_traits.h">
+      <Filter>define</Filter>
+    </ClInclude>
+    <ClInclude Include="define\binary_traits.h">
+      <Filter>define</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
