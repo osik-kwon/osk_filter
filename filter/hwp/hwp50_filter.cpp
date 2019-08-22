@@ -1,5 +1,8 @@
 #include "filter_pch.h"
 #include "hwp/hwp50_filter.h"
+#include "locale/charset_encoder.h"
+#include "io/compound_file_binary.h"
+#include "io/zlib.h"
 
 namespace filter
 {
@@ -204,7 +207,7 @@ namespace hwp50
 		const streamsize size_of_control = sizeof(syntax_t::control_t);
 		for (streamsize offset = 0; offset < size; offset += size_of_control)
 		{
-			syntax_t::control_t code = binary_stream_t::read_uint16(stream);
+			syntax_t::control_t code = binary_io::read_uint16(stream);
 			if (syntax_t::is_char_control(code))
 			{
 				if (syntax_t::is_carriage_return(code))
@@ -215,7 +218,7 @@ namespace hwp50
 			else
 			{
 				// TODO: implement tab
-				auto inline_contol = binary_stream_t::read(stream, syntax_t::sizeof_inline_control());
+				auto inline_contol = binary_io::read(stream, syntax_t::sizeof_inline_control());
 				offset += syntax_t::sizeof_inline_control();
 			}
 		}

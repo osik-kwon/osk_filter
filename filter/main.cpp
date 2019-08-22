@@ -1,5 +1,6 @@
 #include "filter_pch.h"
 #include "hwp/hwp50_filter.h"
+#include "hwp/hwp30_filter.h"
 #include "locale/charset_encoder.h"
 
 void print(const filter::hwp50::filter_t::sections_t& sections)
@@ -47,10 +48,18 @@ void test_replace_privacy()
 	print(filter.extract_all_texts(u16_to_u8(u"d:/filter/privacy.hwp.hwp")));
 }
 
+void test_hwp30()
+{
+	typedef filter::hwp30::filter_t filter_t;
+	filter_t filter;
+	print(filter.extract_all_texts(u16_to_u8(u"d:/filter/hwp97_1.hwp")));
+}
+
 int main()
 {
 	//test_decompress_save();
 	//test_extract_all_texts();
-	test_replace_privacy();
+	//test_replace_privacy();
+	test_hwp30();
 	return 0;
 }

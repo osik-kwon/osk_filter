@@ -6,10 +6,6 @@
 #include "define/compound_file_binary_traits.h"
 #include "io/binary_iostream.h"
 
-#define DECLARE_BINARY_SERIALIZER(T) \
-friend bufferstream& operator >> (bufferstream& , T& ); \
-friend bufferstream& operator << (bufferstream&, const T& );
-
 namespace filter
 {
 namespace hwp50

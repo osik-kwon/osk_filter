@@ -2,12 +2,9 @@
 #include <string>
 #include <functional>
 #include <regex>
-
-#include "io/zlib.h"
-#include "locale/charset_encoder.h"
-
+#include "define/binary_traits.h"
+#include "define/compound_file_binary_traits.h"
 #include "hwp/hwp50_syntax.h"
-#include "io/compound_file_binary.h"
 
 namespace filter
 {

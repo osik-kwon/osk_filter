@@ -41,6 +41,12 @@
     <ClCompile Include="hwp\hwp50_syntax.cpp">
       <Filter>hwp</Filter>
     </ClCompile>
+    <ClCompile Include="hwp\hwp30_filter.cpp">
+      <Filter>hwp</Filter>
+    </ClCompile>
+    <ClCompile Include="hwp\hwp30_syntax.cpp">
+      <Filter>hwp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -72,6 +78,12 @@
     </ClInclude>
     <ClInclude Include="filter_pch.h" />
     <ClInclude Include="hwp\hwp50_syntax.h">
+      <Filter>hwp</Filter>
+    </ClInclude>
+    <ClInclude Include="hwp\hwp30_filter.h">
+      <Filter>hwp</Filter>
+    </ClInclude>
+    <ClInclude Include="hwp\hwp30_syntax.h">
       <Filter>hwp</Filter>
     </ClInclude>
   </ItemGroup>

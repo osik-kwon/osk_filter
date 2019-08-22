@@ -2,13 +2,17 @@
 #include <iostream>
 #include "define/binary_traits.h"
 
+#define DECLARE_BINARY_SERIALIZER(T) \
+friend bufferstream& operator >> (bufferstream& , T& ); \
+friend bufferstream& operator << (bufferstream&, const T& );
+
 namespace filter
 {
-	class binary_stream_t
+	class binary_io
 	{
 	public:
 		typedef binary_traits::buffer_t buffer_t;
-		binary_stream_t() = default;
+		binary_io() = default;
 
 		// interfaces of input
 		static int8_t read_int8(std::iostream& stream);
@@ -24,6 +28,7 @@ namespace filter
 		static buffer_t read(std::iostream& stream, std::streamsize size);
 		static void consume(std::iostream& stream, std::streamsize size);
 		static std::string read_string(std::iostream& stream, std::streamsize size);
+		static std::u16string read_u16string(std::iostream& stream, std::streamsize size);
 
 		// interfaces of output
 		static void write_int8(std::iostream& stream, int8_t value);
@@ -38,6 +43,7 @@ namespace filter
 		static void write_double(std::iostream& stream, double value);
 		static void write(std::iostream& stream, const buffer_t& value);
 		static void write_string(std::iostream& stream, const std::string& value);
+		static void write_u16string(std::iostream& stream, const std::u16string& value);
 	private:
 	};
 }
