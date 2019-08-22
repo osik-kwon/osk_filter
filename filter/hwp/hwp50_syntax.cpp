@@ -71,5 +71,63 @@ namespace hwp50
 		binary_stream_t::write(stream, record.body);
 		return stream;
 	}
+
+	bufferstream& operator >> (bufferstream& stream, para_text_t& para_text)
+	{
+		const streamsize size_of_control = sizeof(syntax_t::control_t);
+		const streamsize size_of_inline_control = syntax_t::sizeof_inline_control();
+		for (streamsize offset = 0; offset < para_text.body_size; offset += size_of_control)
+		{
+			syntax_t::control_t code = binary_stream_t::read_uint16(stream);
+			if (syntax_t::is_extend_control(code))
+			{
+				para_text_t::control_t control;
+				control.body.push_back(code);
+				control.type = para_text_t::control_is_t::is_extend_control;
+				for (size_t i = 0; i < size_of_inline_control; i += size_of_control)
+					control.body.push_back(binary_stream_t::read_uint16(stream));
+				offset += size_of_inline_control;
+				para_text.controls.push_back(std::move(control));
+			}
+			else if (syntax_t::is_inline_control(code))
+			{
+				para_text_t::control_t control;
+				control.body.push_back(code);
+				control.type = para_text_t::control_is_t::is_inline_control;
+				for (size_t i = 0; i < size_of_inline_control; i += size_of_control)
+					control.body.push_back(binary_stream_t::read_uint16(stream));
+				offset += size_of_inline_control;
+				para_text.controls.push_back(std::move(control));
+			}
+			else // char control
+			{
+				if (!para_text.controls.empty() &&
+					para_text.controls.back().type == para_text_t::control_is_t::is_char_control)
+				{
+					para_text.controls.back().body.push_back(code);
+				}
+				else
+				{
+					para_text_t::control_t control;
+					control.type = para_text_t::control_is_t::is_char_control;
+					control.body.push_back(code);
+					para_text.controls.push_back(std::move(control));
+				}
+			}
+		}
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const para_text_t& para_text)
+	{
+		for (auto& control : para_text.controls)
+		{
+			for (auto& code : control.body)
+			{
+				binary_stream_t::write_uint16(stream, code);
+			}
+		}
+		return stream;
+	}
 }
 }

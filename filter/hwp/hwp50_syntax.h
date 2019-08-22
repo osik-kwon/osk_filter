@@ -97,8 +97,6 @@ namespace hwp50
 			control_t() : type(is_char_control)
 			{}
 
-			DECLARE_BINARY_SERIALIZER(control_t);
-
 			std::size_t size() const {
 				return body.size() * sizeof(value_type);
 			}
@@ -107,7 +105,7 @@ namespace hwp50
 			std::vector<value_type> body;
 		};
 
-		para_text_t()
+		para_text_t(std::size_t size) : body_size(size)
 		{}
 
 		DECLARE_BINARY_SERIALIZER(para_text_t);
@@ -119,6 +117,7 @@ namespace hwp50
 			});
 		}
 
+		std::size_t body_size;
 		std::vector<control_t> controls;
 	};
 
@@ -135,6 +134,7 @@ namespace hwp50
 			HWPTAG_PARA_TEXT = HWPTAG_BEGIN + 51
 		};
 
+		syntax_t() = default;
 		static bool is_carriage_return(control_t code)
 		{
 			return (code == 13);
@@ -166,6 +166,10 @@ namespace hwp50
 		static std::string section_root()
 		{
 			return std::string("/BodyText/");
+		}
+
+		static std::size_t sizeof_inline_control() {
+			return 7 * sizeof(syntax_t::control_t);
 		}
 	};
 }
