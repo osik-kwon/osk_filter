@@ -52,7 +52,7 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	filter_t filter;
-	print(filter.extract_all_texts(u16_to_u8(u"d:/filter/hwp97_1.hwp")));
+	print(filter.extract_all_texts(u16_to_u8(u"d:/filter/hwp30/hwp97_1.hwp")));
 }
 
 int main()

@@ -1,4 +1,5 @@
 #pragma once
+#include <bitset>
 #include "define/binary_traits.h"
 #include "io/binary_iostream.h"
 
@@ -89,7 +90,6 @@ namespace hwp30
 	{
 		typedef std::string name_t;
 		style_t() = default;
-		DECLARE_BINARY_SERIALIZER(style_t);
 
 		name_t name; // 20 bytes
 		char_shape_t char_shape;
@@ -102,6 +102,83 @@ namespace hwp30
 		DECLARE_BINARY_SERIALIZER(style_list_t);
 
 		std::vector<style_t> styles;
+	};
+
+	struct para_header_t
+	{
+		typedef std::string name_t;
+		para_header_t() = default;
+		DECLARE_BINARY_SERIALIZER(para_header_t);
+
+		bool empty() const {
+			return char_count == 0 || char_count == 0xffff;
+		}
+
+		uint8_t prev_para_shape_id; // 0 : new shape
+		uint16_t char_count;
+		uint16_t line_count;
+		uint8_t char_shape_id; // 0: 대표 글자 모양
+		std::bitset<8> etc_flag;
+		uint32_t control_code;
+		uint8_t style_id;
+		char_shape_t char_shape;
+		para_shape_t para_shape; // prev_para_shape_id 가 0, char_count 가 1개 이상 일 때 존재
+	};
+
+	struct line_segment_list_t
+	{
+		line_segment_list_t() : line_count(0)
+		{}
+		line_segment_list_t(uint16_t count) : line_count(count)
+		{}
+		DECLARE_BINARY_SERIALIZER(line_segment_list_t);
+		std::size_t size() const {
+			return 14 * line_count;
+		}
+		buffer_t body;
+		uint16_t line_count;
+	};
+
+	struct char_shape_info_t
+	{
+		char_shape_info_t() : flag(0)
+		{}
+		char_shape_t char_shape;
+		uint8_t flag;
+	};
+
+	struct char_shape_info_list_t
+	{
+		char_shape_info_list_t() : char_count(0)
+		{}
+		char_shape_info_list_t(uint16_t count) : char_count(count)
+		{}
+		DECLARE_BINARY_SERIALIZER(char_shape_info_list_t);
+
+		std::vector<char_shape_info_t> char_shape_info_list;
+		uint16_t char_count;
+	};
+
+	struct hchar_t
+	{
+		hchar_t() : code(0)
+		{}
+		DECLARE_BINARY_SERIALIZER(hchar_t);
+		uint16_t code;
+	};
+	
+
+	struct paragraph_t
+	{
+		typedef std::string name_t;
+		paragraph_t() = default;
+		DECLARE_BINARY_SERIALIZER(paragraph_t);
+
+		para_header_t para_header;
+		line_segment_list_t line_segment_list;
+		char_shape_info_list_t char_shape_info_list; // para_header_t.char_shape_id : 0이 아닐 때만 존재
+		std::vector<hchar_t> hchars; // para_header_t.control_code : 0 일 때만 존재
+		// TODO: implement control codes
 	};
 
 	struct document_t
@@ -119,6 +196,5 @@ namespace hwp30
 		style_list_t style_list;
 		// TODO: implement
 	};
-
 }
 }

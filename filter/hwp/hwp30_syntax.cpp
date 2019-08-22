@@ -133,5 +133,101 @@ namespace hwp30
 		}
 		return stream;
 	}
+
+	bufferstream& operator >> (bufferstream& stream, para_header_t& data)
+	{
+		data.prev_para_shape_id = binary_io::read_uint8(stream);
+		data.char_count = binary_io::read_uint16(stream);
+		data.line_count = binary_io::read_uint16(stream);
+		data.char_shape_id = binary_io::read_uint8(stream);
+		data.etc_flag = binary_io::read_uint8(stream);
+		data.control_code = binary_io::read_uint32(stream);
+		data.style_id = binary_io::read_uint8(stream);
+
+		stream >> data.char_shape;
+		if (data.prev_para_shape_id == 0 &&
+			data.char_count > 0 )
+			stream >> data.para_shape;
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const para_header_t& data)
+	{
+		binary_io::write_uint8(stream, data.prev_para_shape_id);
+		binary_io::write_uint16(stream, data.char_count);
+		binary_io::write_uint16(stream, data.line_count);
+		binary_io::write_uint8(stream, data.char_shape_id);
+		binary_io::write_uint8(stream, (uint8_t)data.etc_flag.to_ulong());
+		binary_io::write_uint32(stream, data.control_code);
+		binary_io::write_uint8(stream, data.style_id);
+
+		stream << data.char_shape;
+		if (data.prev_para_shape_id == 0 &&
+			data.char_count > 0)
+			stream << data.para_shape;
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, line_segment_list_t& data)
+	{
+		data.body = binary_io::read(stream, data.size());
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const line_segment_list_t& data)
+	{
+		binary_io::write(stream, data.body);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, char_shape_info_list_t& data)
+	{
+		for (uint16_t id = 0; id < data.char_count; ++id)
+		{
+			char_shape_info_t char_shape_info;
+			char_shape_info.flag = binary_io::read_uint8(stream);
+			if (char_shape_info.flag == 1)
+				stream >> char_shape_info.char_shape;
+			data.char_shape_info_list.push_back(std::move(char_shape_info));
+		}
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const char_shape_info_list_t& data)
+	{
+		for (auto& char_shape_info : data.char_shape_info_list)
+		{
+			binary_io::write_uint8(stream, char_shape_info.flag);
+			if (char_shape_info.flag == 1)
+				stream << char_shape_info.char_shape;
+		}
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, hchar_t& data)
+	{
+		data.code = binary_io::read_uint16(stream);
+		// TODO: implement hchar decode
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const hchar_t& data)
+	{
+		// TODO: implement hchar encode
+		binary_io::write_uint16(stream, data.code);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, paragraph_t& data)
+	{
+		// TODO: implement
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const paragraph_t& data)
+	{
+		// TODO: implement
+		return stream;
+	}
 }
 }
