@@ -51,6 +51,15 @@ namespace hwp30
 	{
 		stream >> document->face_name_list;
 		stream >> document->style_list;
+
+		bool end_of_para = false;
+		do{
+			paragraph_t para;
+			stream >> para;
+			end_of_para = para.para_header.empty();
+			if (!end_of_para)
+				document->para_list.push_back(std::move(para));
+		} while (!end_of_para);
 	}
 
 	std::unique_ptr<document_t> filter_t::parse(buffer_t& buffer)

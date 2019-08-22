@@ -186,7 +186,7 @@ namespace hwp30
 		{
 			char_shape_info_t char_shape_info;
 			char_shape_info.flag = binary_io::read_uint8(stream);
-			if (char_shape_info.flag == 1)
+			if (char_shape_info.flag != 1)
 				stream >> char_shape_info.char_shape;
 			data.char_shape_info_list.push_back(std::move(char_shape_info));
 		}
@@ -220,7 +220,23 @@ namespace hwp30
 
 	bufferstream& operator >> (bufferstream& stream, paragraph_t& data)
 	{
-		// TODO: implement
+		stream >> data.para_header;
+		if (data.para_header.empty())
+			return stream; // IMPORTANT!
+		data.line_segment_list.line_count = data.para_header.line_count; // IMPORTANT!
+		data.char_shape_info_list.char_count = data.para_header.char_count; // IMPORTANT!
+		stream >> data.line_segment_list;
+		stream >> data.char_shape_info_list;
+		if (data.para_header.control_code == 0)
+		{
+			uint16_t count = data.para_header.char_count;
+			for (uint16_t i = 0; i < count; i++)
+			{
+				hchar_t hchar;
+				stream >> hchar;
+				data.hchars.push_back(std::move(hchar));
+			}
+		}
 		return stream;
 	}
 

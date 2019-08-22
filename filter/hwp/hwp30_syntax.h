@@ -194,6 +194,7 @@ namespace hwp30
 		// compress data
 		face_name_list_t face_name_list;
 		style_list_t style_list;
+		std::vector<paragraph_t> para_list;
 		// TODO: implement
 	};
 }
