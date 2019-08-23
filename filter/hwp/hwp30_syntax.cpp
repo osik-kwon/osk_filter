@@ -271,5 +271,51 @@ namespace hwp30
 		}
 		return stream;
 	}
+
+	bufferstream& operator >> (bufferstream& stream, document_header_t& data)
+	{
+		// TODO: implement
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const document_header_t& data)
+	{
+		binary_io::write(stream, data.signature);
+		stream << data.doc_info;
+		stream << data.doc_summary;
+		if (data.doc_info.info_block_length != 0)
+			stream << data.info_block;
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, document_body_t& data)
+	{
+		// TODO: implement
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const document_body_t& data)
+	{
+		stream << data.face_name_list;
+		stream << data.style_list;
+		// TODO: implement control codes
+		for (auto& para : data.para_list)
+		{
+			stream << para;
+		}
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, document_tail_t& data)
+	{
+		// TODO: implement
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const document_tail_t& data)
+	{
+		binary_io::write(stream, data.trailer);
+		return stream;
+	}
 }
 }

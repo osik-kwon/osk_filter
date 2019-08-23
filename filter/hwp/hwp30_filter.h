@@ -22,7 +22,9 @@ namespace hwp30
 		filter_t() = default;
 
 		sections_t extract_all_texts(const std::string& import_path);
-		void save(const std::string& open_path, const std::string& save_path);
+
+		std::unique_ptr<document_t> open(const std::string& open_path);
+		bool save(const std::unique_ptr<document_t>& document, const std::string& save_path);
 	private:
 		buffer_t read_file(const std::string& path);
 		std::unique_ptr<document_t> parse(buffer_t& buffer);

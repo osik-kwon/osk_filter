@@ -1,6 +1,7 @@
 #include "filter_pch.h"
 #include "hwp/hwp50_filter.h"
 #include "hwp/hwp30_filter.h"
+#include "hwp/hwp30_syntax.h"
 #include "locale/charset_encoder.h"
 
 void print(const filter::hwp50::filter_t::sections_t& sections)
@@ -52,11 +53,13 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	filter_t filter;
-	filter.save(to_utf8(u"d:/filter/hwp30/0F0034.hwp"), to_utf8(u"d:/filter/hwp30/0F0034.hwp.hwp"));
-	//filter.save(to_utf8(u"d:/filter/hwp30/hwp97_all.hwp"), to_utf8(u"d:/filter/hwp30/hwp97_all.hwp.hwp"));
+	auto document = filter.open(to_utf8(u"d:/filter/hwp30/hwp97_all.hwp"));
+	filter.save(document, to_utf8(u"d:/filter/hwp30/hwp97_all.hwp.hwp"));
+
+	//filter.save(to_utf8(u"d:/filter/hwp30/0F0034.hwp"), to_utf8(u"d:/filter/hwp30/0F0034.hwp.hwp"));
 	//filter.save(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp"), to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp.hwp"));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
+	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
+	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
 }
 
 int main()

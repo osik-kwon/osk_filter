@@ -231,12 +231,11 @@ namespace hwp30
 		// TODO: implement control codes
 	};
 
-	struct document_t
+	struct document_header_t
 	{
-		document_t()
-		{}
-
-		std::size_t sizeof_header() const {
+		document_header_t() = default;
+		DECLARE_BINARY_SERIALIZER(document_header_t);
+		std::size_t size() const {
 			std::size_t offset = 0;
 			offset += signature.size();
 			offset += doc_info.size();
@@ -247,29 +246,56 @@ namespace hwp30
 			return offset;
 		}
 
-		std::size_t sizeof_body() const {
-			std::size_t offset = 0;
-			offset += face_name_list.size();
-			offset += style_list.size();
-			for ( auto& para : para_list)
-				offset += para.size();
-			return offset;
-		}
-
-		std::size_t sizeof_trailer() const {
-			return 8;
-		}
-
 		buffer_t signature;
 		doc_info_t doc_info;
 		doc_summary_t doc_summary;
 		info_block_t info_block;
+	};
 
-		// compress data
+	struct document_body_t
+	{
+		document_body_t() = default;
+		DECLARE_BINARY_SERIALIZER(document_body_t);
+		std::size_t size() const {
+			std::size_t offset = 0;
+			offset += face_name_list.size();
+			offset += style_list.size();
+			for (auto& para : para_list)
+				offset += para.size();
+			return offset;
+		}
+		// compressd data
 		face_name_list_t face_name_list;
 		style_list_t style_list;
 		std::vector<paragraph_t> para_list;
 		// TODO: implement
+	};
+
+	struct document_tail_t
+	{
+		document_tail_t()
+		{
+			trailer.resize( 8 );
+		}
+		DECLARE_BINARY_SERIALIZER(document_tail_t);
+		std::size_t size() const {
+			return 8;
+		}
+
+		// TODO: implement
+		buffer_t trailer;
+	};
+
+	struct document_t
+	{
+		document_t() = default;
+		std::size_t size() const {
+			return header.size() + body.size() + tail.size();
+		}
+
+		document_header_t header;
+		document_body_t body;
+		document_tail_t tail;
 	};
 }
 }
