@@ -274,7 +274,14 @@ namespace hwp30
 
 	bufferstream& operator >> (bufferstream& stream, document_header_t& data)
 	{
-		// TODO: implement
+		data.signature = binary_io::read(stream, 30);
+		stream >> data.doc_info;
+		stream >> data.doc_summary;
+		if (data.doc_info.info_block_length != 0)
+		{
+			data.info_block.info_block_length = data.doc_info.info_block_length;
+			stream >> data.info_block;
+		}
 		return stream;
 	}
 
@@ -290,7 +297,16 @@ namespace hwp30
 
 	bufferstream& operator >> (bufferstream& stream, document_body_t& data)
 	{
-		// TODO: implement
+		stream >> data.face_name_list;
+		stream >> data.style_list;
+
+		bool end_of_para = false;
+		do {
+			paragraph_t para;
+			stream >> para;
+			data.para_list.push_back(std::move(para));
+			end_of_para = para.para_header.empty();
+		} while (!end_of_para);
 		return stream;
 	}
 

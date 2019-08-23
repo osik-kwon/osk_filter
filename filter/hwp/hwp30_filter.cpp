@@ -24,18 +24,6 @@ namespace hwp30
 		std::copy(std::istream_iterator<byte_t>(file), std::istream_iterator<byte_t>(), std::back_inserter(buffer));
 		return buffer;
 	}
-
-	void filter_t::parse_header(bufferstream& stream, std::unique_ptr<document_t>& document)
-	{
-		document->header.signature = binary_io::read(stream, 30);
-		stream >> document->header.doc_info;
-		stream >> document->header.doc_summary;
-		if (document->header.doc_info.info_block_length != 0)
-		{
-			document->header.info_block.info_block_length = document->header.doc_info.info_block_length;
-			stream >> document->header.info_block;
-		}
-	}
 	
 	buffer_t filter_t::extract_body(buffer_t& buffer, bufferstream& stream, std::unique_ptr<document_t>& document)
 	{
@@ -48,28 +36,15 @@ namespace hwp30
 		return body;
 	}
 
-	void filter_t::parse_body(bufferstream& stream, std::unique_ptr<document_t>& document)
-	{
-		stream >> document->body.face_name_list;
-		stream >> document->body.style_list;
-
-		bool end_of_para = false;
-		do{
-			paragraph_t para;
-			stream >> para;
-			document->body.para_list.push_back(std::move(para));
-			end_of_para = para.para_header.empty();
-		} while (!end_of_para);
-	}
-
 	std::unique_ptr<document_t> filter_t::parse(buffer_t& buffer)
 	{
 		std::unique_ptr<document_t> document(std::make_unique<document_t>());
 		bufferstream header_stream(&buffer[0], buffer.size());
-		parse_header(header_stream, document);
+		header_stream >> document->header;
+
 		buffer_t body = extract_body(buffer, header_stream, document);
 		bufferstream body_stream(&body[0], body.size());
-		parse_body(body_stream, document);
+		body_stream >> document->body;
 		return document;
 	}
 

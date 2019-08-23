@@ -28,9 +28,7 @@ namespace hwp30
 	private:
 		buffer_t read_file(const std::string& path);
 		std::unique_ptr<document_t> parse(buffer_t& buffer);
-		void parse_header(bufferstream& stream, std::unique_ptr<document_t>& document);
 		buffer_t extract_body(buffer_t& buffer, bufferstream& stream, std::unique_ptr<document_t>& document);
-		void parse_body(bufferstream& stream, std::unique_ptr<document_t>& document);
 	};
 }
 }
