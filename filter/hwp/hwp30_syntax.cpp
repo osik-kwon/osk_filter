@@ -1,5 +1,7 @@
 #include "filter_pch.h"
 #include "hwp/hwp30_syntax.h"
+#include "locale/hchar_converter.h"
+#include "locale/charset_encoder.h"
 
 namespace filter
 {
@@ -58,16 +60,16 @@ namespace hwp30
 
 	bufferstream& operator >> (bufferstream& stream, face_name_list_t& data)
 	{
-		typedef std::string face_name_t;
-		typedef std::vector<face_name_t> face_names_t;
-		typedef std::vector<face_names_t> family_list_t;
+		typedef face_name_list_t::face_name_t face_name_t;
+		typedef face_name_list_t::face_names_t face_names_t;
+		typedef face_name_list_t::family_list_t family_list_t;
 
 		for (size_t family = 0; family < 7; ++family)
 		{
 			int16_t face_count = binary_io::read_int16(stream);
 			face_names_t face_names;
 			for (uint16_t id = 0; id < face_count; ++id)
-				face_names.push_back( binary_io::read_string(stream, 40) );
+				face_names.push_back( binary_io::read(stream, 40) );
 			data.family_list.push_back(std::move(face_names));
 		}
 		return stream;
@@ -79,7 +81,7 @@ namespace hwp30
 		{
 			binary_io::write_uint16(stream, (uint16_t)face_names.size());
 			for ( auto& face_name : face_names )
-				binary_io::write_string(stream, face_name);
+				binary_io::write(stream, face_name);
 		}
 		return stream;
 	}
@@ -198,7 +200,7 @@ namespace hwp30
 		for (auto& char_shape_info : data.char_shape_info_list)
 		{
 			binary_io::write_uint8(stream, char_shape_info.flag);
-			if (char_shape_info.flag == 1)
+			if (char_shape_info.flag != 1)
 				stream << char_shape_info.char_shape;
 		}
 		return stream;
@@ -207,14 +209,23 @@ namespace hwp30
 	bufferstream& operator >> (bufferstream& stream, hchar_t& data)
 	{
 		data.code = binary_io::read_uint16(stream);
-		// TODO: implement hchar decode
+		data.utf32 = charset::hchar_converter::hchar_to_wchar(data.code);
 		return stream;
 	}
 
 	bufferstream& operator << (bufferstream& stream, const hchar_t& data)
 	{
-		// TODO: implement hchar encode
-		binary_io::write_uint16(stream, data.code);
+		// save as original
+		//binary_io::write_uint16(stream, data.code);
+		
+		// ucs4 to ucs2
+		auto utf16 = to_utf16(data.utf32);
+		for (auto code : utf16)
+		{
+			// ucs2 to hchar
+			auto hchar = charset::hchar_converter::wchar_to_hchar(code);
+			binary_io::write_uint16(stream, hchar);
+		}
 		return stream;
 	}
 
@@ -242,17 +253,16 @@ namespace hwp30
 
 	bufferstream& operator << (bufferstream& stream, const paragraph_t& data)
 	{
+		stream << data.para_header;
 		if (data.para_header.empty())
 			return stream; // IMPORTANT!
-		stream << data.para_header;
 		stream << data.line_segment_list;
 		stream << data.char_shape_info_list;
 		if (data.para_header.control_code == 0)
 		{
 			uint16_t count = data.para_header.char_count;
-			for (uint16_t i = 0; i < count; i++)
+			for (auto& hchar : data.hchars)
 			{
-				hchar_t hchar;
 				stream << hchar;
 			}
 		}

@@ -1,5 +1,6 @@
 #pragma once
 #include <bitset>
+#include <string>
 #include "define/binary_traits.h"
 #include "io/binary_iostream.h"
 
@@ -56,12 +57,22 @@ namespace hwp30
 	// compress data
 	struct face_name_list_t
 	{
-		typedef std::string face_name_t;
+		typedef buffer_t face_name_t;
 		typedef std::vector<face_name_t> face_names_t;
 		typedef std::vector<face_names_t> family_list_t;
 
 		face_name_list_t() = default;
 		DECLARE_BINARY_SERIALIZER(face_name_list_t);
+
+		std::size_t size() const
+		{
+			std::size_t offset = 0;
+			for (auto& face_names : family_list) {
+				offset += 2;
+				offset += ( face_names.size() * 40 );
+			}
+			return offset;
+		}
 
 		family_list_t family_list;
 	};
@@ -101,6 +112,18 @@ namespace hwp30
 		style_list_t() = default;
 		DECLARE_BINARY_SERIALIZER(style_list_t);
 
+		std::size_t size() const
+		{
+			std::size_t offset = 0;
+			offset += 2;
+			for (auto& style : styles)
+			{
+				offset += style.name.size();
+				offset += style.char_shape.size();
+				offset += style.para_shape.size();
+			}
+		}
+
 		std::vector<style_t> styles;
 	};
 
@@ -109,6 +132,10 @@ namespace hwp30
 		typedef std::string name_t;
 		para_header_t() = default;
 		DECLARE_BINARY_SERIALIZER(para_header_t);
+
+		std::size_t size() const {
+			return 12 + char_shape.size() + para_shape.size();
+		}
 
 		bool empty() const {
 			return char_count == 0 || char_count == 0xffff;
@@ -155,16 +182,32 @@ namespace hwp30
 		{}
 		DECLARE_BINARY_SERIALIZER(char_shape_info_list_t);
 
+		std::size_t size() const
+		{
+			std::size_t offset = 0;
+			offset += 2;
+			for (auto& char_shape_info : char_shape_info_list)
+			{
+				offset += 1;
+				if (char_shape_info.flag != 1)
+					offset += char_shape_info.char_shape.size();
+			}
+		}
+
 		std::vector<char_shape_info_t> char_shape_info_list;
 		uint16_t char_count;
 	};
 
 	struct hchar_t
 	{
-		hchar_t() : code(0)
+		hchar_t() : code(0), utf32(0)
 		{}
 		DECLARE_BINARY_SERIALIZER(hchar_t);
+		std::size_t size() const {
+			return 2;
+		}
 		uint16_t code;
+		char32_t utf32;
 	};
 	
 
@@ -173,6 +216,11 @@ namespace hwp30
 		typedef std::string name_t;
 		paragraph_t() = default;
 		DECLARE_BINARY_SERIALIZER(paragraph_t);
+
+		std::size_t size() const {
+			return para_header.size() + line_segment_list.size() + char_shape_info_list.size() +
+				(hchars.size() * 2) ;
+		}
 
 		para_header_t para_header;
 		line_segment_list_t line_segment_list;
@@ -185,6 +233,26 @@ namespace hwp30
 	{
 		document_t()
 		{}
+
+		std::size_t sizeof_header() const {
+			std::size_t offset = 0;
+			offset += signature.size();
+			offset += doc_info.size();
+			offset += doc_summary.size();
+
+			// variable
+			offset += info_block.body.size();
+			return offset;
+		}
+
+		std::size_t sizeof_body() const {
+			std::size_t offset = 0;
+			offset += face_name_list.size();
+			offset += style_list.size();
+			for ( auto& para : para_list)
+				offset += para.size();
+			return offset;
+		}
 
 		buffer_t signature;
 		doc_info_t doc_info;

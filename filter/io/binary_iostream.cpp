@@ -218,7 +218,10 @@ namespace filter
 		FILTER_ENDIAN_SWAP(const_cast<char*>(&value[0]));
 		stream.write(reinterpret_cast<const char*>(&value[0]), value.size());
 		if (!stream.good())
+		{
+			size_t cur = stream.tellg();
 			throw std::runtime_error("write stream fail");
+		}
 	}
 
 	void binary_io::write_string(std::iostream& stream, const std::string& value)

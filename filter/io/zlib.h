@@ -51,6 +51,26 @@ namespace zip
 			return buffer_t();
 		}
 
+		static buffer_t compress_noexcept(const char* data, std::size_t size) {
+			try {
+				return compress(data, size);
+			}
+			catch (const std::exception&)
+			{
+			}
+			return buffer_t();
+		}
+
+		static buffer_t decompress_noexcept(const char* data, std::size_t size) {
+			try {
+				return decompress(data, size);
+			}
+			catch (const std::exception&)
+			{
+			}
+			return buffer_t();
+		}
+
 		static buffer_t compress(const char* data, std::size_t size)
 		{
 			boost::iostreams::array_source src(reinterpret_cast<const char*>(data), size);

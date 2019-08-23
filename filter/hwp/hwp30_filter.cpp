@@ -56,9 +56,8 @@ namespace hwp30
 		do{
 			paragraph_t para;
 			stream >> para;
+			document->para_list.push_back(std::move(para));
 			end_of_para = para.para_header.empty();
-			if (!end_of_para)
-				document->para_list.push_back(std::move(para));
 		} while (!end_of_para);
 	}
 
@@ -88,6 +87,60 @@ namespace hwp30
 			std::cout << e.what() << std::endl;
 		}
 		return sections_t();
+	}
+
+	void filter_t::save(const std::string& open_path, const std::string& save_path)
+	{
+		try
+		{
+			sections_t sections;
+			auto import_buffer = read_file(open_path);
+			auto document = parse(import_buffer);
+
+			// TODO: remove
+			{
+				buffer_t header_buffer;
+				header_buffer.resize(document->sizeof_header());
+
+				bufferstream header_stream(&header_buffer[0], header_buffer.size());
+				binary_io::write(header_stream, document->signature);
+				header_stream << document->doc_info;
+				header_stream << document->doc_summary;
+				if (document->doc_info.info_block_length != 0)
+					header_stream << document->info_block;
+
+				buffer_t body_buffer;
+				body_buffer.resize(1000000); // TODO: implement sizeof_export
+				bufferstream body_stream(&body_buffer[0], body_buffer.size());
+
+				body_stream << document->face_name_list;
+				body_stream << document->style_list;
+
+				for (auto& para : document->para_list)
+				{
+					body_stream << para;
+				}
+
+				// compress
+				if (document->doc_info.compressed != 0)
+				{
+					size_t buffer_size = body_stream.tellp(); // IMPORTANT!
+					body_buffer = hwp_zip::compress_noexcept((char*)& body_buffer[0], buffer_size);
+				}
+
+				std::ofstream fout(save_path, std::ios::out | std::ios::binary);
+				fout.write((char*)& header_buffer[0], header_buffer.size() * sizeof(char));
+				fout.write((char*)& body_buffer[0], body_buffer.size() * sizeof(char));
+
+				char nulls[8] = {};
+				fout.write((char*)& nulls[0], 8 * sizeof(char));
+				fout.close();
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 }
 }

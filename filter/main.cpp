@@ -52,7 +52,9 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	filter_t filter;
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
+	//filter.save(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp.hwp"), to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp.hwp.hwp"));
+	filter.save(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp"), to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp.hwp"));
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
 }
 

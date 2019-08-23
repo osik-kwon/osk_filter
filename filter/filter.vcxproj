@@ -162,6 +162,8 @@
     <ClCompile Include="io\compound_file_binary.cpp" />
     <ClCompile Include="io\zlib.cpp" />
     <ClCompile Include="locale\charset_encoder.cpp" />
+    <ClCompile Include="locale\hchar_converter.cpp" />
+    <ClCompile Include="locale\kssm_ks_converter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pole\pole.cpp" />
   </ItemGroup>
@@ -182,6 +184,8 @@
     <ClInclude Include="locale\cp_utf32.hpp" />
     <ClInclude Include="locale\cp_utf8.hpp" />
     <ClInclude Include="locale\cp_utfw.hpp" />
+    <ClInclude Include="locale\hchar_converter.h" />
+    <ClInclude Include="locale\kssm_ks_converter.h" />
     <ClInclude Include="locale\utf_config.hpp" />
     <ClInclude Include="locale\utf_converters.hpp" />
     <ClInclude Include="locale\utf_selector.hpp" />
