@@ -86,5 +86,29 @@
     <ClInclude Include="hwp\hwp30_syntax.h">
       <Filter>hwp</Filter>
     </ClInclude>
+    <ClInclude Include="locale\cp_utf8.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\cp_utf16.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\cp_utf32.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\cp_utfw.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\utf_config.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\utf_converters.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\utf_selector.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\utf_sizes.hpp">
+      <Filter>locale</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

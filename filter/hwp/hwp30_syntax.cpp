@@ -242,7 +242,20 @@ namespace hwp30
 
 	bufferstream& operator << (bufferstream& stream, const paragraph_t& data)
 	{
-		// TODO: implement
+		if (data.para_header.empty())
+			return stream; // IMPORTANT!
+		stream << data.para_header;
+		stream << data.line_segment_list;
+		stream << data.char_shape_info_list;
+		if (data.para_header.control_code == 0)
+		{
+			uint16_t count = data.para_header.char_count;
+			for (uint16_t i = 0; i < count; i++)
+			{
+				hchar_t hchar;
+				stream << hchar;
+			}
+		}
 		return stream;
 	}
 }

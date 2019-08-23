@@ -178,6 +178,14 @@
     <ClInclude Include="io\endianness.h" />
     <ClInclude Include="io\zlib.h" />
     <ClInclude Include="locale\charset_encoder.h" />
+    <ClInclude Include="locale\cp_utf16.hpp" />
+    <ClInclude Include="locale\cp_utf32.hpp" />
+    <ClInclude Include="locale\cp_utf8.hpp" />
+    <ClInclude Include="locale\cp_utfw.hpp" />
+    <ClInclude Include="locale\utf_config.hpp" />
+    <ClInclude Include="locale\utf_converters.hpp" />
+    <ClInclude Include="locale\utf_selector.hpp" />
+    <ClInclude Include="locale\utf_sizes.hpp" />
     <ClInclude Include="pole\pole.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,27 +1,21 @@
 #pragma once
 #include <string>
-#include <locale>
-#include <codecvt>
 
-namespace filter
-{
-	class charset
-	{
-	public:
-		charset() = default;
-		static std::u16string u8_to_u16(const std::string& source)
-		{
-			std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
-			return convert.from_bytes(source);
-		}
+// thank you! https://github.com/ww898/utf-cpp/blob/master/README.md
+// license : https://github.com/ww898/utf-cpp/blob/master/LICENSE.md
 
-		static std::string u16_to_u8(const std::u16string& source)
-		{
-			std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
-			return convert.to_bytes(source);
-		}
-	};
-}
+extern std::string to_utf8(const std::u16string& str);
+extern std::string to_utf8(const std::u32string& str);
+extern std::string to_utf8(const std::wstring& str);
 
-extern std::u16string u8_to_u16(const std::string& source);
-extern std::string u16_to_u8(const std::u16string& source);
+extern std::u16string to_utf16(const std::string& str);
+extern std::u16string to_utf16(const std::u32string& str);
+extern std::u16string to_utf16(const std::wstring& str);
+
+extern std::u32string to_utf32(const std::string& str);
+extern std::u32string to_utf32(const std::u16string& str);
+extern std::u32string to_utf32(const std::wstring& str);
+
+extern std::wstring to_wchar(const std::string& str);
+extern std::wstring to_wchar(const std::u16string& str);
+extern std::wstring to_wchar(const std::u32string& str);
