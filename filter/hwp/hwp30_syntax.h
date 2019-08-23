@@ -122,6 +122,7 @@ namespace hwp30
 				offset += style.char_shape.size();
 				offset += style.para_shape.size();
 			}
+			return offset;
 		}
 
 		std::vector<style_t> styles;
@@ -192,6 +193,7 @@ namespace hwp30
 				if (char_shape_info.flag != 1)
 					offset += char_shape_info.char_shape.size();
 			}
+			return offset;
 		}
 
 		std::vector<char_shape_info_t> char_shape_info_list;
@@ -252,6 +254,10 @@ namespace hwp30
 			for ( auto& para : para_list)
 				offset += para.size();
 			return offset;
+		}
+
+		std::size_t sizeof_trailer() const {
+			return 8;
 		}
 
 		buffer_t signature;

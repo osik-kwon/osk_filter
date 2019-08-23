@@ -110,7 +110,7 @@ namespace hwp30
 					header_stream << document->info_block;
 
 				buffer_t body_buffer;
-				body_buffer.resize(1000000); // TODO: implement sizeof_export
+				body_buffer.resize(document->sizeof_body());
 				bufferstream body_stream(&body_buffer[0], body_buffer.size());
 
 				body_stream << document->face_name_list;
@@ -129,11 +129,12 @@ namespace hwp30
 				}
 
 				std::ofstream fout(save_path, std::ios::out | std::ios::binary);
-				fout.write((char*)& header_buffer[0], header_buffer.size() * sizeof(char));
-				fout.write((char*)& body_buffer[0], body_buffer.size() * sizeof(char));
+				fout.write((char*)& header_buffer[0], header_buffer.size());
+				fout.write((char*)& body_buffer[0], body_buffer.size());
 
+				// trailer
 				char nulls[8] = {};
-				fout.write((char*)& nulls[0], 8 * sizeof(char));
+				fout.write((char*)& nulls[0], document->sizeof_trailer());
 				fout.close();
 			}
 		}

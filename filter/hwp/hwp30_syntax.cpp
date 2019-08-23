@@ -216,8 +216,10 @@ namespace hwp30
 	bufferstream& operator << (bufferstream& stream, const hchar_t& data)
 	{
 		// save as original
-		//binary_io::write_uint16(stream, data.code);
+		binary_io::write_uint16(stream, data.code);
 		
+		/*
+		// TODO: implement PUA
 		// ucs4 to ucs2
 		auto utf16 = to_utf16(data.utf32);
 		for (auto code : utf16)
@@ -226,6 +228,7 @@ namespace hwp30
 			auto hchar = charset::hchar_converter::wchar_to_hchar(code);
 			binary_io::write_uint16(stream, hchar);
 		}
+		*/
 		return stream;
 	}
 
