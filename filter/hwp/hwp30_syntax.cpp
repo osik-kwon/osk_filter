@@ -329,25 +329,48 @@ namespace hwp30
 		}
 		else
 		{
-			stream >> data.control_code;
-			if (data.control_code.is_control_code())
+			uint16_t count = data.para_header.char_count;
+			for (uint16_t i = 0; i < count; i++)
 			{
-				// TODO: implement table
-				stream >> data.table;
-				for (uint16_t i = 0; i < data.table.cell_count; ++i)
+				uint16_t code = binary_io::read_uint16(stream);
+				if (code >= 32)
 				{
-					paragraph_list_t para_list;
-					stream >> para_list;
-					data.childs.push_back(para_list);
+					hchar_t hchar;
+					hchar.code = code;
+					hchar.utf32 = charset::hchar_converter::hchar_to_wchar(code);
+					data.hchars.push_back(std::move(hchar));
+					continue;
 				}
-				paragraph_list_t caption_para_list;
-				stream >> caption_para_list;
-				data.childs.push_back(caption_para_list);
-				
+				if (code == 13)
+				{
+					hchar_t hchar;
+					hchar.code = code;
+					hchar.utf32 = charset::hchar_converter::hchar_to_wchar(code);
+					data.hchars.push_back(std::move(hchar));
+					i += 3;
+					continue;
+				}
+				data.control_code.begin_code = code;
+				data.control_code.reserved = binary_io::read_uint32(stream);
+				data.control_code.end_code = binary_io::read_uint16(stream);
+
+				//stream >> data.control_code;
+				if (data.control_code.is_control_code())
+				{
+					// TODO: implement table
+					stream >> data.table;
+					for (uint16_t i = 0; i < data.table.cell_count; ++i)
+					{
+						paragraph_list_t para_list;
+						stream >> para_list;
+						data.childs.push_back(para_list);
+					}
+					paragraph_list_t caption_para_list;
+					stream >> caption_para_list;
+					data.childs.push_back(caption_para_list);
+					i += 3;
+				}
 			}
-			hchar_t hchar;
-			stream >> hchar;
-			data.hchars.push_back(std::move(hchar));
 		}
 		return stream;
 	}

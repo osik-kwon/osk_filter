@@ -131,7 +131,8 @@ namespace hwp30
 	struct para_header_t
 	{
 		typedef std::string name_t;
-		para_header_t() = default;
+		para_header_t() : prev_para_shape_id(0), char_count(0), line_count(0), char_shape_id(0), control_code(0), style_id(0)
+		{}
 		DECLARE_BINARY_SERIALIZER(para_header_t);
 
 		std::size_t size() const {
