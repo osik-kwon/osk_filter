@@ -53,13 +53,18 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	filter_t filter;
-	auto document = filter.open(to_utf8(u"d:/filter/hwp30/hwp97_all.hwp"));
-	filter.save(document, to_utf8(u"d:/filter/hwp30/hwp97_all.hwp.hwp"));
+	auto document = filter.open(to_utf8(u"d:/filter/hwp30/table.hwp"));
+	filter.save(document, to_utf8(u"d:/filter/hwp30/table.hwp.hwp"));
+
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table.hwp")));
+	//auto document = filter.open(to_utf8(u"d:/filter/hwp30/hwp97_all.hwp"));
+	//filter.save(document, to_utf8(u"d:/filter/hwp30/hwp97_all.hwp.hwp"));
 
 	//filter.save(to_utf8(u"d:/filter/hwp30/0F0034.hwp"), to_utf8(u"d:/filter/hwp30/0F0034.hwp.hwp"));
 	//filter.save(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp"), to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp.hwp"));
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
 }
 
 int main()

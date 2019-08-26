@@ -212,23 +212,80 @@ namespace hwp30
 		char32_t utf32;
 	};
 	
+	struct control_code_t
+	{
+		control_code_t() : begin_code(0), reserved(0), end_code(0)
+		{}
+		DECLARE_BINARY_SERIALIZER(control_code_t);
+		std::size_t size() const {
+			return 8;
+		}
+		bool is_control_code() const {
+			return begin_code > 0 && begin_code < 32;
+		}
+		uint16_t begin_code;
+		uint32_t reserved;
+		uint16_t end_code;
+	};
 
+	struct cell_t
+	{
+		cell_t() = default;
+		std::size_t size() const {
+			return 27;
+		}
+		buffer_t data;
+	};
+
+	struct table_t
+	{
+		table_t() : cell_count(0), protect(0)
+		{}
+		DECLARE_BINARY_SERIALIZER(table_t);
+		std::size_t size() const {
+			return 80 + 2 + 2 + 
+				std::accumulate(cells.begin(), cells.end(), 0, [](std::size_t size, auto& cell) {
+				return size + cell.size(); });
+		}
+		buffer_t data;
+		uint16_t cell_count;
+		uint16_t protect;
+		std::vector<cell_t> cells;
+
+	};
+
+	struct paragraph_list_t;
 	struct paragraph_t
 	{
 		typedef std::string name_t;
-		paragraph_t() = default;
+		paragraph_t(paragraph_list_t& that);
 		DECLARE_BINARY_SERIALIZER(paragraph_t);
-
-		std::size_t size() const {
-			return para_header.size() + line_segment_list.size() + char_shape_info_list.size() +
-				(hchars.size() * 2) ;
-		}
+		std::size_t size() const;
 
 		para_header_t para_header;
 		line_segment_list_t line_segment_list;
 		char_shape_info_list_t char_shape_info_list; // para_header_t.char_shape_id : 0이 아닐 때만 존재
 		std::vector<hchar_t> hchars; // para_header_t.control_code : 0 일 때만 존재
+		control_code_t control_code;
+		table_t table;
 		// TODO: implement control codes
+		paragraph_list_t& parent;
+		std::vector<paragraph_list_t> childs;
+	};
+
+	struct paragraph_list_t
+	{
+		typedef std::string name_t;
+		paragraph_list_t() = default;
+		DECLARE_BINARY_SERIALIZER(paragraph_list_t);
+
+		std::size_t size() const {
+			return std::accumulate(para_list.begin(), para_list.end(), 0, [](std::size_t size, auto& paragraph) {
+				return size + paragraph.size(); });
+		}
+
+		std::vector<paragraph_t> para_list;
+		// TODO: implement
 	};
 
 	struct document_header_t
@@ -260,14 +317,13 @@ namespace hwp30
 			std::size_t offset = 0;
 			offset += face_name_list.size();
 			offset += style_list.size();
-			for (auto& para : para_list)
-				offset += para.size();
+			offset += sections.size();
 			return offset;
 		}
 		// compressd data
 		face_name_list_t face_name_list;
 		style_list_t style_list;
-		std::vector<paragraph_t> para_list;
+		paragraph_list_t sections;
 		// TODO: implement
 	};
 

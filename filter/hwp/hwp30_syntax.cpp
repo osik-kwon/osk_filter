@@ -7,6 +7,38 @@ namespace filter
 {
 namespace hwp30
 {
+	paragraph_t::paragraph_t(paragraph_list_t& that) : parent(that)
+	{}
+
+	std::size_t paragraph_t::size() const
+	{
+		std::size_t offset = 0;
+		offset += para_header.size();
+		if (para_header.empty())
+			return offset;
+
+		offset += line_segment_list.size();
+		offset += char_shape_info_list.size();
+		if (para_header.control_code == 0)
+		{
+			offset += (hchars.size() * 2);
+		}
+		else
+		{
+			offset += control_code.size();
+			if (control_code.is_control_code())
+			{
+				offset += table.size();
+				for (auto& child : childs)
+				{
+					offset += child.size();
+				}
+			}
+			offset += (hchars.size() * 2);
+		}
+		return offset;
+	}
+
 	// serializers
 	bufferstream& operator >> (bufferstream& stream, doc_info_t& data)
 	{
@@ -232,6 +264,49 @@ namespace hwp30
 		return stream;
 	}
 
+	bufferstream& operator >> (bufferstream& stream, control_code_t& data)
+	{
+		data.begin_code = binary_io::read_uint16(stream);
+		data.reserved = binary_io::read_uint32(stream);
+		data.end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const control_code_t& data)
+	{
+		binary_io::write_uint16(stream, data.begin_code);
+		binary_io::write_uint32(stream, data.reserved);
+		binary_io::write_uint16(stream, data.end_code);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, table_t& data)
+	{
+		data.data = binary_io::read(stream, 80);
+		data.cell_count = binary_io::read_uint16(stream);
+		data.protect = binary_io::read_uint16(stream);
+
+		for (uint16_t i = 0; i < data.cell_count; ++i)
+		{
+			cell_t cell;
+			cell.data = binary_io::read(stream, 27);
+			data.cells.push_back(std::move(cell));
+		}
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const table_t& data)
+	{
+		binary_io::write(stream, data.data);
+		binary_io::write_uint16(stream, data.cell_count);
+		binary_io::write_uint16(stream, data.protect);
+		for (auto& cell : data.cells)
+		{
+			binary_io::write(stream, cell.data);
+		}
+		return stream;
+	}
+
 	bufferstream& operator >> (bufferstream& stream, paragraph_t& data)
 	{
 		stream >> data.para_header;
@@ -240,7 +315,8 @@ namespace hwp30
 		data.line_segment_list.line_count = data.para_header.line_count; // IMPORTANT!
 		data.char_shape_info_list.char_count = data.para_header.char_count; // IMPORTANT!
 		stream >> data.line_segment_list;
-		stream >> data.char_shape_info_list;
+		if(data.para_header.char_shape_id != 0)
+			stream >> data.char_shape_info_list;
 		if (data.para_header.control_code == 0)
 		{
 			uint16_t count = data.para_header.char_count;
@@ -250,6 +326,28 @@ namespace hwp30
 				stream >> hchar;
 				data.hchars.push_back(std::move(hchar));
 			}
+		}
+		else
+		{
+			stream >> data.control_code;
+			if (data.control_code.is_control_code())
+			{
+				// TODO: implement table
+				stream >> data.table;
+				for (uint16_t i = 0; i < data.table.cell_count; ++i)
+				{
+					paragraph_list_t para_list;
+					stream >> para_list;
+					data.childs.push_back(para_list);
+				}
+				paragraph_list_t caption_para_list;
+				stream >> caption_para_list;
+				data.childs.push_back(caption_para_list);
+				
+			}
+			hchar_t hchar;
+			stream >> hchar;
+			data.hchars.push_back(std::move(hchar));
 		}
 		return stream;
 	}
@@ -263,11 +361,48 @@ namespace hwp30
 		stream << data.char_shape_info_list;
 		if (data.para_header.control_code == 0)
 		{
-			uint16_t count = data.para_header.char_count;
 			for (auto& hchar : data.hchars)
 			{
 				stream << hchar;
 			}
+		}
+		else
+		{
+			stream << data.control_code;
+			if (data.control_code.is_control_code())
+			{
+				// TODO: implement table
+				stream << data.table;
+				for (auto& child : data.childs)
+				{
+					stream << child;
+				}
+			}
+			for (auto& hchar : data.hchars)
+			{
+				stream << hchar;
+			}
+		}
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, paragraph_list_t& data)
+	{
+		bool end_of_para = false;
+		do {
+			paragraph_t para(data);
+			stream >> para;
+			end_of_para = para.para_header.empty();
+			data.para_list.push_back(std::move(para));
+		} while (!end_of_para);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const paragraph_list_t& data)
+	{
+		for (auto& para : data.para_list)
+		{
+			stream << para;
 		}
 		return stream;
 	}
@@ -299,14 +434,7 @@ namespace hwp30
 	{
 		stream >> data.face_name_list;
 		stream >> data.style_list;
-
-		bool end_of_para = false;
-		do {
-			paragraph_t para;
-			stream >> para;
-			data.para_list.push_back(std::move(para));
-			end_of_para = para.para_header.empty();
-		} while (!end_of_para);
+		stream >> data.sections;
 		return stream;
 	}
 
@@ -314,11 +442,7 @@ namespace hwp30
 	{
 		stream << data.face_name_list;
 		stream << data.style_list;
-		// TODO: implement control codes
-		for (auto& para : data.para_list)
-		{
-			stream << para;
-		}
+		stream << data.sections;
 		return stream;
 	}
 

@@ -70,7 +70,7 @@ namespace hwp30
 			sections_t sections;
 			sections.resize(1);
 			auto document = open(import_path);
-			for (auto& para_body : document->body.para_list)
+			for (auto& para_body : document->body.sections.para_list)
 			{
 				para_t para;
 				for (auto& hchar : para_body.hchars)
