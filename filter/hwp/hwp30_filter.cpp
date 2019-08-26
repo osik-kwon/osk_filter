@@ -63,6 +63,52 @@ namespace hwp30
 		return std::unique_ptr<document_t>(std::make_unique<document_t>());
 	}
 
+	// TODO: move
+	void extract_texts(const std::vector<paragraph_t>& para_list, filter_t::section_t& para_texts)
+	{
+		for (auto& para : para_list)
+		{
+			filter_t::para_t para_text;
+			if (para.para_header.control_code == 0)
+			{
+				for (auto& hchar : para.hchars)
+				{
+					auto utf16 = to_utf16(hchar.utf32);
+					if (utf16.size() == 1)
+					{
+						if (utf16[0] == 0x000d)
+							para_text.push_back(L'\n');
+						else
+							para_text.push_back(utf16[0]);
+					}
+				}
+			}
+			else
+			{
+				if (para.control_code.is_control_code())
+				{
+					for (auto& child : para.childs)
+					{
+						extract_texts(child.para_list, para_texts);
+					}
+				}
+				for (auto& hchar : para.hchars)
+				{
+					auto utf16 = to_utf16(hchar.utf32);
+					if (utf16.size() == 1)
+					{
+						if (utf16[0] == 0x000d)
+							para_text.push_back(L'\n');
+						else
+							para_text.push_back(utf16[0]);
+					}
+				}
+			}
+			if(!para_text.empty())
+				para_texts.push_back(std::move(para_text));
+		}
+	}
+
 	filter_t::sections_t filter_t::extract_all_texts(const std::string& import_path)
 	{
 		try
@@ -70,22 +116,7 @@ namespace hwp30
 			sections_t sections;
 			sections.resize(1);
 			auto document = open(import_path);
-			for (auto& para_body : document->body.sections.para_list)
-			{
-				para_t para;
-				for (auto& hchar : para_body.hchars)
-				{
-					auto utf16 = to_utf16(hchar.utf32);
-					if (utf16.size() == 1)
-					{
-						if (utf16[0] == 0x000d)
-							para.push_back(L'\n');
-						else
-							para.push_back(utf16[0]);
-					}
-				}
-				sections[0].push_back(std::move(para));
-			}
+			extract_texts(document->body.sections.para_list, sections[0]);
 			return sections;
 		}
 		catch (const std::exception& e)
