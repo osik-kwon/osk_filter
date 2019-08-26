@@ -131,7 +131,7 @@ namespace hwp30
 	struct para_header_t
 	{
 		typedef std::string name_t;
-		para_header_t() : prev_para_shape_id(0), char_count(0), line_count(0), char_shape_id(0), control_code(0), style_id(0)
+		para_header_t() : prev_para_shape_id(0), char_count(0), line_count(0), char_shape_id(0), style_id(0)
 		{}
 		DECLARE_BINARY_SERIALIZER(para_header_t);
 
@@ -148,7 +148,7 @@ namespace hwp30
 		uint16_t line_count;
 		uint8_t char_shape_id; // 0: 대표 글자 모양
 		std::bitset<8> etc_flag;
-		uint32_t control_code;
+		uint32_t control_code; // TODO: remove
 		uint8_t style_id;
 		char_shape_t char_shape;
 		para_shape_t para_shape; // prev_para_shape_id 가 0, char_count 가 1개 이상 일 때 존재
@@ -259,7 +259,7 @@ namespace hwp30
 	struct paragraph_t
 	{
 		typedef std::string name_t;
-		paragraph_t(paragraph_list_t& that);
+		paragraph_t() = default;
 		DECLARE_BINARY_SERIALIZER(paragraph_t);
 		std::size_t size() const;
 
@@ -270,7 +270,6 @@ namespace hwp30
 		control_code_t control_code;
 		table_t table;
 		// TODO: implement control codes
-		paragraph_list_t& parent;
 		std::vector<paragraph_list_t> childs;
 	};
 

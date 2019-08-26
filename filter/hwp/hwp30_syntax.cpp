@@ -7,9 +7,6 @@ namespace filter
 {
 namespace hwp30
 {
-	paragraph_t::paragraph_t(paragraph_list_t& that) : parent(that)
-	{}
-
 	std::size_t paragraph_t::size() const
 	{
 		std::size_t offset = 0;
@@ -413,7 +410,7 @@ namespace hwp30
 	{
 		bool end_of_para = false;
 		do {
-			paragraph_t para(data);
+			paragraph_t para;
 			stream >> para;
 			end_of_para = para.para_header.empty();
 			data.para_list.push_back(std::move(para));
