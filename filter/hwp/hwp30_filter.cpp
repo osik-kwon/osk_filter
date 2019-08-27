@@ -32,10 +32,16 @@ namespace hwp30
 				auto utf16 = to_utf16(code.get().utf32);
 				if (utf16.size() == 1)
 				{
-					if ( syntax_t::is_carriage_return(utf16[0]) )
+					if ( utf16[0] == syntax_t::para_break )
 						para_text.push_back(L'\n'); // TODO: normalize
-					else if (syntax_t::is_tab(utf16[0]))
+					else if (utf16[0] == syntax_t::tab )
 						para_text.push_back(L'\t'); // TODO: normalize
+					else if (utf16[0] == syntax_t::hypen)
+						para_text.push_back(L'-'); // TODO: normalize
+					else if (utf16[0] == syntax_t::hypen)
+						para_text.push_back(L' '); // TODO: normalize
+					else if (utf16[0] == syntax_t::fixed_space)
+						para_text.push_back(L' '); // TODO: normalize
 					else
 						para_text.push_back(utf16[0]);
 				}
@@ -58,14 +64,43 @@ namespace hwp30
 			{
 				if (!control->is_control_code())
 				{
-					hchar_t* code = dynamic_cast<hchar_t*>(control.get());
-					if (code)
-						para_ref.push_back(dynamic_cast<hchar_t&>(*control.get()));
-					else
+					switch (control->get_code())
 					{
-						tab_control_t* tab = dynamic_cast<tab_control_t*>(control.get());
-						if (tab)
-							para_ref.push_back(dynamic_cast<hchar_t&>(tab->code));
+						case syntax_t::tab:
+						{
+							tab_control_t* tab = dynamic_cast<tab_control_t*>(control.get());
+							if (tab)
+								para_ref.push_back(dynamic_cast<hchar_t&>(tab->code));
+						}
+						break;
+						case syntax_t::hypen:
+						{
+							hypen_t* hypen = dynamic_cast<hypen_t*>(control.get());
+							if (hypen)
+								para_ref.push_back(dynamic_cast<hchar_t&>(hypen->code));
+						}
+						break;
+						case syntax_t::blank:
+						{
+							blank_t* blank = dynamic_cast<blank_t*>(control.get());
+							if (blank)
+								para_ref.push_back(dynamic_cast<hchar_t&>(blank->code));
+						}
+						break;
+						case syntax_t::fixed_space:
+						{
+							fixed_space_t* fixed_space = dynamic_cast<fixed_space_t*>(control.get());
+							if (fixed_space)
+								para_ref.push_back(dynamic_cast<hchar_t&>(fixed_space->code));
+						}
+						break;
+						default:
+						{
+							hchar_t* code = dynamic_cast<hchar_t*>(control.get());
+							if (code)
+								para_ref.push_back(dynamic_cast<hchar_t&>(*control.get()));
+						}
+						break;
 					}
 				}
 				else if (control->has_para_list())

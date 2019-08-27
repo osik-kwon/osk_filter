@@ -621,6 +621,164 @@ namespace hwp30
 		buffer_t data;
 	};
 
+	struct text_overlap_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		text_overlap_t(control_t code) : code(code)
+		{}
+		~text_overlap_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 10;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct hypen_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		hypen_t(control_t that) : code(that), width(0), end_code(0)
+		{}
+		~hypen_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return end_code;
+		}
+		virtual bool is_control_code() const {
+			return false;
+		}
+		size_t size() const {
+			return 6;
+		}
+		hchar_t code;
+		uint16_t width;
+		control_t end_code;
+	};
+
+	struct outline_mark_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		outline_mark_t(control_t that) : code(that), type(0), end_code(0)
+		{}
+		~outline_mark_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 6;
+		}
+		control_t code;
+		uint16_t type;
+		control_t end_code;
+	};
+
+	struct find_mark_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		find_mark_t(control_t code) : code(code)
+		{}
+		~find_mark_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 246;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct outline_shape_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		outline_shape_t(control_t code) : code(code)
+		{}
+		~outline_shape_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 64;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct cross_reference_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		cross_reference_t(control_t code) : code(code), length(0), reserved(0)
+		{}
+		~cross_reference_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 2 + data.size() + 2 + 4 + contents.size();
+		}
+		uint16_t code;
+		buffer_t data; // 46
+		uint16_t length;
+		uint32_t reserved;
+		buffer_t contents; // if(length > 0) variable
+	};
+
+	struct blank_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		blank_t(control_t that) : code(that), end_code(0)
+		{}
+		~blank_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return end_code;
+		}
+		virtual bool is_control_code() const {
+			return false;
+		}
+		size_t size() const {
+			return 4;
+		}
+		hchar_t code;
+		control_t end_code;
+	};
+
+	struct fixed_space_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		fixed_space_t(control_t that) : code(that), end_code(0)
+		{}
+		~fixed_space_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return end_code;
+		}
+		virtual bool is_control_code() const {
+			return false;
+		}
+		size_t size() const {
+			return 4;
+		}
+		hchar_t code;
+		control_t end_code;
+	};
+
 	struct cell_t
 	{
 		cell_t() = default;
@@ -827,16 +985,43 @@ namespace hwp30
 	struct syntax_t
 	{
 		typedef control_code_t::control_t control_t;
+		enum control_ids : control_t
+		{
+			field = 5,
+			bookmark = 6,
+			date_format = 7,
+			date_code = 8,
+			tab = 9,
+			table = 10,
+			picture = 11,
+			para_break = 13,
+			line_shape = 14,
+			hidden_text = 15,
+			header_footer = 16,
+			note = 17,
+			number_code = 18,
+			start_new_number = 19,
+			page_number = 20,
+			start_odd_hide_number = 21,
+			mail_merge = 22,
+			text_overlap = 23,
+			hypen = 24,
+			outline_mark = 25,
+			find_mark = 26,
+			outline_shape = 28,
+			cross_reference = 29,
+			blank = 30,
+			fixed_space = 31
+		};
 		syntax_t() = default;
-		static bool is_carriage_return(control_t code)
-		{
-			return (code == 13);
-		}
+	};
 
-		static bool is_tab(control_t code)
-		{
-			return (code == 9);
-		}
+	struct control_builder
+	{
+		typedef control_code_t::control_t control_t;
+		typedef paragraph_t::controls_t controls_t;
+		control_builder() {}
+		static uint16_t push_back(control_t code, controls_t& controls);
 	};
 }
 }

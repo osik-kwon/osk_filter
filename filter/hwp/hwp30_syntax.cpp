@@ -7,116 +7,97 @@ namespace filter
 {
 namespace hwp30
 {
-	struct control_builder
+	uint16_t control_builder::push_back(control_t code, controls_t& controls)
 	{
-		typedef control_code_t::control_t control_t;
-		enum control_ids : control_t
+		switch (code)
 		{
-			field = 5,
-			bookmark = 6,
-			date_format = 7,
-			date_code = 8,
-			tab = 9,
-			table = 10,
-			picture = 11,
-			para_break = 13,
-			line_shape = 14,
-			hidden_text = 15,
-			header_footer = 16,
-			note = 17,
-			number_code = 18,
-			start_new_number = 19,
-			page_number = 20,
-			start_odd_hide_number = 21,
-			mail_merge = 22,
-			hypen = 24
-		};
-		typedef paragraph_t::controls_t controls_t;
-		control_builder(){}
-		static uint16_t push_back(control_t code, controls_t& controls)
-		{
-			switch (code)
-			{
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 12:
-			case 27:
-				controls.push_back(std::make_unique<reserved_control_t>(code));
-				return 4;
-			case field:
-				controls.push_back(std::make_unique<field_t>(code));
-				return 4;
-			case bookmark:
-				controls.push_back(std::make_unique<bookmark_t>(code));
-				return 4;
-			case date_format:
-				controls.push_back(std::make_unique<date_format_t>(code));
-				return 42;
-			case date_code:
-				controls.push_back(std::make_unique<date_code_t>(code));
-				return 48;
-			case tab:
-				controls.push_back(std::make_unique<tab_control_t>(code));
-				return 4;
-			case table:
-				controls.push_back(std::make_unique<table_t>(code));
-				return 4;
-			case picture:
-				controls.push_back(std::make_unique<picture_t>(code));
-				return 4;
-			case line_shape:
-				controls.push_back(std::make_unique<line_shape_t>(code));
-				return 4;
-			case hidden_text:
-				controls.push_back(std::make_unique<hidden_text_t>(code));
-				return 4;
-			case header_footer:
-				controls.push_back(std::make_unique<header_footer_t>(code));
-				return 4;
-			case note:
-				controls.push_back(std::make_unique<note_t>(code));
-				return 4;
-			case number_code:
-				controls.push_back(std::make_unique<number_code_t>(code));
-				return 4;
-			case start_new_number:
-				controls.push_back(std::make_unique<start_new_number_t>(code));
-				return 4;
-			case page_number:
-				controls.push_back(std::make_unique<page_number_t>(code));
-				return 4;
-			case start_odd_hide_number:
-				controls.push_back(std::make_unique<start_odd_hide_number_t>(code));
-				return 4;
-			case mail_merge:
-				controls.push_back(std::make_unique<mail_merge_t>(code));
-				return 12;
-			case 23: // ±ÛÀÚ °ãÄ¡±â
-				return 5;
-			case hypen:
-				return 3;
-			case 25: // Á¦¸ñ/Ç¥/±×¸²Â÷·Ê Ç¥½Ä
-				return 3;
-			case 26: // Ã£¾Æº¸±â Ç¥½Ä
-				return 123;
-			case 28: // °³¿ä ¸ğ¾ç/¹øÈ£
-				return 32;
-			case 29: // »óÈ£ ÂüÁ¶
-				return 4;
-			case 30: // ¹­À½ ºóÄ­
-				return 2;
-			case 31: // °íÁ¤ Æø ºóÄ­
-				return 2;
-			case para_break:
-			default:
-				controls.push_back(std::make_unique<hchar_t>(code));
-				return 1;
-			}
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 12:
+		case 27:
+			controls.push_back(std::make_unique<reserved_control_t>(code));
+			return 4;
+		case syntax_t::field:
+			controls.push_back(std::make_unique<field_t>(code));
+			return 4;
+		case syntax_t::bookmark:
+			controls.push_back(std::make_unique<bookmark_t>(code));
+			return 4;
+		case syntax_t::date_format:
+			controls.push_back(std::make_unique<date_format_t>(code));
+			return 42;
+		case syntax_t::date_code:
+			controls.push_back(std::make_unique<date_code_t>(code));
+			return 48;
+		case syntax_t::tab:
+			controls.push_back(std::make_unique<tab_control_t>(code));
+			return 4;
+		case syntax_t::table:
+			controls.push_back(std::make_unique<table_t>(code));
+			return 4;
+		case syntax_t::picture:
+			controls.push_back(std::make_unique<picture_t>(code));
+			return 4;
+		case syntax_t::line_shape:
+			controls.push_back(std::make_unique<line_shape_t>(code));
+			return 4;
+		case syntax_t::hidden_text:
+			controls.push_back(std::make_unique<hidden_text_t>(code));
+			return 4;
+		case syntax_t::header_footer:
+			controls.push_back(std::make_unique<header_footer_t>(code));
+			return 4;
+		case syntax_t::note:
+			controls.push_back(std::make_unique<note_t>(code));
+			return 4;
+		case syntax_t::number_code:
+			controls.push_back(std::make_unique<number_code_t>(code));
+			return 4;
+		case syntax_t::start_new_number:
+			controls.push_back(std::make_unique<start_new_number_t>(code));
+			return 4;
+		case syntax_t::page_number:
+			controls.push_back(std::make_unique<page_number_t>(code));
+			return 4;
+		case syntax_t::start_odd_hide_number:
+			controls.push_back(std::make_unique<start_odd_hide_number_t>(code));
+			return 4;
+		case syntax_t::mail_merge:
+			controls.push_back(std::make_unique<mail_merge_t>(code));
+			return 12;
+		case syntax_t::text_overlap:
+			controls.push_back(std::make_unique<text_overlap_t>(code));
+			return 5;
+		case syntax_t::hypen:
+			controls.push_back(std::make_unique<hypen_t>(code));
+			return 3;
+		case syntax_t::outline_mark:
+			controls.push_back(std::make_unique<outline_mark_t>(code));
+			return 3;
+		case syntax_t::find_mark:
+			controls.push_back(std::make_unique<find_mark_t>(code));
+			return 123;
+		case syntax_t::outline_shape:
+			controls.push_back(std::make_unique<outline_shape_t>(code));
+			return 32;
+		case syntax_t::cross_reference:
+			controls.push_back(std::make_unique<cross_reference_t>(code));
+			return 4;
+		case syntax_t::blank:
+			controls.push_back(std::make_unique<blank_t>(code));
+			return 2;
+		case syntax_t::fixed_space:
+			controls.push_back(std::make_unique<fixed_space_t>(code));
+			return 2;
+		case syntax_t::para_break:
+		default:
+			controls.push_back(std::make_unique<hchar_t>(code));
 			return 1;
 		}
-	};
+		return 1;
+	}
 
 	// serializers
 	bufferstream& operator >> (bufferstream& stream, doc_info_t& data)
@@ -586,6 +567,125 @@ namespace hwp30
 	{
 		binary_io::write_uint16(stream, code);
 		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& text_overlap_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 8);
+		return stream;
+	}
+
+	bufferstream& text_overlap_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& hypen_t::read(bufferstream& stream)
+	{
+		code.read(stream);
+		width = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& hypen_t::write(bufferstream& stream)
+	{
+		code.write(stream);
+		binary_io::write_uint16(stream, width);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& outline_mark_t::read(bufferstream& stream)
+	{
+		type = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& outline_mark_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, type);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& find_mark_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 244);
+		return stream;
+	}
+
+	bufferstream& find_mark_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& outline_shape_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 62);
+		return stream;
+	}
+
+	bufferstream& outline_shape_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& cross_reference_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 46);
+		length = binary_io::read_uint16(stream);
+		reserved = binary_io::read_uint32(stream);
+		if( length > 0 )
+			contents = binary_io::read(stream, length);
+		return stream;
+	}
+
+	bufferstream& cross_reference_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		binary_io::write_uint16(stream, length);
+		binary_io::write_uint32(stream, reserved);
+		if (contents.size() > 0)
+			binary_io::write(stream, contents);
+		return stream;
+	}
+
+	bufferstream& blank_t::read(bufferstream& stream)
+	{
+		code.read(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& blank_t::write(bufferstream& stream)
+	{
+		code.write(stream);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& fixed_space_t::read(bufferstream& stream)
+	{
+		code.read(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& fixed_space_t::write(bufferstream& stream)
+	{
+		code.write(stream);
+		binary_io::write_uint16(stream, end_code);
 		return stream;
 	}
 
