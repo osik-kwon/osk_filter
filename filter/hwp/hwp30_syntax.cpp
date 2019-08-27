@@ -298,7 +298,8 @@ namespace hwp30
 		return stream;
 	}
 
-	// control codes
+#pragma region definition of control codes
+
 	bufferstream& hchar_t::read(bufferstream& stream)
 	{
 		utf32 = charset::hchar_converter::hchar_to_wchar(code);
@@ -766,6 +767,8 @@ namespace hwp30
 		stream << caption;
 		return stream;
 	}
+
+#pragma endregion definition of control codes
 
 	bufferstream& operator >> (bufferstream& stream, paragraph_t& data)
 	{

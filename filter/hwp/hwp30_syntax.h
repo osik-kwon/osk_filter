@@ -270,7 +270,7 @@ namespace hwp30
 		}
 		std::vector<paragraph_t> para_list;
 	};
-
+#pragma region definition of control codes
 	struct hchar_t : control_code_t
 	{
 		typedef control_code_t::control_t control_t;
@@ -869,6 +869,8 @@ namespace hwp30
 		buffer_t data3; // length
 		paragraph_list_t caption;
 	};
+
+#pragma endregion definition of control codes
 
 	struct document_header_t
 	{
