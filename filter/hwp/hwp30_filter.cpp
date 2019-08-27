@@ -1,5 +1,6 @@
 #include "filter_pch.h"
 #include <fstream>
+#include <functional>
 #include "hwp/hwp30_filter.h"
 #include "hwp/hwp30_syntax.h"
 #include "locale/charset_encoder.h"
@@ -43,6 +44,8 @@ namespace hwp30
 		header_stream >> document->header;
 
 		buffer_t body = extract_body(buffer, header_stream, document);
+		if(body.empty())
+			throw std::runtime_error("hwp30 parse body error");
 		bufferstream body_stream(&body[0], body.size());
 		body_stream >> document->body;
 		return document;
@@ -64,48 +67,78 @@ namespace hwp30
 	}
 
 	// TODO: move
-	void extract_texts(const std::vector<paragraph_t>& para_list, filter_t::section_t& para_texts)
-	{
-		for (auto& para : para_list)
+
+	typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
+	typedef std::vector<para_ref_t> para_list_ref_t;
+
+	void extract_texts(const para_list_ref_t& para_list_ref, filter_t::section_t& para_texts)
+	{	
+		for (auto& para_ref : para_list_ref)
 		{
 			filter_t::para_t para_text;
-			if (para.para_header.control_code == 0)
+			for (auto code : para_ref)
 			{
-				for (auto& hchar : para.hchars)
+				auto utf16 = to_utf16(code.get().utf32);
+				if (utf16.size() == 1)
 				{
-					auto utf16 = to_utf16(hchar.utf32);
-					if (utf16.size() == 1)
-					{
-						if (utf16[0] == 0x000d)
-							para_text.push_back(L'\n');
-						else
-							para_text.push_back(utf16[0]);
-					}
+					if (utf16[0] == 0x000d) // TODO: rename
+						para_text.push_back(L'\n');
+					else
+						// TODO: implement tab
+						para_text.push_back(utf16[0]);
 				}
 			}
-			else
+			if (!para_text.empty())
 			{
-				if (para.control_code.is_control_code())
-				{
-					for (auto& child : para.childs)
-					{
-						extract_texts(child.para_list, para_texts);
-					}
-				}
-				for (auto& hchar : para.hchars)
-				{
-					auto utf16 = to_utf16(hchar.utf32);
-					if (utf16.size() == 1)
-					{
-						if (utf16[0] == 0x000d)
-							para_text.push_back(L'\n');
-						else
-							para_text.push_back(utf16[0]);
-					}
-				}
-			}
-			if(!para_text.empty())
+				if(para_text.back() != L'\n')
+					para_text.push_back(L'\n');
 				para_texts.push_back(std::move(para_text));
+			}
+		}
+	}
+
+	void extract_para_list_ref(const paragraph_list_t& section, para_list_ref_t& para_list_ref)
+	{
+		for (auto& para : section.para_list)
+		{
+			para_ref_t para_ref;
+			for (auto& control : para.controls)
+			{
+				if (!control->is_control_code())
+				{
+					hchar_t* code = dynamic_cast<hchar_t*>(control.get());
+					if (code)
+						para_ref.push_back(dynamic_cast<hchar_t&>(*control.get()));
+				}
+				else if (control->has_para_list())
+				{
+					if (!para_ref.empty())
+						para_list_ref.push_back(std::move(para_ref));
+					para_ref = para_ref_t();
+
+					para_ref_t control_para_ref;
+					if (control->get_para_lists())
+					{
+						auto& para_lists = *control->get_para_lists();
+						for( auto& para_list : para_lists)
+							extract_para_list_ref(para_list, para_list_ref);
+					}
+					if (!control_para_ref.empty())
+						para_list_ref.push_back(std::move(control_para_ref));
+				}
+
+				if (control->has_caption())
+				{
+					para_ref_t caption_para_ref;
+					if (control->get_caption())
+						extract_para_list_ref(*control->get_caption(), para_list_ref);
+					if (!caption_para_ref.empty())
+						para_list_ref.push_back(std::move(caption_para_ref));
+				}
+			}
+
+			if (!para_ref.empty())
+				para_list_ref.push_back(std::move(para_ref));
 		}
 	}
 
@@ -116,7 +149,10 @@ namespace hwp30
 			sections_t sections;
 			sections.resize(1);
 			auto document = open(import_path);
-			extract_texts(document->body.sections.para_list, sections[0]);
+
+			para_list_ref_t para_list_ref;
+			extract_para_list_ref(document->body.sections, para_list_ref);
+			extract_texts(para_list_ref, sections[0]);
 			return sections;
 		}
 		catch (const std::exception& e)

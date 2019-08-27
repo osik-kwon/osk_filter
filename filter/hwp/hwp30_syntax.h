@@ -201,76 +201,61 @@ namespace hwp30
 		uint16_t char_count;
 	};
 
-	struct hchar_t
-	{
-		hchar_t() : code(0), utf32(0)
-		{}
-		DECLARE_BINARY_SERIALIZER(hchar_t);
-		std::size_t size() const {
-			return 2;
-		}
-		uint16_t code;
-		char32_t utf32;
-	};
-	
+	struct paragraph_list_t;
 	struct control_code_t
 	{
-		control_code_t() : begin_code(0), reserved(0), end_code(0)
-		{}
-		DECLARE_BINARY_SERIALIZER(control_code_t);
-		std::size_t size() const {
-			return 8;
+		typedef uint16_t control_t;
+		control_code_t() {}
+		virtual ~control_code_t(){}
+		virtual std::size_t size() const = 0;
+		virtual bufferstream& read(bufferstream& stream) = 0;
+		virtual bufferstream & write(bufferstream & stream) = 0;
+		virtual control_t get_code() const = 0;
+		virtual bool is_control_code() const {
+			return true;
 		}
-		bool is_control_code() const {
-			return begin_code > 0 && begin_code < 32;
+		virtual bool has_para_list() const{
+			return false;
 		}
-		uint16_t begin_code;
-		uint32_t reserved;
-		uint16_t end_code;
+		virtual bool has_caption() const {
+			return false;
+		}
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
+			return nullptr;
+		}
+		virtual paragraph_list_t* get_caption() {
+			return nullptr;
+		}
 	};
 
-	struct cell_t
-	{
-		cell_t() = default;
-		std::size_t size() const {
-			return 27;
-		}
-		buffer_t data;
-	};
-
-	struct table_t
-	{
-		table_t() : cell_count(0), protect(0)
-		{}
-		DECLARE_BINARY_SERIALIZER(table_t);
-		std::size_t size() const {
-			return 80 + 2 + 2 + 
-				std::accumulate(cells.begin(), cells.end(), 0, [](std::size_t size, auto& cell) {
-				return size + cell.size(); });
-		}
-		buffer_t data;
-		uint16_t cell_count;
-		uint16_t protect;
-		std::vector<cell_t> cells;
-
-	};
-
-	struct paragraph_list_t;
 	struct paragraph_t
 	{
-		typedef std::string name_t;
+		typedef std::vector<std::unique_ptr<control_code_t>> controls_t;
 		paragraph_t() = default;
 		DECLARE_BINARY_SERIALIZER(paragraph_t);
-		std::size_t size() const;
+		std::size_t size() const
+		{
+			std::size_t offset = 0;
+			offset += para_header.size();
+			if (para_header.empty())
+				return offset;
+
+			offset += line_segment_list.size();
+			offset += char_shape_info_list.size();
+
+			for (auto& control : controls)
+			{
+				offset += control->size();
+			}
+			return offset;
+		}
 
 		para_header_t para_header;
 		line_segment_list_t line_segment_list;
-		char_shape_info_list_t char_shape_info_list; // para_header_t.char_shape_id : 0이 아닐 때만 존재
-		std::vector<hchar_t> hchars; // para_header_t.control_code : 0 일 때만 존재
-		control_code_t control_code;
-		table_t table;
-		// TODO: implement control codes
-		std::vector<paragraph_list_t> childs;
+		char_shape_info_list_t char_shape_info_list;
+
+		// control codes
+		controls_t controls;
 	};
 
 	struct paragraph_list_t
@@ -283,9 +268,85 @@ namespace hwp30
 			return std::accumulate(para_list.begin(), para_list.end(), 0, [](std::size_t size, auto& paragraph) {
 				return size + paragraph.size(); });
 		}
-
 		std::vector<paragraph_t> para_list;
-		// TODO: implement
+	};
+
+	struct hchar_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		hchar_t(control_t code) : code(code), utf32(0)
+		{}
+		~hchar_t(){}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		bool is_control_code() const {
+			return false;
+		}
+		std::size_t size() const {
+			return 2;
+		}
+		control_t code;
+		char32_t utf32;
+	};
+
+	struct cell_t
+	{
+		cell_t() = default;
+		std::size_t size() const {
+			return 27;
+		}
+		buffer_t data;
+	};
+
+	struct table_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		table_t(control_t code) : code(code), reserved(0), end_code(0), cell_count(0), protect(0)
+		{}
+		~table_t(){}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		bool has_para_list() const {
+			return true;
+		}
+		bool has_caption() const {
+			return true;
+		}
+		std::vector<paragraph_list_t>* get_para_lists() {
+			return &para_lists;
+		}
+
+		paragraph_list_t* get_caption() {
+			return &caption;
+		}
+
+		std::size_t size() const{
+			std::size_t offset = 0;
+			offset += 84;
+			offset += std::accumulate(cells.begin(), cells.end(), 0, [](std::size_t size, auto& cell) {
+				return size + cell.size(); });
+			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](std::size_t size, auto& para_list) {
+				return size + para_list.size(); });
+			offset += caption.size();
+			return offset;
+		}
+		control_t code;
+		uint32_t reserved;
+		control_t end_code;
+
+		buffer_t data;
+		uint16_t cell_count;
+		uint16_t protect;
+		std::vector<cell_t> cells;
+
+		std::vector<paragraph_list_t> para_lists;
+		paragraph_list_t caption;
 	};
 
 	struct document_header_t

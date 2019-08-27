@@ -53,9 +53,10 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	filter_t filter;
-	auto document = filter.open(to_utf8(u"d:/filter/hwp30/table3.hwp"));
-	filter.save(document, to_utf8(u"d:/filter/hwp30/table3.hwp.hwp"));
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table0.hwp")));
+	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table2.hwp")));
+	auto document = filter.open(to_utf8(u"d:/filter/hwp30/table2.hwp"));
+	filter.save(document, to_utf8(u"d:/filter/hwp30/table2.hwp.hwp"));
+	
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table3.hwp")));
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table.hwp")));
