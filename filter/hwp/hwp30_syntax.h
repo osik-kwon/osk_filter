@@ -282,14 +282,131 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		bool is_control_code() const {
+		virtual bool is_control_code() const {
 			return false;
 		}
-		std::size_t size() const {
+		virtual std::size_t size() const {
 			return 2;
 		}
 		control_t code;
 		char32_t utf32;
+	};
+
+	struct reserved_control_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		reserved_control_t(control_t code) : code(code), data_length(0), end_code(0)
+		{}
+		~reserved_control_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		std::size_t size() const {
+			return 2 + 4 + data_length + 2;
+		}
+		control_t code;
+		uint32_t data_length;
+		buffer_t data;
+		control_t end_code;
+	};
+
+	struct tab_control_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		tab_control_t(control_t that) : code(that), width(0), leader(0), end_code(0)
+		{}
+		~tab_control_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return end_code;
+		}
+		virtual bool is_control_code() const {
+			return false;
+		}
+		std::size_t size() const {
+			return 8;
+		}
+		hchar_t code;
+		uint16_t width;
+		uint16_t leader;
+		control_t end_code;
+	};
+
+	struct field_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		field_t(control_t code) : code(code), data_length(0), end_code(0)
+		{}
+		~field_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		std::size_t size() const {
+			return 2 + 4 + data_length + 2;
+		}
+		control_t code;
+		uint32_t data_length;
+		buffer_t data;
+		control_t end_code;
+	};
+
+	struct bookmark_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		bookmark_t(control_t code) : code(code)
+		{}
+		~bookmark_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		std::size_t size() const {
+			return 42;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct date_format_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		date_format_t(control_t code) : code(code)
+		{}
+		~date_format_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		std::size_t size() const {
+			return 84;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct date_code_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		date_code_t(control_t code) : code(code)
+		{}
+		~date_code_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		std::size_t size() const {
+			return 96;
+		}
+		control_t code;
+		buffer_t data;
 	};
 
 	struct cell_t
@@ -312,17 +429,17 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		bool has_para_list() const {
+		virtual bool has_para_list() const {
 			return true;
 		}
-		bool has_caption() const {
+		virtual bool has_caption() const {
 			return true;
 		}
-		std::vector<paragraph_list_t>* get_para_lists() {
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
 			return &para_lists;
 		}
 
-		paragraph_list_t* get_caption() {
+		virtual paragraph_list_t* get_caption() {
 			return &caption;
 		}
 
@@ -346,6 +463,40 @@ namespace hwp30
 		std::vector<cell_t> cells;
 
 		std::vector<paragraph_list_t> para_lists;
+		paragraph_list_t caption;
+	};
+
+	struct picture_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		picture_t(control_t code) : code(code), reserved(0), end_code(0), length(0), type(0)
+		{}
+		~picture_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		virtual bool has_caption() const {
+			return true;
+		}
+		virtual paragraph_list_t* get_caption() {
+			return &caption;
+		}
+		std::size_t size() const {
+			return 8 + 4 + data.size() + 1 + data2.size() + data3.size() + caption.size();
+		}
+		control_t code;
+		uint32_t reserved;
+		control_t end_code;
+
+		uint32_t length;
+		buffer_t data; // 70
+		uint8_t type; // 1: 외부파일, 2 : OLE, 2 : 포함 그림, 3 : Drawing Object
+		buffer_t data2; // 273
+
+		// variable data
+		buffer_t data3; // length
 		paragraph_list_t caption;
 	};
 
@@ -388,19 +539,65 @@ namespace hwp30
 		// TODO: implement
 	};
 
+	struct extra_info_block_t
+	{
+		extra_info_block_t() : id(0), length(0)
+		{}
+		DECLARE_BINARY_SERIALIZER(extra_info_block_t);
+		std::size_t size() const {
+			return 4 + 4 + length;
+		}
+		bool is_last() const {
+			return id == 0 && length == 0;
+		}
+		bool is_second_block() const {
+			return ((id & 0x80000000) >> 31) == 1;
+		}
+		// extra_info_block 2 : id & 0x80000000 == 1;
+		uint32_t id; // 1: picture, 2: OLE, 3: hypertext, 6: BG image, 4 : presentation
+		uint32_t length;
+		buffer_t data;
+	};
+
+	struct extra_info_blocks_t
+	{
+		extra_info_blocks_t()
+		{}
+		DECLARE_BINARY_SERIALIZER(extra_info_blocks_t);
+		std::size_t size() const {
+			return std::accumulate(extra_info_blocks.begin(), extra_info_blocks.end(), 0, [](std::size_t size, auto& extra_info_block) {
+				return size + extra_info_block.size(); });
+		}
+		std::vector<extra_info_block_t> extra_info_blocks;
+	};
+
+	struct second_extra_info_blocks_t
+	{
+		second_extra_info_blocks_t()
+		{}
+		DECLARE_BINARY_SERIALIZER(second_extra_info_blocks_t);
+		std::size_t size() const {
+			return std::accumulate(second_extra_info_blocks.begin(), second_extra_info_blocks.end(), 0, [](std::size_t size, auto& extra_info_block) {
+				return size + extra_info_block.size(); });
+		}
+		std::vector<extra_info_block_t> second_extra_info_blocks;
+	};
+
 	struct document_tail_t
 	{
 		document_tail_t()
-		{
-			trailer.resize( 8 );
-		}
+		{}
 		DECLARE_BINARY_SERIALIZER(document_tail_t);
 		std::size_t size() const {
-			return 8;
+			return first.size() + second.size();
 		}
 
-		// TODO: implement
-		buffer_t trailer;
+		bool has_second_extra_block() const {
+			return second.size() > 0;
+		}
+
+		extra_info_blocks_t first;
+		second_extra_info_blocks_t second;
 	};
 
 	struct document_t

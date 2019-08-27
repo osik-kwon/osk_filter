@@ -61,6 +61,12 @@ namespace hwp30
 					hchar_t* code = dynamic_cast<hchar_t*>(control.get());
 					if (code)
 						para_ref.push_back(dynamic_cast<hchar_t&>(*control.get()));
+					else
+					{
+						tab_control_t* tab = dynamic_cast<tab_control_t*>(control.get());
+						if (tab)
+							para_ref.push_back(dynamic_cast<hchar_t&>(tab->code));
+					}
 				}
 				else if (control->has_para_list())
 				{
@@ -78,7 +84,6 @@ namespace hwp30
 					if (!control_para_ref.empty())
 						para_list_ref.push_back(std::move(control_para_ref));
 				}
-
 				if (control->has_caption())
 				{
 					para_ref_t caption_para_ref;
@@ -130,6 +135,7 @@ namespace hwp30
 			throw std::runtime_error("hwp30 parse body error");
 		bufferstream body_stream(&body[0], body.size());
 		body_stream >> document->body;
+		body_stream >> document->tail;
 		return document;
 	}
 
@@ -173,12 +179,15 @@ namespace hwp30
 		{
 			buffer_t header_buffer;
 			header_buffer.resize(document->header.size());
-
+			if (header_buffer.size() == 0)
+				throw std::runtime_error("save buffer size error");
 			bufferstream header_stream(&header_buffer[0], header_buffer.size());
 			header_stream << document->header;
 
 			buffer_t body_buffer;
 			body_buffer.resize(document->body.size());
+			if (body_buffer.size() == 0)
+				throw std::runtime_error("save buffer size error");
 			bufferstream body_stream(&body_buffer[0], body_buffer.size());
 			body_stream << document->body;
 
@@ -191,16 +200,34 @@ namespace hwp30
 
 			// tail
 			buffer_t tail_buffer;
-			tail_buffer.resize(document->tail.size());
+			tail_buffer.resize(document->tail.first.size());
+			if (tail_buffer.size() == 0)
+				throw std::runtime_error("save buffer size error");
 			bufferstream tail_stream(&tail_buffer[0], tail_buffer.size());
-			tail_stream << document->tail;
+			tail_stream << document->tail.first;
 
+			if (document->header.doc_info.compressed != 0)
+			{
+				streamsize buffer_size = tail_stream.tellp(); // IMPORTANT!
+				tail_buffer = hwp_zip::compress_noexcept((char*)& tail_buffer[0], (std::size_t)buffer_size);
+			}
+			
 			std::ofstream fout(save_path, std::ios::out | std::ios::binary);
 			fout.write((char*)& header_buffer[0], header_buffer.size());
 			fout.write((char*)& body_buffer[0], body_buffer.size());
 			fout.write((char*)& tail_buffer[0], tail_buffer.size());
-			fout.close();
+			if (document->tail.has_second_extra_block())
+			{
+				buffer_t second_extra_block_buffer;
+				second_extra_block_buffer.resize(document->tail.second.size());
+				if (second_extra_block_buffer.size() == 0)
+					throw std::runtime_error("save buffer size error");
+				bufferstream second_extra_block_stream(&second_extra_block_buffer[0], second_extra_block_buffer.size());
+				second_extra_block_stream << document->tail.second;
 
+				fout.write((char*)& second_extra_block_buffer[0], second_extra_block_buffer.size());
+			}
+			fout.close();
 			return true;
 		}
 		catch (const std::exception& e)

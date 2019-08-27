@@ -12,8 +12,17 @@ namespace hwp30
 		typedef control_code_t::control_t control_t;
 		enum control_ids : control_t
 		{
+			field = 5,
+			bookmark = 6,
+			date_format = 7,
+			date_code = 8,
+			tab = 9,
 			table = 10,
-			para_break = 13
+			picture = 11,
+			para_break = 13,
+			header = 16,
+			note = 17,
+			hypen = 24
 		};
 		typedef paragraph_t::controls_t controls_t;
 		control_builder(){}
@@ -21,9 +30,72 @@ namespace hwp30
 		{
 			switch (code)
 			{
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 12:
+			case 27:
+				controls.push_back(std::make_unique<reserved_control_t>(code));
+				return 4;
+			case field:
+				controls.push_back(std::make_unique<field_t>(code));
+				return 4;
+			case bookmark:
+				controls.push_back(std::make_unique<bookmark_t>(code));
+				return 4;
+			case date_format:
+				controls.push_back(std::make_unique<date_format_t>(code));
+				return 42;
+			case date_code:
+				controls.push_back(std::make_unique<date_code_t>(code));
+				return 48;
+			case tab:
+				controls.push_back(std::make_unique<tab_control_t>(code));
+				return 4;
 			case table:
 				controls.push_back(std::make_unique<table_t>(code));
 				return 4;
+			case picture:
+				controls.push_back(std::make_unique<picture_t>(code));
+				return 4;
+			case 14: // 틀, 선
+				return 4;
+			case 15: // 숨은 설명
+				// TODO: paralist
+				return 4;
+			case header: // 숨은 설명
+				// TODO: paralist
+				return 4;
+			case note: // 숨은 설명
+				// TODO: paralist
+				return 4;
+			case 18: // 번호 넣기
+				return 4;
+			case 19: // 번호 바꾸기
+				return 4;
+			case 20: // 쪽번호 달기
+				return 4;
+			case 21: // 쪽번호 감추기
+				return 4;
+			case 22: // 메일 머지
+				return 12;
+			case 23: // 글자 겹치기
+				return 5;
+			case hypen:
+				return 3;
+			case 25: // 제목/표/그림차례 표식
+				return 3;
+			case 26: // 찾아보기 표식
+				return 123;
+			case 28: // 개요 모양/번호
+				return 32;
+			case 29: // 상호 참조
+				return 4;
+			case 30: // 묶음 빈칸
+				return 2;
+			case 31: // 고정 폭 빈칸
+				return 2;
 			case para_break:
 			default:
 				controls.push_back(std::make_unique<hchar_t>(code));
@@ -245,6 +317,97 @@ namespace hwp30
 		return stream;
 	}
 
+	bufferstream& reserved_control_t::read(bufferstream& stream)
+	{
+		data_length = binary_io::read_uint32(stream);
+		data = binary_io::read(stream, data_length);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& reserved_control_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, data_length);
+		binary_io::write(stream, data);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& tab_control_t::read(bufferstream& stream)
+	{
+		code.read(stream);
+		width = binary_io::read_uint16(stream);
+		leader = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& tab_control_t::write(bufferstream& stream)
+	{
+		code.write(stream);
+		binary_io::write_uint16(stream, width);
+		binary_io::write_uint16(stream, leader);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& field_t::read(bufferstream& stream)
+	{
+		data_length = binary_io::read_uint32(stream);
+		data = binary_io::read(stream, data_length);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& field_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, data_length);
+		binary_io::write(stream, data);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& bookmark_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 40);
+		return stream;
+	}
+
+	bufferstream& bookmark_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& date_format_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 82);
+		return stream;
+	}
+
+	bufferstream& date_format_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& date_code_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 94);
+		return stream;
+	}
+
+	bufferstream& date_code_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
 	bufferstream& table_t::read(bufferstream& stream)
 	{
 		reserved = binary_io::read_uint32(stream);
@@ -287,6 +450,38 @@ namespace hwp30
 		{
 			stream << para_list;
 		}
+		stream << caption;
+		return stream;
+	}
+
+	bufferstream& picture_t::read(bufferstream& stream)
+	{
+		reserved = binary_io::read_uint32(stream);
+		end_code = binary_io::read_uint16(stream);
+
+		length = binary_io::read_uint32(stream);
+		data = binary_io::read(stream, 70);
+		type = binary_io::read_uint8(stream);
+		data2 = binary_io::read(stream, 273);
+
+		if (type != 3 && length > 0)
+			data3 = binary_io::read(stream, length);
+
+		stream >> caption;
+		return stream;
+	}
+
+	bufferstream& picture_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint32(stream, reserved);
+		binary_io::write_uint16(stream, end_code);
+		binary_io::write_uint32(stream, length);
+		binary_io::write(stream, data);
+		binary_io::write_uint8(stream, type);
+		binary_io::write(stream, data2);
+		if (type != 3 && length > 0)
+			binary_io::write(stream, data3);
 		stream << caption;
 		return stream;
 	}
@@ -385,15 +580,83 @@ namespace hwp30
 		return stream;
 	}
 
+	bufferstream& operator >> (bufferstream& stream, extra_info_block_t& data)
+	{
+		data.id = binary_io::read_uint32(stream);
+		data.length = binary_io::read_uint32(stream);
+
+		if ( data.is_last() )
+			return stream;
+
+		data.data = binary_io::read(stream, data.length);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const extra_info_block_t& data)
+	{
+		binary_io::write_uint32(stream, data.id);
+		binary_io::write_uint32(stream, data.length);
+		if ( data.is_last() )
+			return stream;
+		binary_io::write(stream, data.data);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, extra_info_blocks_t& data)
+	{
+		bool end_of_block = false;
+		do {
+			extra_info_block_t extra_info_block;
+			stream >> extra_info_block;
+			end_of_block = extra_info_block.is_last() || extra_info_block.is_second_block();
+			data.extra_info_blocks.push_back(std::move(extra_info_block));
+		} while (!end_of_block);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const extra_info_blocks_t& data)
+	{
+		for (auto& extra_info_block : data.extra_info_blocks)
+		{
+			stream << extra_info_block;
+		}
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, second_extra_info_blocks_t& data)
+	{
+		bool end_of_block = false;
+		do {
+			extra_info_block_t extra_info_block;
+			stream >> extra_info_block;
+			end_of_block = extra_info_block.is_last();
+			data.second_extra_info_blocks.push_back(std::move(extra_info_block));
+		} while (!end_of_block);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const second_extra_info_blocks_t& data)
+	{
+		for (auto& extra_info_block : data.second_extra_info_blocks)
+		{
+			stream << extra_info_block;
+		}
+		return stream;
+	}
+
 	bufferstream& operator >> (bufferstream& stream, document_tail_t& data)
 	{
-		// TODO: implement
+		stream >> data.first;
+		if( !data.first.extra_info_blocks.empty() && !data.first.extra_info_blocks.back().is_last() )
+			stream >> data.second;
 		return stream;
 	}
 
 	bufferstream& operator << (bufferstream& stream, const document_tail_t& data)
 	{
-		binary_io::write(stream, data.trailer);
+		// NOTE: DO NOT USE - second block is NOT zip
+		stream << data.first;
+		stream << data.second;
 		return stream;
 	}
 }
