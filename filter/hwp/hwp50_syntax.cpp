@@ -37,6 +37,24 @@ namespace hwp50
 		{
 			header.body_size = binary_io::read_uint32(stream);
 		}
+
+		/*
+		// TODO: remove DEBUG
+		if (syntax_t::is_para_text(header.tag))
+		{
+			std::cout << "[is_para_text] ";
+		}
+		else if (syntax_t::is_para_header(header.tag))
+		{
+			std::cout << "[is_para_header] ";
+		}
+		else if (syntax_t::is_list_header(header.tag))
+		{
+			std::cout << "[is_list_header] ";
+		}
+		std::cout << "tag is "  << header.tag << " , level is " << header.level << std::endl;
+		*/
+
 		return stream;
 	}
 

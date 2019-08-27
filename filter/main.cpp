@@ -32,8 +32,10 @@ void test_decompress_save()
 void test_extract_all_texts()
 {
 	filter::hwp50::filter_t filter;
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/resume.hwp")));
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/tab.hwp")));
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/table.hwp")));
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/table_nested.hwp")));
+	print(filter.extract_all_texts(to_utf8(u"d:/filter/table_cr.hwp")));
 	//print( filter.extract_all_texts(to_utf8(u"d:/filter/[여성부]김현진_우리아이지키기_종합대책(08.5.27).hwp")) );
 	//print( filter.extract_all_texts(to_utf8(u"d:/filter/[국립공원관리공단]조선희_북한산독립유공자묘역정비[이미지].hwp")) );
 	//print( filter.extract_all_texts("d:/filter/sample2.hwp") );
@@ -77,8 +79,8 @@ void test_hwp30()
 int main()
 {
 	//test_decompress_save();
-	//test_extract_all_texts();
+	test_extract_all_texts();
 	//test_replace_privacy();
-	test_hwp30();
+	//test_hwp30();
 	return 0;
 }

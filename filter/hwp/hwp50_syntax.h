@@ -125,9 +125,59 @@ namespace hwp50
 			// TODO: implement
 			HWPTAG_BEGIN = 16,
 			// docinfo
+			HWPTAG_DOCUMENT_PROPERTIES			=	HWPTAG_BEGIN,		//문서속성
+			HWPTAG_ID_MAPPINGS					=	HWPTAG_BEGIN + 1,	//ID Mapping 헤더정보
+			HWPTAG_BIN_DATA						=	HWPTAG_BEGIN + 2,	//Bin Data
+			HWPTAG_FACE_NAME					=	HWPTAG_BEGIN + 3,	//Typeface Name
+			HWPTAG_BORDER_FILL					=	HWPTAG_BEGIN + 4,	//테두리/배경
+			HWPTAG_CHAR_SHAPE					=	HWPTAG_BEGIN + 5,	//글자 모양
+			HWPTAG_TAB_DEF						=	HWPTAG_BEGIN + 6,	//탭정의
+			HWPTAG_NUMBERING					=	HWPTAG_BEGIN + 7,	//번호 정의
+			HWPTAG_BULLET						=	HWPTAG_BEGIN + 8,	//불릿 정의
+			HWPTAG_PARA_SHAPE					=	HWPTAG_BEGIN + 9,	//문단 모양
+			HWPTAG_STYLE						=	HWPTAG_BEGIN + 10,	//스타일
+			HWPTAG_DOC_DATA						=	HWPTAG_BEGIN + 11,	//문서 임의의 데이터인 parameter set archive
+			HWPTAG_DISTRIBUTE_DOC_DATA			=	HWPTAG_BEGIN + 12,	//배포용 문서 데이터
+			HWPTAG_RESERVED						=	HWPTAG_BEGIN + 13,	//예약
+			HWPTAG_COMPATIBLE_DOCUMENT			=	HWPTAG_BEGIN + 14,	//호환 문서
+			HWPTAG_LAYOUT_COMPATIBILITY			=	HWPTAG_BEGIN + 15,	//레이아웃 호환성
+			HWPTAG_TRACKCHANGE					=	HWPTAG_BEGIN + 16,	//변경 추적 정보
+			HWPTAG_MEMO_SHAPE					=	HWPTAG_BEGIN + 76,	//메모 모양
+			HWPTAG_FORBIDDEN_CHAR				=	HWPTAG_BEGIN + 78,	//금칙처리 문자
+			HWPTAG_TRACK_CHARNGE				=	HWPTAG_BEGIN + 80,	//변경 추적 내용 및 모양
+			HWPTAG_TRACK_CHARNGE_AUTHOR			=	HWPTAG_BEGIN + 81,	//변경 추적 작성자
 
 			// body text
-			HWPTAG_PARA_TEXT = HWPTAG_BEGIN + 51
+			HWPTAG_PARA_HEADER					=	HWPTAG_BEGIN + 50,	//문단 헤더
+			HWPTAG_PARA_TEXT					=	HWPTAG_BEGIN + 51,	//문단의 텍스트 내용
+			HWPTAG_PARA_CHAR_SHAPE				=	HWPTAG_BEGIN + 52,	//문단의 글자 모양 정보
+			HWPTAG_PARA_LINE_SEG				=	HWPTAG_BEGIN + 53,	//문단의 각 줄에 대한 ALGIN 정보
+			HWPTAG_PARA_RANGE_TAG				=	HWPTAG_BEGIN + 54,	//문단의 RAGNE TAG 정보
+			HWPTAG_CTRL_HEADER					=	HWPTAG_BEGIN + 55,	//컨트롤의 헤더 블록
+			HWPTAG_LIST_HEADER					=	HWPTAG_BEGIN + 56,	//문단 리스트의 헤더 블록
+			HWPTAG_PAGE_DEF						=	HWPTAG_BEGIN + 57,	//섹션 내의 용지설정
+			HWPTAG_FOOTNOTE_SHAPE				=	HWPTAG_BEGIN + 58,	//섹션 내의 각주/미주 모양
+			HWPTAG_PAGE_BORDER_FILL				=	HWPTAG_BEGIN + 59,	//섹션 내의 쪽 테두리 모양
+			HWPTAG_SHAPE_COMPONENT				=	HWPTAG_BEGIN + 60,	//shape object 내의 shape component
+			HWPTAG_TABLE						=	HWPTAG_BEGIN + 61,	//표
+			HWPTAG_SHAPE_COMPONENT_LINE			=	HWPTAG_BEGIN + 62,	//shape component 중 직선, 연결선
+			HWPTAG_SHAPE_COMPONENT_RECTANGLE	=	HWPTAG_BEGIN + 63,	//shape component 중 사각형
+			HWPTAG_SHAPE_COMPONENT_ELLIPSE		=	HWPTAG_BEGIN + 64,	//shape component 중 타원
+			HWPTAG_SHAPE_COMPONENT_ARC			=	HWPTAG_BEGIN + 65,	//shape component 중 아크
+			HWPTAG_SHAPE_COMPONENT_POLYGON		=	HWPTAG_BEGIN + 66,	//shape component 중 다각형
+			HWPTAG_SHAPE_COMPONENT_CURVE		=	HWPTAG_BEGIN + 67,	//shape component 중 곡선
+			HWPTAG_SHAPE_COMPONENT_OLE			=	HWPTAG_BEGIN + 68,	//shape component 중 OLE
+			HWPTAG_SHAPE_COMPONENT_PICTURE		=	HWPTAG_BEGIN + 69,	//shape component 중 그림
+			HWPTAG_SHAPE_COMPONENT_CONTAINER	=	HWPTAG_BEGIN + 70,	//shape component 중 컨테이너
+			HWPTAG_CTRL_DATA					=	HWPTAG_BEGIN + 71,	//컨트롤의 임의의 데이터인 parameter set archive
+			HWPTAG_EQEDIT						=	HWPTAG_BEGIN + 72,	//수식의 스크립트 정보
+			HWPTAG_RESERVE						=	HWPTAG_BEGIN + 73,	//예약
+			HWPTAG_SHAPE_COMPONENT_TEXTART		=	HWPTAG_BEGIN + 74,	//shape component 중 글맵시
+			HWPTAG_SAMPLEOBJ					=	HWPTAG_BEGIN + 75,	//양식 개체
+			HWPTAG_MEMO							=	HWPTAG_BEGIN + 76,	//메모 모양
+			HWPTAG_MEMOLIST						=	HWPTAG_BEGIN + 77,	//메모 리스트 헤더
+			HWPTAG_CHARTDATA					=	HWPTAG_BEGIN + 79,	//차트 데이터
+			HWPTAG_VIDEODATA					=	HWPTAG_BEGIN + 82,	//비디오 데이터
 		};
 
 		syntax_t() = default;
@@ -141,9 +191,19 @@ namespace hwp50
 			return (code == 9);
 		}
 
+		static bool is_para_header(control_t code)
+		{
+			return (code == HWPTAG_PARA_HEADER);
+		}
+
 		static bool is_para_text(control_t code)
 		{
 			return (code == HWPTAG_PARA_TEXT);
+		}
+
+		static bool is_list_header(control_t code)
+		{
+			return (code == HWPTAG_LIST_HEADER);
 		}
 
 		static bool is_char_control(control_t code)
