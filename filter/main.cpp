@@ -58,7 +58,7 @@ void test_hwp30()
 	typedef filter::hwp30::filter_t filter_t;
 	{
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/pic.hwp.hwp")));
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/pic.hwp")));
 		auto document = filter.open(to_utf8(u"d:/filter/hwp30/pic.hwp"));
 		filter.save(document, to_utf8(u"d:/filter/hwp30/pic.hwp.hwp"));
 	}
@@ -92,8 +92,8 @@ void test_hwp30()
 int main()
 {
 	//test_decompress_save();
-	test_extract_all_texts();
-	test_replace_privacy();
+	//test_extract_all_texts();
+	//test_replace_privacy();
 	test_hwp30();
 	return 0;
 }

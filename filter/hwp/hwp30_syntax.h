@@ -18,7 +18,7 @@ namespace hwp30
 		doc_info_t() = default;
 
 		DECLARE_BINARY_SERIALIZER(doc_info_t);
-		std::size_t size() const {
+		size_t size() const {
 			return 128;
 		}
 		buffer_t body;
@@ -33,7 +33,7 @@ namespace hwp30
 	{
 		doc_summary_t() = default;
 		DECLARE_BINARY_SERIALIZER(doc_summary_t);
-		std::size_t size() const {
+		size_t size() const {
 			return 1008;
 		}
 		buffer_t body;
@@ -47,7 +47,7 @@ namespace hwp30
 		info_block_t(uint16_t len) : info_block_length(len)
 		{}
 		DECLARE_BINARY_SERIALIZER(info_block_t);
-		std::size_t size() const {
+		size_t size() const {
 			return info_block_length;
 		}
 		buffer_t body;
@@ -64,9 +64,9 @@ namespace hwp30
 		face_name_list_t() = default;
 		DECLARE_BINARY_SERIALIZER(face_name_list_t);
 
-		std::size_t size() const
+		size_t size() const
 		{
-			std::size_t offset = 0;
+			size_t offset = 0;
 			for (auto& face_names : family_list) {
 				offset += 2;
 				offset += ( face_names.size() * 40 );
@@ -81,7 +81,7 @@ namespace hwp30
 	{
 		char_shape_t() = default;
 		DECLARE_BINARY_SERIALIZER(char_shape_t);
-		std::size_t size() const {
+		size_t size() const {
 			return 31;
 		}
 		buffer_t body;
@@ -91,7 +91,7 @@ namespace hwp30
 	{
 		para_shape_t() = default;
 		DECLARE_BINARY_SERIALIZER(para_shape_t);
-		std::size_t size() const {
+		size_t size() const {
 			return 187;
 		}
 		buffer_t body;
@@ -112,9 +112,9 @@ namespace hwp30
 		style_list_t() = default;
 		DECLARE_BINARY_SERIALIZER(style_list_t);
 
-		std::size_t size() const
+		size_t size() const
 		{
-			std::size_t offset = 0;
+			size_t offset = 0;
 			offset += 2;
 			for (auto& style : styles)
 			{
@@ -135,7 +135,7 @@ namespace hwp30
 		{}
 		DECLARE_BINARY_SERIALIZER(para_header_t);
 
-		std::size_t size() const {
+		size_t size() const {
 			return 12 + char_shape.size() + para_shape.size();
 		}
 
@@ -161,7 +161,7 @@ namespace hwp30
 		line_segment_list_t(uint16_t count) : line_count(count)
 		{}
 		DECLARE_BINARY_SERIALIZER(line_segment_list_t);
-		std::size_t size() const {
+		size_t size() const {
 			return 14 * line_count;
 		}
 		buffer_t body;
@@ -184,9 +184,9 @@ namespace hwp30
 		{}
 		DECLARE_BINARY_SERIALIZER(char_shape_info_list_t);
 
-		std::size_t size() const
+		size_t size() const
 		{
-			std::size_t offset = 0;
+			size_t offset = 0;
 			offset += 2;
 			for (auto& char_shape_info : char_shape_info_list)
 			{
@@ -207,7 +207,7 @@ namespace hwp30
 		typedef uint16_t control_t;
 		control_code_t() {}
 		virtual ~control_code_t(){}
-		virtual std::size_t size() const = 0;
+		virtual size_t size() const = 0;
 		virtual bufferstream& read(bufferstream& stream) = 0;
 		virtual bufferstream & write(bufferstream & stream) = 0;
 		virtual control_t get_code() const = 0;
@@ -233,9 +233,9 @@ namespace hwp30
 		typedef std::vector<std::unique_ptr<control_code_t>> controls_t;
 		paragraph_t() = default;
 		DECLARE_BINARY_SERIALIZER(paragraph_t);
-		std::size_t size() const
+		size_t size() const
 		{
-			std::size_t offset = 0;
+			size_t offset = 0;
 			offset += para_header.size();
 			if (para_header.empty())
 				return offset;
@@ -264,8 +264,8 @@ namespace hwp30
 		paragraph_list_t() = default;
 		DECLARE_BINARY_SERIALIZER(paragraph_list_t);
 
-		std::size_t size() const {
-			return std::accumulate(para_list.begin(), para_list.end(), 0, [](std::size_t size, auto& paragraph) {
+		size_t size() const {
+			return std::accumulate(para_list.begin(), para_list.end(), 0, [](size_t size, auto& paragraph) {
 				return size + paragraph.size(); });
 		}
 		std::vector<paragraph_t> para_list;
@@ -285,7 +285,7 @@ namespace hwp30
 		virtual bool is_control_code() const {
 			return false;
 		}
-		virtual std::size_t size() const {
+		virtual size_t size() const {
 			return 2;
 		}
 		control_t code;
@@ -303,7 +303,7 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 2 + 4 + data_length + 2;
 		}
 		control_t code;
@@ -326,7 +326,7 @@ namespace hwp30
 		virtual bool is_control_code() const {
 			return false;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 8;
 		}
 		hchar_t code;
@@ -346,7 +346,7 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 2 + 4 + data_length + 2;
 		}
 		control_t code;
@@ -366,7 +366,7 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 42;
 		}
 		control_t code;
@@ -384,7 +384,7 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 84;
 		}
 		control_t code;
@@ -402,8 +402,220 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 96;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct line_shape_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		line_shape_t(control_t code) : code(code)
+		{}
+		~line_shape_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 92;
+		}
+		control_t code;
+		buffer_t data;
+	};
+
+	struct hidden_text_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		hidden_text_t(control_t code) : code(code), reserved(0), end_code(0), reserved2(0)
+		{}
+		~hidden_text_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		virtual bool has_para_list() const {
+			return true;
+		}
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
+			return &para_lists;
+		}
+		size_t size() const {
+			size_t offset = 0;
+			offset += 8;
+			offset += 8;
+			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](size_t size, auto& para_list) {
+				return size + para_list.size(); });
+			return offset;
+		}
+		control_t code;
+		uint32_t reserved;
+		control_t end_code;
+		uint64_t reserved2;
+		std::vector<paragraph_list_t> para_lists;
+	};
+
+	struct header_footer_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		header_footer_t(control_t code) : code(code), reserved(0), end_code(0)
+		{}
+		~header_footer_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		virtual bool has_para_list() const {
+			return true;
+		}
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
+			return &para_lists;
+		}
+		size_t size() const {
+			size_t offset = 0;
+			offset += 8;
+			offset += data.size();
+			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](size_t size, auto& para_list) {
+				return size + para_list.size(); });
+			return offset;
+		}
+		control_t code;
+		uint32_t reserved;
+		control_t end_code;
+		buffer_t data;
+		std::vector<paragraph_list_t> para_lists;
+	};
+
+	struct note_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		note_t(control_t code) : code(code), reserved(0), end_code(0)
+		{}
+		~note_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		virtual bool has_para_list() const {
+			return true;
+		}
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
+			return &para_lists;
+		}
+		size_t size() const {
+			size_t offset = 0;
+			offset += 8;
+			offset += data.size();
+			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](size_t size, auto& para_list) {
+				return size + para_list.size(); });
+			return offset;
+		}
+		control_t code;
+		uint32_t reserved;
+		control_t end_code;
+		buffer_t data;
+		std::vector<paragraph_list_t> para_lists;
+	};
+
+	struct number_code_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		number_code_t(control_t code) : code(code), type(0), number(0), end_code(0)
+		{}
+		~number_code_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 2 + 2 + 2 + 2;
+		}
+		control_t code;
+		uint16_t type;
+		uint16_t number;
+		control_t end_code;
+	};
+
+	struct start_new_number_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		start_new_number_t(control_t code) : code(code), type(0), number(0), end_code(0)
+		{}
+		~start_new_number_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 2 + 2 + 2 + 2;
+		}
+		control_t code;
+		uint16_t type;
+		uint16_t number;
+		control_t end_code;
+	};
+
+	struct page_number_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		page_number_t(control_t code) : code(code), type(0), number(0), end_code(0)
+		{}
+		~page_number_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 2 + 2 + 2 + 2;
+		}
+		control_t code;
+		uint16_t type;
+		uint16_t number;
+		control_t end_code;
+	};
+
+	struct start_odd_hide_number_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		start_odd_hide_number_t(control_t code) : code(code), type(0), number(0), end_code(0)
+		{}
+		~start_odd_hide_number_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 2 + 2 + 2 + 2;
+		}
+		control_t code;
+		uint16_t type;
+		uint16_t number;
+		control_t end_code;
+	};
+
+	struct mail_merge_t : control_code_t
+	{
+		typedef control_code_t::control_t control_t;
+		mail_merge_t(control_t code) : code(code)
+		{}
+		~mail_merge_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual control_t get_code() const {
+			return code;
+		}
+		size_t size() const {
+			return 24;
 		}
 		control_t code;
 		buffer_t data;
@@ -412,7 +624,7 @@ namespace hwp30
 	struct cell_t
 	{
 		cell_t() = default;
-		std::size_t size() const {
+		size_t size() const {
 			return 27;
 		}
 		buffer_t data;
@@ -443,12 +655,12 @@ namespace hwp30
 			return &caption;
 		}
 
-		std::size_t size() const{
-			std::size_t offset = 0;
+		size_t size() const{
+			size_t offset = 0;
 			offset += 84;
-			offset += std::accumulate(cells.begin(), cells.end(), 0, [](std::size_t size, auto& cell) {
+			offset += std::accumulate(cells.begin(), cells.end(), 0, [](size_t size, auto& cell) {
 				return size + cell.size(); });
-			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](std::size_t size, auto& para_list) {
+			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](size_t size, auto& para_list) {
 				return size + para_list.size(); });
 			offset += caption.size();
 			return offset;
@@ -483,7 +695,7 @@ namespace hwp30
 		virtual paragraph_list_t* get_caption() {
 			return &caption;
 		}
-		std::size_t size() const {
+		size_t size() const {
 			return 8 + 4 + data.size() + 1 + data2.size() + data3.size() + caption.size();
 		}
 		control_t code;
@@ -504,8 +716,8 @@ namespace hwp30
 	{
 		document_header_t() = default;
 		DECLARE_BINARY_SERIALIZER(document_header_t);
-		std::size_t size() const {
-			std::size_t offset = 0;
+		size_t size() const {
+			size_t offset = 0;
 			offset += signature.size();
 			offset += doc_info.size();
 			offset += doc_summary.size();
@@ -525,8 +737,8 @@ namespace hwp30
 	{
 		document_body_t() = default;
 		DECLARE_BINARY_SERIALIZER(document_body_t);
-		std::size_t size() const {
-			std::size_t offset = 0;
+		size_t size() const {
+			size_t offset = 0;
 			offset += face_name_list.size();
 			offset += style_list.size();
 			offset += sections.size();
@@ -544,7 +756,7 @@ namespace hwp30
 		extra_info_block_t() : id(0), length(0)
 		{}
 		DECLARE_BINARY_SERIALIZER(extra_info_block_t);
-		std::size_t size() const {
+		size_t size() const {
 			return 4 + 4 + length;
 		}
 		bool is_last() const {
@@ -564,8 +776,8 @@ namespace hwp30
 		extra_info_blocks_t()
 		{}
 		DECLARE_BINARY_SERIALIZER(extra_info_blocks_t);
-		std::size_t size() const {
-			return std::accumulate(extra_info_blocks.begin(), extra_info_blocks.end(), 0, [](std::size_t size, auto& extra_info_block) {
+		size_t size() const {
+			return std::accumulate(extra_info_blocks.begin(), extra_info_blocks.end(), 0, [](size_t size, auto& extra_info_block) {
 				return size + extra_info_block.size(); });
 		}
 		std::vector<extra_info_block_t> extra_info_blocks;
@@ -576,8 +788,8 @@ namespace hwp30
 		second_extra_info_blocks_t()
 		{}
 		DECLARE_BINARY_SERIALIZER(second_extra_info_blocks_t);
-		std::size_t size() const {
-			return std::accumulate(second_extra_info_blocks.begin(), second_extra_info_blocks.end(), 0, [](std::size_t size, auto& extra_info_block) {
+		size_t size() const {
+			return std::accumulate(second_extra_info_blocks.begin(), second_extra_info_blocks.end(), 0, [](size_t size, auto& extra_info_block) {
 				return size + extra_info_block.size(); });
 		}
 		std::vector<extra_info_block_t> second_extra_info_blocks;
@@ -588,7 +800,7 @@ namespace hwp30
 		document_tail_t()
 		{}
 		DECLARE_BINARY_SERIALIZER(document_tail_t);
-		std::size_t size() const {
+		size_t size() const {
 			return first.size() + second.size();
 		}
 
@@ -603,7 +815,7 @@ namespace hwp30
 	struct document_t
 	{
 		document_t() = default;
-		std::size_t size() const {
+		size_t size() const {
 			return header.size() + body.size() + tail.size();
 		}
 

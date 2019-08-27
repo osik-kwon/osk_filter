@@ -20,8 +20,15 @@ namespace hwp30
 			table = 10,
 			picture = 11,
 			para_break = 13,
-			header = 16,
+			line_shape = 14,
+			hidden_text = 15,
+			header_footer = 16,
 			note = 17,
+			number_code = 18,
+			start_new_number = 19,
+			page_number = 20,
+			start_odd_hide_number = 21,
+			mail_merge = 22,
 			hypen = 24
 		};
 		typedef paragraph_t::controls_t controls_t;
@@ -59,26 +66,32 @@ namespace hwp30
 			case picture:
 				controls.push_back(std::make_unique<picture_t>(code));
 				return 4;
-			case 14: // 틀, 선
+			case line_shape:
+				controls.push_back(std::make_unique<line_shape_t>(code));
 				return 4;
-			case 15: // 숨은 설명
-				// TODO: paralist
+			case hidden_text:
+				controls.push_back(std::make_unique<hidden_text_t>(code));
 				return 4;
-			case header: // 숨은 설명
-				// TODO: paralist
+			case header_footer:
+				controls.push_back(std::make_unique<header_footer_t>(code));
 				return 4;
-			case note: // 숨은 설명
-				// TODO: paralist
+			case note:
+				controls.push_back(std::make_unique<note_t>(code));
 				return 4;
-			case 18: // 번호 넣기
+			case number_code:
+				controls.push_back(std::make_unique<number_code_t>(code));
 				return 4;
-			case 19: // 번호 바꾸기
+			case start_new_number:
+				controls.push_back(std::make_unique<start_new_number_t>(code));
 				return 4;
-			case 20: // 쪽번호 달기
+			case page_number:
+				controls.push_back(std::make_unique<page_number_t>(code));
 				return 4;
-			case 21: // 쪽번호 감추기
+			case start_odd_hide_number:
+				controls.push_back(std::make_unique<start_odd_hide_number_t>(code));
 				return 4;
-			case 22: // 메일 머지
+			case mail_merge:
+				controls.push_back(std::make_unique<mail_merge_t>(code));
 				return 12;
 			case 23: // 글자 겹치기
 				return 5;
@@ -402,6 +415,174 @@ namespace hwp30
 	}
 
 	bufferstream& date_code_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& line_shape_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 90);
+		return stream;
+	}
+
+	bufferstream& line_shape_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write(stream, data);
+		return stream;
+	}
+
+	bufferstream& hidden_text_t::read(bufferstream& stream)
+	{
+		reserved = binary_io::read_uint32(stream);
+		end_code = binary_io::read_uint16(stream);
+		reserved2 = binary_io::read_uint64(stream);
+
+		para_lists.resize(1);
+		stream >> para_lists[0];
+		return stream;
+	}
+
+	bufferstream& hidden_text_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint32(stream, reserved);
+		binary_io::write_uint16(stream, end_code);
+		binary_io::write_uint64(stream, reserved2);
+		for (auto& para_list : para_lists)
+		{
+			stream << para_list;
+		}
+		return stream;
+	}
+
+	bufferstream& header_footer_t::read(bufferstream& stream)
+	{
+		reserved = binary_io::read_uint32(stream);
+		end_code = binary_io::read_uint16(stream);
+		data = binary_io::read(stream, 10);
+
+		para_lists.resize(1);
+		stream >> para_lists[0];
+		return stream;
+	}
+
+	bufferstream& header_footer_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint32(stream, reserved);
+		binary_io::write_uint16(stream, end_code);
+		binary_io::write(stream, data);
+
+		for (auto& para_list : para_lists)
+		{
+			stream << para_list;
+		}
+		return stream;
+	}
+
+	bufferstream& note_t::read(bufferstream& stream)
+	{
+		reserved = binary_io::read_uint32(stream);
+		end_code = binary_io::read_uint16(stream);
+		data = binary_io::read(stream, 14);
+
+		para_lists.resize(1);
+		stream >> para_lists[0];
+		return stream;
+	}
+
+	bufferstream& note_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint32(stream, reserved);
+		binary_io::write_uint16(stream, end_code);
+		binary_io::write(stream, data);
+
+		for (auto& para_list : para_lists)
+		{
+			stream << para_list;
+		}
+		return stream;
+	}
+
+	bufferstream& number_code_t::read(bufferstream& stream)
+	{
+		type = binary_io::read_uint16(stream);
+		number = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& number_code_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, type);
+		binary_io::write_uint16(stream, number);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& start_new_number_t::read(bufferstream& stream)
+	{
+		type = binary_io::read_uint16(stream);
+		number = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& start_new_number_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, type);
+		binary_io::write_uint16(stream, number);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& page_number_t::read(bufferstream& stream)
+	{
+		type = binary_io::read_uint16(stream);
+		number = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& page_number_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, type);
+		binary_io::write_uint16(stream, number);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& start_odd_hide_number_t::read(bufferstream& stream)
+	{
+		type = binary_io::read_uint16(stream);
+		number = binary_io::read_uint16(stream);
+		end_code = binary_io::read_uint16(stream);
+		return stream;
+	}
+
+	bufferstream& start_odd_hide_number_t::write(bufferstream& stream)
+	{
+		binary_io::write_uint16(stream, code);
+		binary_io::write_uint16(stream, type);
+		binary_io::write_uint16(stream, number);
+		binary_io::write_uint16(stream, end_code);
+		return stream;
+	}
+
+	bufferstream& mail_merge_t::read(bufferstream& stream)
+	{
+		data = binary_io::read(stream, 22);
+		return stream;
+	}
+
+	bufferstream& mail_merge_t::write(bufferstream& stream)
 	{
 		binary_io::write_uint16(stream, code);
 		binary_io::write(stream, data);

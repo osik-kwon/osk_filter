@@ -66,7 +66,7 @@ namespace hwp50
 					record.get().body = std::move(write_record_buffer);
 				}
 
-				auto write_size = std::accumulate(records.begin(), records.end(), 0, [](std::size_t size, auto& record) {
+				auto write_size = std::accumulate(records.begin(), records.end(), 0, [](size_t size, auto& record) {
 					return size + record.size(); });
 
 				buffer_t write_buffer;

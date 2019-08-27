@@ -108,7 +108,7 @@ namespace hwp30
 		file.seekg(0, std::ios::beg);
 
 		buffer_t buffer;
-		buffer.reserve(std::size_t(size));
+		buffer.reserve(size_t(size));
 		std::copy(std::istream_iterator<byte_t>(file), std::istream_iterator<byte_t>(), std::back_inserter(buffer));
 		return buffer;
 	}
@@ -196,7 +196,7 @@ namespace hwp30
 			if (document->header.doc_info.compressed != 0)
 			{
 				streamsize buffer_size = body_tail_stream.tellp(); // IMPORTANT!
-				body_tail_buffer = hwp_zip::compress_noexcept((char*)& body_tail_buffer[0], (std::size_t)buffer_size);
+				body_tail_buffer = hwp_zip::compress_noexcept((char*)& body_tail_buffer[0], (size_t)buffer_size);
 			}
 
 			std::ofstream fout(save_path, std::ios::out | std::ios::binary);

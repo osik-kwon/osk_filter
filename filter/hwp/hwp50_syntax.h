@@ -24,7 +24,7 @@ namespace hwp50
 
 		DECLARE_BINARY_SERIALIZER(file_header_t);
 		
-		std::size_t size() const {
+		size_t size() const {
 			return 256; // 256 bytes
 		}
 
@@ -54,7 +54,7 @@ namespace hwp50
 		{}
 
 		DECLARE_BINARY_SERIALIZER(header_t);
-		std::size_t size() const {
+		size_t size() const {
 			return sizeof(uint32_t);
 		}
 
@@ -71,7 +71,7 @@ namespace hwp50
 
 		DECLARE_BINARY_SERIALIZER(record_t);
 
-		std::size_t size() const {
+		size_t size() const {
 			return header.size() + body.size();
 		}
 
@@ -93,7 +93,7 @@ namespace hwp50
 			control_t() : type(is_char_control)
 			{}
 
-			std::size_t size() const {
+			size_t size() const {
 				return body.size() * sizeof(value_type);
 			}
 
@@ -101,19 +101,19 @@ namespace hwp50
 			std::vector<value_type> body;
 		};
 
-		para_text_t(std::size_t size) : body_size(size)
+		para_text_t(size_t size) : body_size(size)
 		{}
 
 		DECLARE_BINARY_SERIALIZER(para_text_t);
 
-		std::size_t size() const
+		size_t size() const
 		{
-			return std::accumulate(controls.begin(), controls.end(), 0, [](std::size_t size, auto& control) {
+			return std::accumulate(controls.begin(), controls.end(), 0, [](size_t size, auto& control) {
 				return size + control.size();
 			});
 		}
 
-		std::size_t body_size;
+		size_t body_size;
 		std::vector<control_t> controls;
 	};
 
@@ -229,7 +229,7 @@ namespace hwp50
 			return std::string("/BodyText/");
 		}
 
-		static std::size_t sizeof_inline_control() {
+		static size_t sizeof_inline_control() {
 			return 7 * sizeof(syntax_t::control_t);
 		}
 	};

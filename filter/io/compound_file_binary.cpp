@@ -9,7 +9,7 @@ namespace filter
 		if (cfb_stream->fail())
 			throw std::runtime_error("stream create error");
 		buffer_t buffer;
-		buffer.resize(static_cast<std::size_t>(cfb_stream->size()));
+		buffer.resize(static_cast<size_t>(cfb_stream->size()));
 		if (cfb_stream->read(reinterpret_cast<byte_t*>(&buffer[0]), cfb_stream->size()) != cfb_stream->size())
 			throw std::runtime_error("stream read error");
 		return buffer;
