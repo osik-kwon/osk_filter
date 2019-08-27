@@ -588,7 +588,8 @@ namespace hwp30
 		if ( data.is_last() )
 			return stream;
 
-		data.data = binary_io::read(stream, data.length);
+		if( data.length > 0 )
+			data.data = binary_io::read(stream, data.length);
 		return stream;
 	}
 
@@ -598,7 +599,8 @@ namespace hwp30
 		binary_io::write_uint32(stream, data.length);
 		if ( data.is_last() )
 			return stream;
-		binary_io::write(stream, data.data);
+		if (data.length > 0)
+			binary_io::write(stream, data.data);
 		return stream;
 	}
 

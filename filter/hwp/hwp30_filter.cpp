@@ -130,12 +130,12 @@ namespace hwp30
 		bufferstream header_stream(&buffer[0], buffer.size());
 		header_stream >> document->header;
 
-		buffer_t body = extract_body(buffer, header_stream, document);
-		if(body.empty())
+		buffer_t body_tail = extract_body(buffer, header_stream, document);
+		if(body_tail.empty())
 			throw std::runtime_error("hwp30 parse body error");
-		bufferstream body_stream(&body[0], body.size());
-		body_stream >> document->body;
-		body_stream >> document->tail;
+		bufferstream body_tail_stream(&body_tail[0], body_tail.size());
+		body_tail_stream >> document->body;
+		body_tail_stream >> document->tail;
 		return document;
 	}
 
@@ -184,38 +184,24 @@ namespace hwp30
 			bufferstream header_stream(&header_buffer[0], header_buffer.size());
 			header_stream << document->header;
 
-			buffer_t body_buffer;
-			body_buffer.resize(document->body.size());
-			if (body_buffer.size() == 0)
+			buffer_t body_tail_buffer;
+			body_tail_buffer.resize(document->body.size() + document->tail.first.size() );
+			if (body_tail_buffer.size() == 0)
 				throw std::runtime_error("save buffer size error");
-			bufferstream body_stream(&body_buffer[0], body_buffer.size());
-			body_stream << document->body;
+			bufferstream body_tail_stream(&body_tail_buffer[0], body_tail_buffer.size());
+			body_tail_stream << document->body;
+			body_tail_stream << document->tail.first;
 
 			// compress
 			if (document->header.doc_info.compressed != 0)
 			{
-				streamsize buffer_size = body_stream.tellp(); // IMPORTANT!
-				body_buffer = hwp_zip::compress_noexcept((char*)& body_buffer[0], (std::size_t)buffer_size);
+				streamsize buffer_size = body_tail_stream.tellp(); // IMPORTANT!
+				body_tail_buffer = hwp_zip::compress_noexcept((char*)& body_tail_buffer[0], (std::size_t)buffer_size);
 			}
 
-			// tail
-			buffer_t tail_buffer;
-			tail_buffer.resize(document->tail.first.size());
-			if (tail_buffer.size() == 0)
-				throw std::runtime_error("save buffer size error");
-			bufferstream tail_stream(&tail_buffer[0], tail_buffer.size());
-			tail_stream << document->tail.first;
-
-			if (document->header.doc_info.compressed != 0)
-			{
-				streamsize buffer_size = tail_stream.tellp(); // IMPORTANT!
-				tail_buffer = hwp_zip::compress_noexcept((char*)& tail_buffer[0], (std::size_t)buffer_size);
-			}
-			
 			std::ofstream fout(save_path, std::ios::out | std::ios::binary);
 			fout.write((char*)& header_buffer[0], header_buffer.size());
-			fout.write((char*)& body_buffer[0], body_buffer.size());
-			fout.write((char*)& tail_buffer[0], tail_buffer.size());
+			fout.write((char*)& body_tail_buffer[0], body_tail_buffer.size());
 			if (document->tail.has_second_extra_block())
 			{
 				buffer_t second_extra_block_buffer;
