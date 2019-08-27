@@ -414,5 +414,20 @@ namespace hwp30
 		document_body_t body;
 		document_tail_t tail;
 	};
+
+	struct syntax_t
+	{
+		typedef control_code_t::control_t control_t;
+		syntax_t() = default;
+		static bool is_carriage_return(control_t code)
+		{
+			return (code == 13);
+		}
+
+		static bool is_tab(control_t code)
+		{
+			return (code == 9);
+		}
+	};
 }
 }

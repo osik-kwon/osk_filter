@@ -217,7 +217,8 @@ namespace hwp50
 			}
 			else
 			{
-				// TODO: implement tab
+				if (syntax_t::is_tab(code))
+					texts.push_back(L'\t'); // TODO: normalize
 				auto inline_contol = binary_io::read(stream, syntax_t::sizeof_inline_control());
 				offset += syntax_t::sizeof_inline_control();
 			}

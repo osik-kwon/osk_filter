@@ -32,11 +32,13 @@ void test_decompress_save()
 void test_extract_all_texts()
 {
 	filter::hwp50::filter_t filter;
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/tab.hwp")));
+	print(filter.extract_all_texts(to_utf8(u"d:/filter/table.hwp")));
 	//print( filter.extract_all_texts(to_utf8(u"d:/filter/[여성부]김현진_우리아이지키기_종합대책(08.5.27).hwp")) );
 	//print( filter.extract_all_texts(to_utf8(u"d:/filter/[국립공원관리공단]조선희_북한산독립유공자묘역정비[이미지].hwp")) );
-	print( filter.extract_all_texts("d:/filter/sample2.hwp") );
+	//print( filter.extract_all_texts("d:/filter/sample2.hwp") );
 	//print( filter.extract_all_texts("d:/filter/sample_compress.hwp") );
-	print( filter.extract_all_texts("d:/filter/text.hwp") );
+	//print( filter.extract_all_texts("d:/filter/text.hwp") );
 }
 
 void test_replace_privacy()
@@ -53,9 +55,12 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	filter_t filter;
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table2.hwp")));
-	auto document = filter.open(to_utf8(u"d:/filter/hwp30/table2.hwp"));
-	filter.save(document, to_utf8(u"d:/filter/hwp30/table2.hwp.hwp"));
+	print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/tab.hwp")));
+	auto document = filter.open(to_utf8(u"d:/filter/hwp30/tab.hwp"));
+	filter.save(document, to_utf8(u"d:/filter/hwp30/tab.hwp.hwp"));
+	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table2.hwp")));
+	//auto document = filter.open(to_utf8(u"d:/filter/hwp30/table2.hwp"));
+	//filter.save(document, to_utf8(u"d:/filter/hwp30/table2.hwp.hwp"));
 	
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table3.hwp")));
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));

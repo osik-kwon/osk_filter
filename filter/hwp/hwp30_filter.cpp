@@ -12,6 +12,88 @@ namespace filter
 {
 namespace hwp30
 {
+
+	struct controller_t
+	{
+		typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
+		typedef std::vector<para_ref_t> para_list_ref_t;
+		controller_t() = default;
+		static void extract_texts(const para_list_ref_t& para_list_ref, filter_t::section_t& para_texts);
+		static void extract_para_list_ref(const paragraph_list_t& section, para_list_ref_t& para_list_ref);
+	};
+
+	void controller_t::extract_texts(const para_list_ref_t& para_list_ref, filter_t::section_t& para_texts)
+	{
+		for (auto& para_ref : para_list_ref)
+		{
+			filter_t::para_t para_text;
+			for (auto code : para_ref)
+			{
+				auto utf16 = to_utf16(code.get().utf32);
+				if (utf16.size() == 1)
+				{
+					if ( syntax_t::is_carriage_return(utf16[0]) )
+						para_text.push_back(L'\n'); // TODO: normalize
+					else if (syntax_t::is_tab(utf16[0]))
+						para_text.push_back(L'\t'); // TODO: normalize
+					else
+						para_text.push_back(utf16[0]);
+				}
+			}
+			if (!para_text.empty())
+			{
+				if (para_text.back() != L'\n') // TODO: normalize
+					para_text.push_back(L'\n'); // TODO: normalize
+				para_texts.push_back(std::move(para_text));
+			}
+		}
+	}
+
+	void controller_t::extract_para_list_ref(const paragraph_list_t& section, para_list_ref_t& para_list_ref)
+	{
+		for (auto& para : section.para_list)
+		{
+			para_ref_t para_ref;
+			for (auto& control : para.controls)
+			{
+				if (!control->is_control_code())
+				{
+					hchar_t* code = dynamic_cast<hchar_t*>(control.get());
+					if (code)
+						para_ref.push_back(dynamic_cast<hchar_t&>(*control.get()));
+				}
+				else if (control->has_para_list())
+				{
+					if (!para_ref.empty())
+						para_list_ref.push_back(std::move(para_ref));
+					para_ref = para_ref_t();
+
+					para_ref_t control_para_ref;
+					if (control->get_para_lists())
+					{
+						auto& para_lists = *control->get_para_lists();
+						for (auto& para_list : para_lists)
+							extract_para_list_ref(para_list, para_list_ref);
+					}
+					if (!control_para_ref.empty())
+						para_list_ref.push_back(std::move(control_para_ref));
+				}
+
+				if (control->has_caption())
+				{
+					para_ref_t caption_para_ref;
+					if (control->get_caption())
+						extract_para_list_ref(*control->get_caption(), para_list_ref);
+					if (!caption_para_ref.empty())
+						para_list_ref.push_back(std::move(caption_para_ref));
+				}
+			}
+
+			if (!para_ref.empty())
+				para_list_ref.push_back(std::move(para_ref));
+		}
+	}
+
 	filter_t::buffer_t filter_t::read_file(const std::string& path)
 	{
 		std::ifstream file(path, std::ios::binary);
@@ -66,82 +148,6 @@ namespace hwp30
 		return std::unique_ptr<document_t>(std::make_unique<document_t>());
 	}
 
-	// TODO: move
-
-	typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
-	typedef std::vector<para_ref_t> para_list_ref_t;
-
-	void extract_texts(const para_list_ref_t& para_list_ref, filter_t::section_t& para_texts)
-	{	
-		for (auto& para_ref : para_list_ref)
-		{
-			filter_t::para_t para_text;
-			for (auto code : para_ref)
-			{
-				auto utf16 = to_utf16(code.get().utf32);
-				if (utf16.size() == 1)
-				{
-					if (utf16[0] == 0x000d) // TODO: rename
-						para_text.push_back(L'\n');
-					else
-						// TODO: implement tab
-						para_text.push_back(utf16[0]);
-				}
-			}
-			if (!para_text.empty())
-			{
-				if(para_text.back() != L'\n')
-					para_text.push_back(L'\n');
-				para_texts.push_back(std::move(para_text));
-			}
-		}
-	}
-
-	void extract_para_list_ref(const paragraph_list_t& section, para_list_ref_t& para_list_ref)
-	{
-		for (auto& para : section.para_list)
-		{
-			para_ref_t para_ref;
-			for (auto& control : para.controls)
-			{
-				if (!control->is_control_code())
-				{
-					hchar_t* code = dynamic_cast<hchar_t*>(control.get());
-					if (code)
-						para_ref.push_back(dynamic_cast<hchar_t&>(*control.get()));
-				}
-				else if (control->has_para_list())
-				{
-					if (!para_ref.empty())
-						para_list_ref.push_back(std::move(para_ref));
-					para_ref = para_ref_t();
-
-					para_ref_t control_para_ref;
-					if (control->get_para_lists())
-					{
-						auto& para_lists = *control->get_para_lists();
-						for( auto& para_list : para_lists)
-							extract_para_list_ref(para_list, para_list_ref);
-					}
-					if (!control_para_ref.empty())
-						para_list_ref.push_back(std::move(control_para_ref));
-				}
-
-				if (control->has_caption())
-				{
-					para_ref_t caption_para_ref;
-					if (control->get_caption())
-						extract_para_list_ref(*control->get_caption(), para_list_ref);
-					if (!caption_para_ref.empty())
-						para_list_ref.push_back(std::move(caption_para_ref));
-				}
-			}
-
-			if (!para_ref.empty())
-				para_list_ref.push_back(std::move(para_ref));
-		}
-	}
-
 	filter_t::sections_t filter_t::extract_all_texts(const std::string& import_path)
 	{
 		try
@@ -149,10 +155,9 @@ namespace hwp30
 			sections_t sections;
 			sections.resize(1);
 			auto document = open(import_path);
-
-			para_list_ref_t para_list_ref;
-			extract_para_list_ref(document->body.sections, para_list_ref);
-			extract_texts(para_list_ref, sections[0]);
+			controller_t::para_list_ref_t para_list_ref;
+			controller_t::extract_para_list_ref(document->body.sections, para_list_ref);
+			controller_t::extract_texts(para_list_ref, sections[0]);
 			return sections;
 		}
 		catch (const std::exception& e)

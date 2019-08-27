@@ -136,6 +136,11 @@ namespace hwp50
 			return (code == 13);
 		}
 
+		static bool is_tab(control_t code)
+		{
+			return (code == 9);
+		}
+
 		static bool is_para_text(control_t code)
 		{
 			return (code == HWPTAG_PARA_TEXT);
