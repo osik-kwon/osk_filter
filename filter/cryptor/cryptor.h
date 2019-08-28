@@ -9,11 +9,7 @@ namespace filter
 		typedef uint32_t seed_t;
 		hwp50_distribution_srand_t(seed_t seed) : random_seed(seed)
 		{}
-		seed_t rand()
-		{
-			random_seed = (random_seed * 214013 + 2531011) & 0xFFFFFFFF;
-			return (random_seed >> 16) & 0x7FFF;
-		}
+		seed_t rand();
 	private:
 		seed_t random_seed;
 	};

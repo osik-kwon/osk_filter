@@ -1,17 +1,19 @@
 #include "filter_pch.h"
-
 #include "cryptor/cryptor.h"
 #include <algorithm>
-#include "cryptopp/cryptlib.h"
-#include "cryptopp/Base64.h"
+
 #include "cryptopp/aes.h"        
-#include "cryptopp/seed.h"
-#include "cryptopp/des.h"
 #include "cryptopp/modes.h"      
 #include "cryptopp/filters.h"  
 
 namespace filter
 {
+	hwp50_distribution_srand_t::seed_t hwp50_distribution_srand_t::rand()
+	{
+		random_seed = (random_seed * 214013 + 2531011) & 0xFFFFFFFF;
+		return (random_seed >> 16) & 0x7FFF;
+	}
+
 	void cryptor_t::make_hwp50_distribution_key(const buffer_t& hint)
 	{
 		buffer_t data;
@@ -45,10 +47,12 @@ namespace filter
 			CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption decryptor(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
 			std::vector<uint8_t> plain;
 			CryptoPP::VectorSource(cipher_text, true,
-				new CryptoPP::StreamTransformationFilter(decryptor,
+				new CryptoPP::StreamTransformationFilter(
+					decryptor,
 					new CryptoPP::VectorSink(plain),
 					CryptoPP::BlockPaddingSchemeDef::ZEROS_PADDING
-				));
+				)
+			);
 			buffer_t out;
 			std::copy(plain.begin(), plain.end(), std::back_inserter(out));
 			return out;

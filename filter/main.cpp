@@ -101,6 +101,6 @@ int main()
 	test_decompress_save();
 	test_extract_all_texts();
 	test_replace_privacy();
-	//test_hwp30();
+	test_hwp30();
 	return 0;
 }
