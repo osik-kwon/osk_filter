@@ -16,6 +16,9 @@
     <Filter Include="hwp">
       <UniqueIdentifier>{9ec87380-1e88-4826-8bc8-df6ec573f90b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cryptor">
+      <UniqueIdentifier>{2f5bac7b-f7d2-4e4c-8d21-4617f1f1305c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="locale\kssm_ks_converter.cpp">
       <Filter>locale</Filter>
+    </ClCompile>
+    <ClCompile Include="cryptor\cryptor.cpp">
+      <Filter>cryptor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="locale\kssm_ks_converter.h">
       <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="cryptor\cryptor.h">
+      <Filter>cryptor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

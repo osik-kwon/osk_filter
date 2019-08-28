@@ -29,6 +29,7 @@ namespace filter
 		static void consume(std::iostream& stream, std::streamsize size);
 		static std::string read_string(std::iostream& stream, std::streamsize size);
 		static std::u16string read_u16string(std::iostream& stream, std::streamsize size);
+		static std::vector<uint8_t> read_u8vector(std::iostream& stream, std::streamsize size);
 
 		// interfaces of output
 		static void write_int8(std::iostream& stream, int8_t value);
@@ -44,6 +45,7 @@ namespace filter
 		static void write(std::iostream& stream, const buffer_t& value);
 		static void write_string(std::iostream& stream, const std::string& value);
 		static void write_u16string(std::iostream& stream, const std::u16string& value);
+		static void write_u8vector(std::iostream& stream, const std::vector<uint8_t>& value);
 	private:
 	};
 }

@@ -28,13 +28,12 @@ namespace hwp50
 			return 256; // 256 bytes
 		}
 
-		bool is_compressed() const {
-			return options[0];
-		}
-
-		void set_compressed(bool compress) {
-			options[0] = compress;
-		}
+		enum options_t : uint32_t
+		{
+			compressed = 0,
+			crypted = 1,
+			distribution = 2
+		};
 
 		static const size_t signature_size = 32;
 		std::string signature;
@@ -61,6 +60,25 @@ namespace hwp50
 		tag_t tag;
 		level_t level;
 		size_t body_size;
+	};
+
+	struct distribute_doc_data_record_t
+	{
+		typedef binary_traits::buffer_t buffer_t;
+		distribute_doc_data_record_t()
+		{}
+
+		DECLARE_BINARY_SERIALIZER(distribute_doc_data_record_t);
+
+		size_t size() const {
+			return header.size() + body.size();
+		}
+
+		header_t header;
+		buffer_t body;
+
+		// edit
+		std::bitset<8> options; // 0 : 복사 제한, 1 : 인쇄 제한
 	};
 
 	struct record_t
@@ -227,6 +245,11 @@ namespace hwp50
 		static std::string section_root()
 		{
 			return std::string("/BodyText/");
+		}
+
+		static std::string viewtext_root()
+		{
+			return std::string("/ViewText/");
 		}
 
 		static size_t sizeof_inline_control() {

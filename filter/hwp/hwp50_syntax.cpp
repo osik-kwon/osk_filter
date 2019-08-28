@@ -1,5 +1,6 @@
 #include "filter_pch.h"
 #include "hwp/hwp50_syntax.h"
+#include "cryptor/cryptor.h"
 
 namespace filter
 {
@@ -73,6 +74,42 @@ namespace hwp50
 			plain += (header.body_size << 20);
 			binary_io::write_uint32(stream, plain);
 		}
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, distribute_doc_data_record_t& record)
+	{
+		stream >> record.header;
+		if( record.header.tag != syntax_t::HWPTAG_DISTRIBUTE_DOC_DATA )
+			throw std::runtime_error("record tag is NOT HWPTAG_DISTRIBUTE_DOC_DATA");
+
+		record.body = binary_io::read(stream, record.header.body_size);
+		bufferstream body_stream(&record.body[0], record.body.size());	
+
+		cryptor_t cryptor( binary_io::read_uint32(body_stream) );
+		cryptor.make_hwp50_distribution_key(record.body);
+		if(!cryptor.options.empty())
+			record.options = cryptor.options[0];
+
+		// read cipher text
+		stream.seekg(0, stream.end);
+		streamsize length = stream.tellg();
+		if (length <= 260)
+			throw std::runtime_error("decrypt error");
+		length -= 260;
+		stream.seekg(260, stream.beg);
+		std::vector<uint8_t> cipher_text = binary_io::read_u8vector(stream, length);
+
+		// decrypt
+		record.body = std::move( cryptor.decrypt_aes128_ecb_nopadding(std::move(cipher_text)) );
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const distribute_doc_data_record_t& record)
+	{
+		// TODO: implement
+		stream << record.header;
+		binary_io::write(stream, record.body);
 		return stream;
 	}
 

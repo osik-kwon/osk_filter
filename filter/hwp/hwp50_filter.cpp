@@ -14,14 +14,24 @@ namespace hwp50
 		{
 			std::unique_ptr<storage_t> import_storage = cfb_t::make_read_only_storage(import_path);
 			std::unique_ptr<storage_t> export_storage = cfb_t::make_writable_storage(export_path);
-			auto section_streams = cfb_t::make_full_entries(import_storage, syntax_t::section_root());
-			auto all_streams_except_sections = cfb_t::make_all_streams_except(import_storage, section_streams);
 			auto import_header = read_file_header(import_storage);
+			auto section_streams = cfb_t::make_full_entries(import_storage, 
+				import_header.options[file_header_t::distribution] ? syntax_t::viewtext_root() : syntax_t::section_root()
+			);
+			auto all_streams_except_sections = cfb_t::make_all_streams_except(import_storage, section_streams);
+			
 			cfb_t::copy_streams(import_storage, export_storage, all_streams_except_sections);
 			for (auto& section_stream : section_streams)
 			{
 				auto section = cfb_t::extract_stream(import_storage, section_stream);
-				if (import_header.is_compressed())
+				if (import_header.options[file_header_t::distribution])
+				{
+					bufferstream stream(&section[0], section.size());
+					distribute_doc_data_record_t record;
+					stream >> record;
+					section = std::move(record.body);
+				}
+				if (import_header.options[file_header_t::compressed])
 					section = hwp_zip::decompress_noexcept(section);
 
 				bufferstream records_stream(&section[0], section.size());
@@ -76,7 +86,7 @@ namespace hwp50
 
 				if (!write_buffer.empty())
 				{
-					if (import_header.is_compressed())
+					if (import_header.options[file_header_t::compressed])
 						write_buffer = hwp_zip::compress_noexcept(write_buffer);
 					cfb_t::make_stream(export_storage, section_stream, write_buffer);
 				}
@@ -97,13 +107,21 @@ namespace hwp50
 		{
 			sections_t sections;
 			std::unique_ptr<storage_t> import_storage = cfb_t::make_read_only_storage(import_path);
-			auto section_streams = cfb_t::make_full_entries(import_storage, syntax_t::section_root());
 			auto header = read_file_header(import_storage);
+			auto section_streams = cfb_t::make_full_entries(import_storage,
+				header.options[file_header_t::distribution] ? syntax_t::viewtext_root() : syntax_t::section_root() );
 
 			for (auto& section_stream : section_streams)
 			{
 				auto section = cfb_t::extract_stream(import_storage, section_stream);
-				if (header.is_compressed())
+				if (header.options[file_header_t::distribution])
+				{
+					bufferstream stream(&section[0], section.size());
+					distribute_doc_data_record_t record;
+					stream >> record;
+					section = std::move( record.body );
+				}
+				if (header.options[file_header_t::compressed])
 				{
 					section = hwp_zip::decompress(section);
 				}
@@ -131,13 +149,13 @@ namespace hwp50
 			auto all_streams_except_file_header = cfb_t::make_all_streams_except(import_storage, "/FileHeader");
 			auto import_header = read_file_header(import_storage);
 			auto export_header = import_header;
-			export_header.set_compressed(false);
+			export_header.options[file_header_t::compressed] = false;
 			write_file_header(export_storage, export_header);
 
 			for (auto& stream : all_streams_except_file_header)
 			{
 				auto plain = cfb_t::extract_stream(import_storage, stream);
-				if (import_header.is_compressed())
+				if (import_header.options[file_header_t::compressed])
 					plain = hwp_zip::decompress_noexcept(plain);
 				if (!plain.empty())
 					cfb_t::make_stream(export_storage, stream, plain);

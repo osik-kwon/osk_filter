@@ -178,7 +178,6 @@ namespace hwp30
 	{
 		try
 		{
-			sections_t sections;
 			auto import_buffer = read_file(open_path);
 			return parse(import_buffer);
 		}

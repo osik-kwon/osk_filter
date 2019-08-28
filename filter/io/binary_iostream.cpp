@@ -136,6 +136,19 @@ namespace filter
 		return buf;
 	}
 
+	std::vector<uint8_t> binary_io::read_u8vector(std::iostream& stream, std::streamsize size)
+	{
+		if (size < 1)
+			throw std::runtime_error("read_string fail");
+		std::vector<uint8_t> buf;
+		buf.resize(static_cast<size_t>(size));
+		stream.read(reinterpret_cast<char*>(&buf[0]), buf.size());
+		if (!stream.good())
+			throw std::runtime_error("read_string fail");
+		FILTER_ENDIAN_SWAP(&buf[0]);
+		return buf;
+	}
+
 	void binary_io::write_int8(std::iostream& stream, int8_t value)
 	{
 		FILTER_ENDIAN_SWAP(&value);
@@ -256,6 +269,17 @@ namespace filter
 
 		for (auto code : value)
 			write_uint16(stream, code);
+		if (!stream.good())
+			throw std::runtime_error("write_u16string fail");
+	}
+
+	void binary_io::write_u8vector(std::iostream& stream, const std::vector<uint8_t>& value)
+	{
+		if (value.size() < 1)
+			throw std::runtime_error("write_u16string fail");
+
+		for (auto code : value)
+			write_uint8(stream, code);
 		if (!stream.good())
 			throw std::runtime_error("write_u16string fail");
 	}
