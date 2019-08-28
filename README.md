@@ -48,6 +48,8 @@ TODO
 
 https://archive.codeplex.com/?p=ooxmlpp
 
+https://archive.codeplex.com/?p=libopc
+
 https://sourceforge.net/projects/b2xtranslator/
 
 
