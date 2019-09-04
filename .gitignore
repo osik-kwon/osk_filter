@@ -39,6 +39,9 @@ x64/
 filter/Debug/
 filter/Release/
 filter/x64/
+xlnt/Debug/
+xlnt/Release/
+xlnt/x64/
 
 #Visual Studio files
 *.user

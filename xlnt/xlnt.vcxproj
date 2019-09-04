@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="xlnt\cell\cell.cpp" />
+    <ClCompile Include="xlnt\cell\cell_reference.cpp" />
+    <ClCompile Include="xlnt\cell\comment.cpp" />
+    <ClCompile Include="xlnt\cell\hyperlink.cpp" />
+    <ClCompile Include="xlnt\cell\index_types.cpp" />
+    <ClCompile Include="xlnt\cell\rich_text.cpp" />
+    <ClCompile Include="xlnt\cell\rich_text_run.cpp" />
+    <ClCompile Include="xlnt\detail\constants.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\aes.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\base64.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\compound_document.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\encryption_info.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\hash.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\sha.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\sha1.c" />
+    <ClCompile Include="xlnt\detail\cryptography\sha512.c" />
+    <ClCompile Include="xlnt\detail\cryptography\xlsx_crypto_consumer.cpp" />
+    <ClCompile Include="xlnt\detail\cryptography\xlsx_crypto_producer.cpp" />
+    <ClCompile Include="xlnt\detail\header_footer\header_footer_code.cpp" />
+    <ClCompile Include="xlnt\detail\implementations\cell_impl.cpp" />
+    <ClCompile Include="xlnt\detail\number_format\number_formatter.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\custom_value_traits.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\miniz.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\open_stream.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\vector_streambuf.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\xlsx_consumer.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\xlsx_producer.cpp" />
+    <ClCompile Include="xlnt\detail\serialization\zstream.cpp" />
+    <ClCompile Include="xlnt\detail\unicode.cpp" />
+    <ClCompile Include="xlnt\packaging\ext_list.cpp" />
+    <ClCompile Include="xlnt\packaging\manifest.cpp" />
+    <ClCompile Include="xlnt\packaging\relationship.cpp" />
+    <ClCompile Include="xlnt\packaging\uri.cpp" />
+    <ClCompile Include="xlnt\styles\alignment.cpp" />
+    <ClCompile Include="xlnt\styles\border.cpp" />
+    <ClCompile Include="xlnt\styles\color.cpp" />
+    <ClCompile Include="xlnt\styles\conditional_format.cpp" />
+    <ClCompile Include="xlnt\styles\fill.cpp" />
+    <ClCompile Include="xlnt\styles\font.cpp" />
+    <ClCompile Include="xlnt\styles\format.cpp" />
+    <ClCompile Include="xlnt\styles\number_format.cpp" />
+    <ClCompile Include="xlnt\styles\protection.cpp" />
+    <ClCompile Include="xlnt\styles\style.cpp" />
+    <ClCompile Include="xlnt\utils\date.cpp" />
+    <ClCompile Include="xlnt\utils\datetime.cpp" />
+    <ClCompile Include="xlnt\utils\exceptions.cpp" />
+    <ClCompile Include="xlnt\utils\path.cpp" />
+    <ClCompile Include="xlnt\utils\time.cpp" />
+    <ClCompile Include="xlnt\utils\timedelta.cpp" />
+    <ClCompile Include="xlnt\utils\variant.cpp" />
+    <ClCompile Include="xlnt\workbook\named_range.cpp" />
+    <ClCompile Include="xlnt\workbook\streaming_workbook_reader.cpp" />
+    <ClCompile Include="xlnt\workbook\streaming_workbook_writer.cpp" />
+    <ClCompile Include="xlnt\workbook\workbook.cpp" />
+    <ClCompile Include="xlnt\workbook\worksheet_iterator.cpp" />
+    <ClCompile Include="xlnt\worksheet\cell_iterator.cpp" />
+    <ClCompile Include="xlnt\worksheet\cell_vector.cpp" />
+    <ClCompile Include="xlnt\worksheet\header_footer.cpp" />
+    <ClCompile Include="xlnt\worksheet\page_margins.cpp" />
+    <ClCompile Include="xlnt\worksheet\page_setup.cpp" />
+    <ClCompile Include="xlnt\worksheet\phonetic_pr.cpp" />
+    <ClCompile Include="xlnt\worksheet\range.cpp" />
+    <ClCompile Include="xlnt\worksheet\range_iterator.cpp" />
+    <ClCompile Include="xlnt\worksheet\range_reference.cpp" />
+    <ClCompile Include="xlnt\worksheet\sheet_protection.cpp" />
+    <ClCompile Include="xlnt\worksheet\worksheet.cpp" />
+    <ClCompile Include="xlnt\xml\details\expat\xmlparse.c" />
+    <ClCompile Include="xlnt\xml\details\expat\xmlrole.c" />
+    <ClCompile Include="xlnt\xml\details\expat\xmltok.c" />
+    <ClCompile Include="xlnt\xml\details\expat\xmltok_impl.c" />
+    <ClCompile Include="xlnt\xml\details\expat\xmltok_ns.c" />
+    <ClCompile Include="xlnt\xml\details\genx\char-props.c" />
+    <ClCompile Include="xlnt\xml\details\genx\genx.c" />
+    <ClCompile Include="xlnt\xml\parser.cxx" />
+    <ClCompile Include="xlnt\xml\qname.cxx" />
+    <ClCompile Include="xlnt\xml\serializer.cxx" />
+    <ClCompile Include="xlnt\xml\value-traits.cxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="xlnt\cell\cell.hpp" />
+    <ClInclude Include="xlnt\cell\cell_reference.hpp" />
+    <ClInclude Include="xlnt\cell\cell_type.hpp" />
+    <ClInclude Include="xlnt\cell\comment.hpp" />
+    <ClInclude Include="xlnt\cell\hyperlink.hpp" />
+    <ClInclude Include="xlnt\cell\index_types.hpp" />
+    <ClInclude Include="xlnt\cell\rich_text.hpp" />
+    <ClInclude Include="xlnt\cell\rich_text_run.hpp" />
+    <ClInclude Include="xlnt\detail\binary.hpp" />
+    <ClInclude Include="xlnt\detail\constants.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\aes.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\base64.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\cipher.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\compound_document.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\encryption_info.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\hash.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\sha.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\value_traits.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\xlsx_crypto_consumer.hpp" />
+    <ClInclude Include="xlnt\detail\cryptography\xlsx_crypto_producer.hpp" />
+    <ClInclude Include="xlnt\detail\default_case.hpp" />
+    <ClInclude Include="xlnt\detail\external\include_libstudxml.hpp" />
+    <ClInclude Include="xlnt\detail\external\include_windows.hpp" />
+    <ClInclude Include="xlnt\detail\header_footer\header_footer_code.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\cell_impl.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\conditional_format_impl.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\formatting_record.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\format_impl.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\hyperlink_impl.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\stylesheet.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\style_impl.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\workbook_impl.hpp" />
+    <ClInclude Include="xlnt\detail\implementations\worksheet_impl.hpp" />
+    <ClInclude Include="xlnt\detail\number_format\number_formatter.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\custom_value_traits.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\excel_thumbnail.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\miniz.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\open_stream.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\vector_streambuf.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\xlsx_consumer.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\xlsx_producer.hpp" />
+    <ClInclude Include="xlnt\detail\serialization\zstream.hpp" />
+    <ClInclude Include="xlnt\detail\unicode.hpp" />
+    <ClInclude Include="xlnt\packaging\ext_list.hpp" />
+    <ClInclude Include="xlnt\packaging\manifest.hpp" />
+    <ClInclude Include="xlnt\packaging\relationship.hpp" />
+    <ClInclude Include="xlnt\packaging\uri.hpp" />
+    <ClInclude Include="xlnt\styles\alignment.hpp" />
+    <ClInclude Include="xlnt\styles\border.hpp" />
+    <ClInclude Include="xlnt\styles\color.hpp" />
+    <ClInclude Include="xlnt\styles\conditional_format.hpp" />
+    <ClInclude Include="xlnt\styles\fill.hpp" />
+    <ClInclude Include="xlnt\styles\font.hpp" />
+    <ClInclude Include="xlnt\styles\format.hpp" />
+    <ClInclude Include="xlnt\styles\number_format.hpp" />
+    <ClInclude Include="xlnt\styles\protection.hpp" />
+    <ClInclude Include="xlnt\styles\style.hpp" />
+    <ClInclude Include="xlnt\utf8.h" />
+    <ClInclude Include="xlnt\utf8\checked.h" />
+    <ClInclude Include="xlnt\utf8\core.h" />
+    <ClInclude Include="xlnt\utf8\unchecked.h" />
+    <ClInclude Include="xlnt\utils\calendar.hpp" />
+    <ClInclude Include="xlnt\utils\date.hpp" />
+    <ClInclude Include="xlnt\utils\datetime.hpp" />
+    <ClInclude Include="xlnt\utils\exceptions.hpp" />
+    <ClInclude Include="xlnt\utils\optional.hpp" />
+    <ClInclude Include="xlnt\utils\path.hpp" />
+    <ClInclude Include="xlnt\utils\scoped_enum_hash.hpp" />
+    <ClInclude Include="xlnt\utils\serialisation_utils.hpp" />
+    <ClInclude Include="xlnt\utils\time.hpp" />
+    <ClInclude Include="xlnt\utils\timedelta.hpp" />
+    <ClInclude Include="xlnt\utils\variant.hpp" />
+    <ClInclude Include="xlnt\workbook\calculation_properties.hpp" />
+    <ClInclude Include="xlnt\workbook\document_security.hpp" />
+    <ClInclude Include="xlnt\workbook\external_book.hpp" />
+    <ClInclude Include="xlnt\workbook\metadata_property.hpp" />
+    <ClInclude Include="xlnt\workbook\named_range.hpp" />
+    <ClInclude Include="xlnt\workbook\streaming_workbook_reader.hpp" />
+    <ClInclude Include="xlnt\workbook\streaming_workbook_writer.hpp" />
+    <ClInclude Include="xlnt\workbook\theme.hpp" />
+    <ClInclude Include="xlnt\workbook\workbook.hpp" />
+    <ClInclude Include="xlnt\workbook\workbook_view.hpp" />
+    <ClInclude Include="xlnt\workbook\worksheet_iterator.hpp" />
+    <ClInclude Include="xlnt\worksheet\cell_iterator.hpp" />
+    <ClInclude Include="xlnt\worksheet\cell_vector.hpp" />
+    <ClInclude Include="xlnt\worksheet\column_properties.hpp" />
+    <ClInclude Include="xlnt\worksheet\header_footer.hpp" />
+    <ClInclude Include="xlnt\worksheet\major_order.hpp" />
+    <ClInclude Include="xlnt\worksheet\page_margins.hpp" />
+    <ClInclude Include="xlnt\worksheet\page_setup.hpp" />
+    <ClInclude Include="xlnt\worksheet\pane.hpp" />
+    <ClInclude Include="xlnt\worksheet\phonetic_pr.hpp" />
+    <ClInclude Include="xlnt\worksheet\print_options.hpp" />
+    <ClInclude Include="xlnt\worksheet\range.hpp" />
+    <ClInclude Include="xlnt\worksheet\range_iterator.hpp" />
+    <ClInclude Include="xlnt\worksheet\range_reference.hpp" />
+    <ClInclude Include="xlnt\worksheet\row_properties.hpp" />
+    <ClInclude Include="xlnt\worksheet\selection.hpp" />
+    <ClInclude Include="xlnt\worksheet\sheet_format_properties.hpp" />
+    <ClInclude Include="xlnt\worksheet\sheet_pr.hpp" />
+    <ClInclude Include="xlnt\worksheet\sheet_protection.hpp" />
+    <ClInclude Include="xlnt\worksheet\sheet_view.hpp" />
+    <ClInclude Include="xlnt\worksheet\worksheet.hpp" />
+    <ClInclude Include="xlnt\xlnt.hpp" />
+    <ClInclude Include="xlnt\xlnt_config.hpp" />
+    <ClInclude Include="xlnt\xml\details\build2\config-vc.h" />
+    <ClInclude Include="xlnt\xml\details\build2\config.h" />
+    <ClInclude Include="xlnt\xml\details\config-vc.h" />
+    <ClInclude Include="xlnt\xml\details\config.h" />
+    <ClInclude Include="xlnt\xml\details\config.hxx" />
+    <ClInclude Include="xlnt\xml\details\expat\ascii.h" />
+    <ClInclude Include="xlnt\xml\details\expat\asciitab.h" />
+    <ClInclude Include="xlnt\xml\details\expat\config.h" />
+    <ClInclude Include="xlnt\xml\details\expat\expat.h" />
+    <ClInclude Include="xlnt\xml\details\expat\expat_external.h" />
+    <ClInclude Include="xlnt\xml\details\expat\iasciitab.h" />
+    <ClInclude Include="xlnt\xml\details\expat\internal.h" />
+    <ClInclude Include="xlnt\xml\details\expat\latin1tab.h" />
+    <ClInclude Include="xlnt\xml\details\expat\nametab.h" />
+    <ClInclude Include="xlnt\xml\details\expat\utf8tab.h" />
+    <ClInclude Include="xlnt\xml\details\expat\xmlrole.h" />
+    <ClInclude Include="xlnt\xml\details\expat\xmltok.h" />
+    <ClInclude Include="xlnt\xml\details\expat\xmltok_impl.h" />
+    <ClInclude Include="xlnt\xml\details\export.hxx" />
+    <ClInclude Include="xlnt\xml\details\genx\genx.h" />
+    <ClInclude Include="xlnt\xml\details\post.hxx" />
+    <ClInclude Include="xlnt\xml\details\pre.hxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="xlnt\xml\content" />
+    <None Include="xlnt\xml\details\config.h.in" />
+    <None Include="xlnt\xml\details\expat\LICENSE" />
+    <None Include="xlnt\xml\details\expat\README" />
+    <None Include="xlnt\xml\details\genx\LICENSE" />
+    <None Include="xlnt\xml\details\genx\README" />
+    <None Include="xlnt\xml\exception" />
+    <None Include="xlnt\xml\forward" />
+    <None Include="xlnt\xml\parser" />
+    <None Include="xlnt\xml\parser.ixx" />
+    <None Include="xlnt\xml\parser.txx" />
+    <None Include="xlnt\xml\qname" />
+    <None Include="xlnt\xml\serializer" />
+    <None Include="xlnt\xml\serializer.ixx" />
+    <None Include="xlnt\xml\value-traits" />
+    <None Include="xlnt\xml\value-traits.txx" />
+    <None Include="xlnt\xml\version" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{B084AB6B-1D72-469A-BAE5-41AAD7167415}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>xlnt</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;XLNT_STATIC;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;XLNT_STATIC;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;XLNT_STATIC;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;XLNT_STATIC;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

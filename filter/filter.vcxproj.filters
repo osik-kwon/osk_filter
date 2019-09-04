@@ -24,7 +24,6 @@
     <ClCompile Include="pole\pole.cpp">
       <Filter>pole</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="hwp\hwp50_filter.cpp">
       <Filter>hwp</Filter>
     </ClCompile>
