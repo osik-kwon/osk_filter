@@ -23,6 +23,10 @@
 
 #pragma once
 
+#ifndef XLNT_STATIC
+#define XLNT_STATIC
+#endif
+
 #ifndef XLNT_API
 #if !defined(XLNT_STATIC) && defined(_MSC_VER)
 #ifdef XLNT_EXPORT

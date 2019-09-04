@@ -90,6 +90,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>filter_pch.h</PrecompiledHeaderFile>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,6 +107,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>filter_pch.h</PrecompiledHeaderFile>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,6 +174,7 @@
     <ClCompile Include="locale\hchar_converter.cpp" />
     <ClCompile Include="locale\kssm_ks_converter.cpp" />
     <ClCompile Include="pole\pole.cpp" />
+    <ClCompile Include="xml\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cryptor\cryptor.h" />
@@ -198,6 +201,8 @@
     <ClInclude Include="locale\utf_selector.hpp" />
     <ClInclude Include="locale\utf_sizes.hpp" />
     <ClInclude Include="pole\pole.h" />
+    <ClInclude Include="xml\pugiconfig.hpp" />
+    <ClInclude Include="xml\pugixml.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

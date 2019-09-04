@@ -19,6 +19,9 @@
     <Filter Include="cryptor">
       <UniqueIdentifier>{2f5bac7b-f7d2-4e4c-8d21-4617f1f1305c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="xml">
+      <UniqueIdentifier>{109e6be2-f55c-4267-9aa5-b3e1b39ec4f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -57,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="cryptor\cryptor.cpp">
       <Filter>cryptor</Filter>
+    </ClCompile>
+    <ClCompile Include="xml\pugixml.cpp">
+      <Filter>xml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +135,12 @@
     </ClInclude>
     <ClInclude Include="cryptor\cryptor.h">
       <Filter>cryptor</Filter>
+    </ClInclude>
+    <ClInclude Include="xml\pugiconfig.hpp">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="xml\pugixml.hpp">
+      <Filter>xml</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
