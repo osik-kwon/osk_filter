@@ -1,10 +1,7 @@
 #include "filter_pch.h"
 #include "cryptor/cryptor.h"
 #include <algorithm>
-
-#include "cryptopp/aes.h"        
-#include "cryptopp/modes.h"      
-#include "cryptopp/filters.h"  
+#include <detail/cryptography/aes.hpp>
 
 namespace filter
 {
@@ -39,28 +36,15 @@ namespace filter
 	{
 		try
 		{
-			if (symmetric_key.size() != CryptoPP::AES::DEFAULT_KEYLENGTH)
-				throw std::runtime_error("decrypt key size error");
-			uint8_t key[CryptoPP::AES::DEFAULT_KEYLENGTH] = { 0, };
-			std::copy(symmetric_key.begin(), symmetric_key.end(), key);
-
-			CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption decryptor(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
+			std::vector<uint8_t> key;
+			std::copy(symmetric_key.begin(), symmetric_key.end(), std::back_inserter(key));
 			std::vector<uint8_t> plain;
-			CryptoPP::VectorSource(cipher_text, true,
-				new CryptoPP::StreamTransformationFilter(
-					decryptor,
-					new CryptoPP::VectorSink(plain),
-					CryptoPP::BlockPaddingSchemeDef::ZEROS_PADDING
-				)
-			);
+			plain = xlnt::detail::aes_ecb_decrypt(cipher_text, key);
 			buffer_t out;
 			std::copy(plain.begin(), plain.end(), std::back_inserter(out));
 			return out;
 		}
 		catch (const std::exception&)
-		{
-		}
-		catch (...)
 		{
 		}
 		return buffer_t();
