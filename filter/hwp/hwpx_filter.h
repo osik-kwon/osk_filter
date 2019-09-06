@@ -43,7 +43,7 @@ namespace hwpx
 			return parts;
 		}
 		part_names_t& get_names() {
-			return &names;
+			return names;
 		}
 	private:
 		void load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream);
