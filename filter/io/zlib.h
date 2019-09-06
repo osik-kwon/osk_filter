@@ -5,7 +5,7 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 
-#include "define/binary_traits.h"
+#include "traits/binary_traits.h"
 
 namespace filter
 {

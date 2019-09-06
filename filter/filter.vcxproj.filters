@@ -4,9 +4,6 @@
     <Filter Include="pole">
       <UniqueIdentifier>{7db16ef5-9c52-4acc-bd91-27a786957694}</UniqueIdentifier>
     </Filter>
-    <Filter Include="define">
-      <UniqueIdentifier>{cb10ea69-7969-4329-9f10-6bfe23a758db}</UniqueIdentifier>
-    </Filter>
     <Filter Include="io">
       <UniqueIdentifier>{7e27ee26-5909-49a2-9d0f-76eb33a16938}</UniqueIdentifier>
     </Filter>
@@ -21,6 +18,9 @@
     </Filter>
     <Filter Include="xml">
       <UniqueIdentifier>{109e6be2-f55c-4267-9aa5-b3e1b39ec4f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="traits">
+      <UniqueIdentifier>{cb10ea69-7969-4329-9f10-6bfe23a758db}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +64,9 @@
     <ClCompile Include="xml\pugixml.cpp">
       <Filter>xml</Filter>
     </ClCompile>
+    <ClCompile Include="hwp\hwpx_filter.cpp">
+      <Filter>hwp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -86,12 +89,6 @@
     </ClInclude>
     <ClInclude Include="hwp\hwp50_filter.h">
       <Filter>hwp</Filter>
-    </ClInclude>
-    <ClInclude Include="define\compound_file_binary_traits.h">
-      <Filter>define</Filter>
-    </ClInclude>
-    <ClInclude Include="define\binary_traits.h">
-      <Filter>define</Filter>
     </ClInclude>
     <ClInclude Include="filter_pch.h" />
     <ClInclude Include="hwp\hwp50_syntax.h">
@@ -141,6 +138,18 @@
     </ClInclude>
     <ClInclude Include="xml\pugixml.hpp">
       <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="hwp\hwpx_filter.h">
+      <Filter>hwp</Filter>
+    </ClInclude>
+    <ClInclude Include="traits\binary_traits.h">
+      <Filter>traits</Filter>
+    </ClInclude>
+    <ClInclude Include="traits\compound_file_binary_traits.h">
+      <Filter>traits</Filter>
+    </ClInclude>
+    <ClInclude Include="traits\xml_traits.h">
+      <Filter>traits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

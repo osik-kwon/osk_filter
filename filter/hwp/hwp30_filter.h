@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "define/binary_traits.h"
+#include "traits/binary_traits.h"
 
 namespace filter
 {

@@ -167,6 +167,7 @@
     <ClCompile Include="hwp\hwp30_syntax.cpp" />
     <ClCompile Include="hwp\hwp50_filter.cpp" />
     <ClCompile Include="hwp\hwp50_syntax.cpp" />
+    <ClCompile Include="hwp\hwpx_filter.cpp" />
     <ClCompile Include="io\binary_iostream.cpp" />
     <ClCompile Include="io\compound_file_binary.cpp" />
     <ClCompile Include="io\zlib.cpp" />
@@ -178,13 +179,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cryptor\cryptor.h" />
-    <ClInclude Include="define\compound_file_binary_traits.h" />
-    <ClInclude Include="define\binary_traits.h" />
     <ClInclude Include="filter_pch.h" />
     <ClInclude Include="hwp\hwp30_filter.h" />
     <ClInclude Include="hwp\hwp30_syntax.h" />
     <ClInclude Include="hwp\hwp50_filter.h" />
     <ClInclude Include="hwp\hwp50_syntax.h" />
+    <ClInclude Include="hwp\hwpx_filter.h" />
     <ClInclude Include="io\binary_iostream.h" />
     <ClInclude Include="io\compound_file_binary.h" />
     <ClInclude Include="io\endianness.h" />
@@ -201,6 +201,9 @@
     <ClInclude Include="locale\utf_selector.hpp" />
     <ClInclude Include="locale\utf_sizes.hpp" />
     <ClInclude Include="pole\pole.h" />
+    <ClInclude Include="traits\binary_traits.h" />
+    <ClInclude Include="traits\compound_file_binary_traits.h" />
+    <ClInclude Include="traits\xml_traits.h" />
     <ClInclude Include="xml\pugiconfig.hpp" />
     <ClInclude Include="xml\pugixml.hpp" />
   </ItemGroup>

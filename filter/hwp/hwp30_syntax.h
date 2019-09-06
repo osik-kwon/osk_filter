@@ -1,7 +1,7 @@
 #pragma once
 #include <bitset>
 #include <string>
-#include "define/binary_traits.h"
+#include "traits/binary_traits.h"
 #include "io/binary_iostream.h"
 
 namespace filter

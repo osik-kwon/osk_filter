@@ -2,8 +2,8 @@
 #include <string>
 #include <bitset>
 #include <numeric>
-#include "define/binary_traits.h"
-#include "define/compound_file_binary_traits.h"
+#include "traits/binary_traits.h"
+#include "traits/compound_file_binary_traits.h"
 #include "io/binary_iostream.h"
 
 namespace filter

@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "define/binary_traits.h"
+#include "traits/binary_traits.h"
 
 #define DECLARE_BINARY_SERIALIZER(T) \
 friend bufferstream& operator >> (bufferstream& , T& ); \
