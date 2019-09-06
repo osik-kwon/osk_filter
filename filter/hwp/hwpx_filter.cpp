@@ -12,6 +12,46 @@ namespace hwpx
 	typedef xml_traits::izstream_t izstream_t;
 	typedef xml_traits::ozstream_t ozstream_t;
 
+	struct extract_texts_t : pugi::xml_tree_walker
+	{
+		extract_texts_t()
+		{
+			section.resize(1); // IMPORTANT!
+		}
+		typedef filter_t::section_t section_t;
+		virtual bool for_each(pugi::xml_node& node)
+		{
+			auto name = std::string(node.name());
+			if (name == "hp:t")
+			{
+				std::string text(node.first_child().value());
+				if (!text.empty())
+				{
+					if (lookup_break())
+						section.emplace_back(std::move(to_wchar(text)));
+					else
+					{
+						section.back() += to_wchar(text);
+					}
+				}
+			}
+			else if (name == "hp:p")
+			{
+				section.back().push_back(L'\n'); // TODO: normalize
+			}
+			return true;
+		}
+
+		bool lookup_break() const {
+			if (!section.empty() && !section.back().empty())
+			{
+				return section.back().back() == L'\n';
+			}
+			return false;
+		}
+		section_t section;
+	};
+
 	filter_t::filter_t()
 	{}
 
@@ -23,21 +63,16 @@ namespace hwpx
 			sections.resize(1);
 			consumer_t consumer;
 			consumer.open(path_t(path));
+
+			extract_texts_t extract_texts;
 			for (auto& name : consumer.get_names())
 			{
 				auto document = consumer.get_part(name);
 				if (!document)
 					continue;
-				const std::string query = "//hp:t[text()]"; // hwpx
-				pugi::xpath_node_set texts = document->select_nodes(query.c_str());
-				for (pugi::xpath_node_set::const_iterator it = texts.begin(); it != texts.end(); ++it)
-				{
-					auto name = it->node().name();
-					std::string text(it->node().first_child().value());
-					if (!text.empty())
-						sections[0].emplace_back(std::move( to_wchar(text) ));
-				}
+				document->traverse(extract_texts);
 			}
+			sections[0] = std::move(extract_texts.section);
 			return sections;
 		}
 		catch (const std::exception& e)
