@@ -1,6 +1,7 @@
 #include "hwp/hwp50_filter.h"
 #include "hwp/hwp30_filter.h"
 #include "hwp/hwp30_syntax.h"
+#include "hwp/hwpx_filter.h"
 #include "locale/charset_encoder.h"
 
 void print(const filter::hwp50::filter_t::sections_t& sections)
@@ -95,17 +96,16 @@ void test_hwp30()
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
 }
 
-
-int main()
+void test_hwpx()
 {
-	test_decompress_save();
-	test_extract_all_texts();
-	test_replace_privacy();
-	test_hwp30();
-	return 0;
+	typedef filter::hwpx::filter_t filter_t;
+	{
+		filter_t filter;
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
+	}
 }
 
-/*
+
 #include <iostream>
 #include <xlnt/xlnt.hpp>
 
@@ -173,11 +173,12 @@ void test_opc(const xlnt::path& open_path, const xlnt::path& save_path)
 	ostream.close();
 }
 
+
 int main()
 {
 	try
 	{
-		test_opc(xlnt::path("d:/filter/simple.docx"), xlnt::path("d:/filter/simple.docx.docx"));
+		//test_opc(xlnt::path("d:/filter/simple.docx"), xlnt::path("d:/filter/simple.docx.docx"));
 		//test_opc(xlnt::path("d:/filter/simple.hwpx"), xlnt::path("d:/filter/simple.hwpx.hwpx"));
 
 		//xlnt::workbook wb(xlnt::path("d:/filter/sample.xlsx"));
@@ -193,6 +194,11 @@ int main()
 	{
 		std::cout << e.what() << std::endl;
 	}
+
+	test_hwpx();
+	//test_decompress_save();
+	//test_extract_all_texts();
+	//test_replace_privacy();
+	//test_hwp30();
 	return 0;
 }
-*/

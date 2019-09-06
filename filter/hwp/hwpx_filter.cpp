@@ -1,6 +1,7 @@
 #include <filter_pch.h>
 #include <hwp/hwpx_filter.h>
 #include <xlnt/detail/serialization/open_stream.hpp>
+#include "locale/charset_encoder.h"
 
 namespace filter
 {
@@ -19,11 +20,24 @@ namespace hwpx
 		try
 		{
 			sections_t sections;
+			sections.resize(1);
 			consumer_t consumer;
 			consumer.open(path_t(path));
-
-
-
+			for (auto& name : consumer.get_names())
+			{
+				auto document = consumer.get_part(name);
+				if (!document)
+					continue;
+				const std::string query = "//hp:t[text()]"; // hwpx
+				pugi::xpath_node_set texts = document->select_nodes(query.c_str());
+				for (pugi::xpath_node_set::const_iterator it = texts.begin(); it != texts.end(); ++it)
+				{
+					auto name = it->node().name();
+					std::string text(it->node().first_child().value());
+					if (!text.empty())
+						sections[0].emplace_back(std::move( to_wchar(text) ));
+				}
+			}
 			return sections;
 		}
 		catch (const std::exception& e)
@@ -38,7 +52,6 @@ namespace hwpx
 
 	std::unique_ptr<izstream_t> consumer_t::open_package(const path_t& path)
 	{
-		std::ifstream source;
 		xlnt::detail::open_stream(source, path.string());
 		if (!source.good())
 			throw std::runtime_error("file not found : " + path.string());
@@ -59,8 +72,13 @@ namespace hwpx
 
 	void consumer_t::load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream)
 	{
-		auto document = extract_part(path, izstream);
-		parts.emplace(std::move(path.string()), std::move(document));
+		try
+		{
+			auto document = extract_part(path, izstream);
+			parts.emplace(std::move(path.string()), std::move(document));
+		}
+		catch (const std::exception&)
+		{}
 	}
 
 	void consumer_t::open(const path_t& path)
