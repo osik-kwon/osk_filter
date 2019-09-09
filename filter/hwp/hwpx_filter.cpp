@@ -17,77 +17,200 @@ namespace hwpx
 
 	struct extract_texts_t : pugi::xml_tree_walker
 	{
-		extract_texts_t()
-		{
-			section.resize(1); // IMPORTANT!
-		}
+		extract_texts_t();
 		typedef filter_t::section_t section_t;
 		typedef int depth_t;
 		std::map< depth_t, std::reference_wrapper<pugi::xml_node> > para_nodes;
 
-		virtual bool for_each(pugi::xml_node& node)
-		{
-			end_element();
-			auto name = std::string(node.name());
-			if (name == "hp:t")
-			{
-				std::string text(node.first_child().value());
-				if (!text.empty())
-				{
-					if (lookup_break())
-						section.emplace_back(std::move(to_wchar(text)));
-					else
-					{
-						section.back() += to_wchar(text);
-					}
-				}
-			}
-			else if (name == "hp:p")
-			{
-				if( para_nodes.find(depth()) != para_nodes.end() )
-					throw std::runtime_error("invalid para end");
-				para_nodes.insert( std::make_pair(depth(), std::ref(node) ));
-			}
-			return true;
-		}
+		virtual bool for_each(pugi::xml_node& node);
 		section_t section;
 	private:
-		void end_element()
+		void end_element();
+		bool lookup_break() const;
+	};
+
+	extract_texts_t::extract_texts_t()
+	{
+		section.resize(1); // IMPORTANT!
+	}
+
+	bool extract_texts_t::for_each(pugi::xml_node& node)
+	{
+		end_element();
+		auto name = std::string(node.name());
+		if (name == "hp:t")
 		{
-			if (!para_nodes.empty())
+			std::string text(node.first_child().value());
+			if (!text.empty())
 			{
-				auto cur = depth();
-				auto upper = para_nodes.upper_bound(cur);
-				if (upper == para_nodes.end())
-					upper = para_nodes.find(cur);
-				while (upper != para_nodes.end())
+				if (lookup_break())
+					section.emplace_back(std::move(to_wchar(text)));
+				else
 				{
-					if (upper != para_nodes.end())
-					{
-						upper = para_nodes.erase(upper);
-						section.back().push_back(L'\n'); // TODO: normalize
-					}
-					else
-						++upper;
+					section.back() += to_wchar(text);
 				}
 			}
 		}
-
-		bool lookup_break() const
+		else if (name == "hp:p")
 		{
-			if (!section.empty() && !section.back().empty())
-			{
-				return section.back().back() == L'\n';
-			}
-			return false;
+			if (para_nodes.find(depth()) != para_nodes.end())
+				throw std::runtime_error("invalid para end");
+			para_nodes.insert(std::make_pair(depth(), std::ref(node)));
 		}
+		return true;
+	}
+
+	void extract_texts_t::end_element()
+	{
+		if (!para_nodes.empty())
+		{
+			auto cur = depth();
+			auto upper = para_nodes.upper_bound(cur);
+			if (upper == para_nodes.end())
+				upper = para_nodes.find(cur);
+			while (upper != para_nodes.end())
+			{
+				if (upper != para_nodes.end())
+				{
+					upper = para_nodes.erase(upper);
+					section.back().push_back(L'\n'); // TODO: normalize
+				}
+				else
+					++upper;
+			}
+		}
+	}
+
+	bool extract_texts_t::lookup_break() const
+	{
+		if (!section.empty() && !section.back().empty())
+		{
+			return section.back().back() == L'\n';
+		}
+		return false;
+	}
+
+	struct replace_texts_t : pugi::xml_tree_walker
+	{
+		replace_texts_t(const std::wregex& pattern, char16_t replace_dest);
+		typedef filter_t::section_t section_t;
+		typedef int depth_t;
+		std::map< depth_t, std::reference_wrapper<pugi::xml_node> > para_nodes;
+		std::vector< std::reference_wrapper<pugi::xml_node> > text_nodes;
+
+		virtual bool for_each(pugi::xml_node& node);
+		section_t section;
+	private:
+		void end_element();
+		bool lookup_break() const;
+
+		std::wregex pattern;
+		char16_t replace_dest;
 	};
+
+	replace_texts_t::replace_texts_t(const std::wregex& pattern, char16_t replace_dest) : pattern(pattern), replace_dest(replace_dest)
+	{
+		section.resize(1); // IMPORTANT!
+	}
+
+	bool replace_texts_t::for_each(pugi::xml_node& node)
+	{
+		end_element();
+		auto name = std::string(node.name());
+		if (name == "hp:t")
+		{
+			std::string text(node.first_child().value());
+			if (!text.empty())
+			{		
+				std::wstring texts = to_wchar(text);
+				std::match_results<std::wstring::iterator> results;
+				auto begin = texts.begin();
+				while (std::regex_search(begin, texts.end(), results, pattern))
+				{
+					for (auto i = results[0].first; i != results[0].second; ++i)
+					{
+						*i = replace_dest;
+					}
+					begin += results.position() + results.length();
+				}
+				node.first_child().set_value(to_utf8(texts).c_str());
+
+				text_nodes.push_back(node);
+				if (lookup_break())
+					section.emplace_back(std::move(to_wchar(text)));
+				else
+				{
+					section.back() += to_wchar(text);
+				}
+			}
+		}
+		else if (name == "hp:p")
+		{
+			if (para_nodes.find(depth()) != para_nodes.end())
+				throw std::runtime_error("invalid para end");
+			para_nodes.insert(std::make_pair(depth(), std::ref(node)));
+		}
+		return true;
+	}
+
+	void replace_texts_t::end_element()
+	{
+		if (!para_nodes.empty())
+		{
+			auto cur = depth();
+			auto upper = para_nodes.upper_bound(cur);
+			if (upper == para_nodes.end())
+				upper = para_nodes.find(cur);
+			while (upper != para_nodes.end())
+			{
+				if (upper != para_nodes.end())
+				{
+					upper = para_nodes.erase(upper);
+					section.back().push_back(L'\n'); // TODO: normalize
+				}
+				else
+					++upper;
+			}
+		}
+	}
+
+	bool replace_texts_t::lookup_break() const
+	{
+		if (!section.empty() && !section.back().empty())
+		{
+			return section.back().back() == L'\n';
+		}
+		return false;
+	}
 
 	filter_t::filter_t()
 	{}
 
 	std::regex filter_t::section_name_regex() const {
 		return std::regex("Contents/section\\d*.xml");
+	}
+
+	void filter_t::replace_privacy(const std::wregex& pattern, char16_t replace_dest, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			const std::regex regex = section_name_regex();
+			replace_texts_t replace_texts(pattern, replace_dest);
+			for (auto& name : consumer->get_names())
+			{
+				auto document = consumer->get_part(name);
+				if (!document)
+					continue;
+				if (std::regex_match(name.string(), regex))
+				{
+					document->traverse(replace_texts);
+				}
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 
 	filter_t::sections_t filter_t::extract_all_texts(const std::string& path)
@@ -105,11 +228,13 @@ namespace hwpx
 			{
 				auto document = consumer.get_part(name);
 				if (!document)
-					continue;			
-				if( std::regex_match(name.string(), regex) )
+					continue;
+				if (std::regex_match(name.string(), regex))
+				{
 					document->traverse(extract_texts);
+					sections.emplace_back(std::move(extract_texts.section));
+				}
 			}
-			sections[0] = std::move(extract_texts.section);
 			return sections;
 		}
 		catch (const std::exception& e)
@@ -214,8 +339,7 @@ namespace hwpx
 			auto part_doc = parts.find(file.string());
 			if (part_doc != parts.end())
 			{
-				std::ostream part_stream(nullptr);
-				part_stream.rdbuf(part_buf.get());
+				std::ostream part_stream(part_buf.get());
 				part_doc->second->save(part_stream, PUGIXML_TEXT("\t"), pugi::parse_default, pugi::xml_encoding::encoding_auto);
 			}
 

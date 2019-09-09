@@ -23,9 +23,12 @@ namespace hwpx
 		typedef std::vector<para_t> section_t;
 		typedef std::vector<section_t> sections_t;
 		filter_t();
-		sections_t extract_all_texts(const std::string& path);
+		
 		std::unique_ptr<consumer_t> open(const std::string& path);
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
+
+		sections_t extract_all_texts(const std::string& path);
+		void replace_privacy(const std::wregex& pattern, char16_t replace_dest, std::unique_ptr<consumer_t>& consumer);
 	private:
 		std::regex section_name_regex() const;
 	};

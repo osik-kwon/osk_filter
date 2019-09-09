@@ -99,7 +99,7 @@ void test_hwp30()
 void test_hwpx()
 {
 	typedef filter::hwpx::filter_t filter_t;
-	{
+	/*{
 		filter_t filter;
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
 		auto consumer = filter.open(to_utf8(u"d:/filter/hwpx.hwpx"));
@@ -107,6 +107,18 @@ void test_hwpx()
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.export.hwpx")));
 		//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
 		//print(filter.extract_all_texts(to_utf8(u"d:/filter/all_hwpx.hwpx")));
+	}
+	*/
+	// test_replace_privacy
+	{
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		filter_t filter;
+
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/privacy.hwpx")));
+		auto consumer = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
+		filter.replace_privacy(resident_registration_number, u'@', consumer);
+		filter.save(to_utf8(u"d:/filter/privacy.export.hwpx"), consumer);
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/privacy.export.hwpx")));
 	}
 }
 
