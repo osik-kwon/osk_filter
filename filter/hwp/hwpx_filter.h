@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <map>
+#include <regex>
 #include <string>
 #include "traits/xml_traits.h"
 
@@ -23,6 +24,7 @@ namespace hwpx
 		filter_t();
 		sections_t extract_all_texts(const std::string& path);
 	private:
+		std::regex section_name_regex() const;
 	};
 
 	class consumer_t

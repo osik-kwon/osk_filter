@@ -102,6 +102,7 @@ void test_hwpx()
 	{
 		filter_t filter;
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
+		//print(filter.extract_all_texts(to_utf8(u"d:/filter/all_hwpx.hwpx")));
 	}
 }
 

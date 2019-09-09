@@ -1,5 +1,7 @@
 #include <filter_pch.h>
-#include <hwp/hwpx_filter.h>
+#include "hwp/hwpx_filter.h"
+#include <functional>
+#include <map>
 #include <xlnt/detail/serialization/open_stream.hpp>
 #include "locale/charset_encoder.h"
 
@@ -19,8 +21,12 @@ namespace hwpx
 			section.resize(1); // IMPORTANT!
 		}
 		typedef filter_t::section_t section_t;
+		typedef int depth_t;
+		std::map< depth_t, std::reference_wrapper<pugi::xml_node> > para_nodes;
+
 		virtual bool for_each(pugi::xml_node& node)
 		{
+			end_element();
 			auto name = std::string(node.name());
 			if (name == "hp:t")
 			{
@@ -37,23 +43,51 @@ namespace hwpx
 			}
 			else if (name == "hp:p")
 			{
-				section.back().push_back(L'\n'); // TODO: normalize
+				if( para_nodes.find(depth()) != para_nodes.end() )
+					throw std::runtime_error("invalid para end");
+				para_nodes.insert( std::make_pair(depth(), std::ref(node) ));
 			}
 			return true;
 		}
+		section_t section;
+	private:
+		void end_element()
+		{
+			if (!para_nodes.empty())
+			{
+				auto cur = depth();
+				auto upper = para_nodes.upper_bound(cur);
+				if (upper == para_nodes.end())
+					upper = para_nodes.find(cur);
+				while (upper != para_nodes.end())
+				{
+					if (upper != para_nodes.end())
+					{
+						upper = para_nodes.erase(upper);
+						section.back().push_back(L'\n'); // TODO: normalize
+					}
+					else
+						++upper;
+				}
+			}
+		}
 
-		bool lookup_break() const {
+		bool lookup_break() const
+		{
 			if (!section.empty() && !section.back().empty())
 			{
 				return section.back().back() == L'\n';
 			}
 			return false;
 		}
-		section_t section;
 	};
 
 	filter_t::filter_t()
 	{}
+
+	std::regex filter_t::section_name_regex() const {
+		return std::regex("Contents/section\\d*.xml");
+	}
 
 	filter_t::sections_t filter_t::extract_all_texts(const std::string& path)
 	{
@@ -64,13 +98,15 @@ namespace hwpx
 			consumer_t consumer;
 			consumer.open(path_t(path));
 
+			const std::regex regex = section_name_regex();
 			extract_texts_t extract_texts;
 			for (auto& name : consumer.get_names())
 			{
 				auto document = consumer.get_part(name);
 				if (!document)
-					continue;
-				document->traverse(extract_texts);
+					continue;			
+				if( std::regex_match(name.string(), regex) )
+					document->traverse(extract_texts);
 			}
 			sections[0] = std::move(extract_texts.section);
 			return sections;
