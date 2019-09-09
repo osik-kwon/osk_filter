@@ -3,6 +3,7 @@
 #include <functional>
 #include <map>
 #include <xlnt/detail/serialization/open_stream.hpp>
+#include <xlnt/detail/serialization/vector_streambuf.hpp>
 #include "locale/charset_encoder.h"
 
 namespace filter
@@ -158,27 +159,31 @@ namespace hwpx
 		return std::make_unique<izstream_t>(source);
 	}
 
-	std::unique_ptr<xml_document_t> consumer_t::extract_part(const path_t& path, std::unique_ptr<izstream_t>& izstream)
+	void consumer_t::load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream)
 	{
 		auto stream_buf = izstream->open(path);
 		std::istream stream(stream_buf.get());
 
 		auto document = std::make_unique<xml_document_t>();
 		pugi::xml_parse_result result = document->load(stream, pugi::parse_default, pugi::xml_encoding::encoding_auto);
-		if (!result)
-			throw std::runtime_error("xml load fail : " + path.string());
-		return document;
-	}
-
-	void consumer_t::load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream)
-	{
-		try
+		if (result)
 		{
-			auto document = extract_part(path, izstream);
+			if (parts.find(path.string()) != parts.end())
+				throw std::runtime_error("invalid parts");
 			parts.emplace(std::move(path.string()), std::move(document));
 		}
-		catch (const std::exception&)
-		{}
+		else
+		{
+			if ( buffers.find(path.string() ) != buffers.end() )
+				throw std::runtime_error("invalid buffers buffer");
+
+			buffer_t buffer;
+			auto streambuf = izstream->open(path);
+			xlnt::detail::vector_ostreambuf ostreambuf(buffer);
+			std::ostream ostream(&ostreambuf);
+			ostream << streambuf.get();
+			buffers.emplace(std::move(path.string()), std::move(buffer));
+		}
 	}
 
 	void consumer_t::open(const path_t& path)
@@ -197,9 +202,7 @@ namespace hwpx
 	void producer_t::save(const path_t& path, std::unique_ptr<consumer_t>& consumer)
 	{
 		xlnt::detail::open_stream(dest, path.string());
-		std::unique_ptr<ozstream_t> archive;
-		archive.reset(new ozstream_t(dest));
-
+		std::unique_ptr<ozstream_t> archive(new ozstream_t(dest) );
 		auto& files = consumer->get_names();
 		for (auto file : files)
 		{
@@ -207,18 +210,23 @@ namespace hwpx
 			part_buf.reset();
 			part_buf = archive->open(file);
 
-			std::ostream part_stream(nullptr);
-			part_stream.rdbuf(part_buf.get());
-
 			auto& parts = consumer->get_parts();
 			auto part_doc = parts.find(file.string());
-			if (part_doc == parts.end())
-				continue;
-			part_doc->second->save(part_stream, PUGIXML_TEXT("\t"), pugi::parse_default, pugi::xml_encoding::encoding_auto);
-		}
+			if (part_doc != parts.end())
+			{
+				std::ostream part_stream(nullptr);
+				part_stream.rdbuf(part_buf.get());
+				part_doc->second->save(part_stream, PUGIXML_TEXT("\t"), pugi::parse_default, pugi::xml_encoding::encoding_auto);
+			}
 
-		archive.reset(nullptr);
-		dest.close();
+			auto& buffers = consumer->get_buffers();
+			auto part_buffer = buffers.find(file.string());
+			if (part_buffer != buffers.end())
+			{
+				xlnt::detail::vector_istreambuf buffer(part_buffer->second);
+				std::ostream(part_buf.get()) << &buffer;
+			}
+		}
 	}
 }
 }

@@ -38,12 +38,11 @@ namespace hwpx
 		typedef xml_traits::izstream_t izstream_t;
 
 		typedef std::map< std::string, std::unique_ptr<xml_document_t> > part_documents_t;
+		typedef std::vector< std::uint8_t > buffer_t;
+		typedef std::map< std::string, std::vector< std::uint8_t > > part_buffer_t;
 		typedef std::vector<path_t> part_names_t;
 		consumer_t();
 		void open(const path_t& path);
-		std::unique_ptr<izstream_t> open_package(const path_t& path);
-		std::unique_ptr<xml_document_t> extract_part(const path_t& path, std::unique_ptr<izstream_t>& izstream);
-
 		xml_document_t* get_part(const path_t& path)
 		{
 			auto part = parts.find(path.string());
@@ -51,18 +50,22 @@ namespace hwpx
 				return part->second.get();
 			return nullptr;
 		}
-
 		part_documents_t& get_parts() {
 			return parts;
+		}
+		part_buffer_t& get_buffers() {
+			return buffers;
 		}
 		part_names_t& get_names() {
 			return names;
 		}
 	private:
+		std::unique_ptr<izstream_t> open_package(const path_t& path);
 		void load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream);
 
 		std::ifstream source;
 		part_documents_t parts;
+		part_buffer_t buffers;
 		part_names_t names;
 	};
 
