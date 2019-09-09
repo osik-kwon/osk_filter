@@ -24,6 +24,8 @@ namespace hwpx
 
 		virtual bool for_each(pugi::xml_node& node);
 		section_t section;
+	protected:
+		virtual void replace_privacy(const std::string& text, pugi::xml_node& node){}
 	private:
 		void end_element();
 		bool lookup_break() const;
@@ -43,6 +45,7 @@ namespace hwpx
 			std::string text(node.first_child().value());
 			if (!text.empty())
 			{
+				replace_privacy(text, node);
 				if (lookup_break())
 					section.emplace_back(std::move(to_wchar(text)));
 				else
@@ -90,97 +93,34 @@ namespace hwpx
 		return false;
 	}
 
-	struct replace_texts_t : pugi::xml_tree_walker
+	struct replace_texts_t : extract_texts_t
 	{
 		replace_texts_t(const std::wregex& pattern, char16_t replace_dest);
-		typedef filter_t::section_t section_t;
-		typedef int depth_t;
-		std::map< depth_t, std::reference_wrapper<pugi::xml_node> > para_nodes;
-		std::vector< std::reference_wrapper<pugi::xml_node> > text_nodes;
-
-		virtual bool for_each(pugi::xml_node& node);
-		section_t section;
+	protected:
+		virtual void replace_privacy(const std::string& text, pugi::xml_node& node);
 	private:
-		void end_element();
-		bool lookup_break() const;
-
 		std::wregex pattern;
 		char16_t replace_dest;
 	};
 
-	replace_texts_t::replace_texts_t(const std::wregex& pattern, char16_t replace_dest) : pattern(pattern), replace_dest(replace_dest)
-	{
-		section.resize(1); // IMPORTANT!
-	}
+	replace_texts_t::replace_texts_t(const std::wregex& pattern, char16_t replace_dest)
+		: pattern(pattern), replace_dest(replace_dest)
+	{}
 
-	bool replace_texts_t::for_each(pugi::xml_node& node)
+	void replace_texts_t::replace_privacy(const std::string& text, pugi::xml_node& node)
 	{
-		end_element();
-		auto name = std::string(node.name());
-		if (name == "hp:t")
+		std::wstring texts = to_wchar(text);
+		std::match_results<std::wstring::iterator> results;
+		auto begin = texts.begin();
+		while (std::regex_search(begin, texts.end(), results, pattern))
 		{
-			std::string text(node.first_child().value());
-			if (!text.empty())
-			{		
-				std::wstring texts = to_wchar(text);
-				std::match_results<std::wstring::iterator> results;
-				auto begin = texts.begin();
-				while (std::regex_search(begin, texts.end(), results, pattern))
-				{
-					for (auto i = results[0].first; i != results[0].second; ++i)
-					{
-						*i = replace_dest;
-					}
-					begin += results.position() + results.length();
-				}
-				node.first_child().set_value(to_utf8(texts).c_str());
-
-				text_nodes.push_back(node);
-				if (lookup_break())
-					section.emplace_back(std::move(to_wchar(text)));
-				else
-				{
-					section.back() += to_wchar(text);
-				}
-			}
-		}
-		else if (name == "hp:p")
-		{
-			if (para_nodes.find(depth()) != para_nodes.end())
-				throw std::runtime_error("invalid para end");
-			para_nodes.insert(std::make_pair(depth(), std::ref(node)));
-		}
-		return true;
-	}
-
-	void replace_texts_t::end_element()
-	{
-		if (!para_nodes.empty())
-		{
-			auto cur = depth();
-			auto upper = para_nodes.upper_bound(cur);
-			if (upper == para_nodes.end())
-				upper = para_nodes.find(cur);
-			while (upper != para_nodes.end())
+			for (auto i = results[0].first; i != results[0].second; ++i)
 			{
-				if (upper != para_nodes.end())
-				{
-					upper = para_nodes.erase(upper);
-					section.back().push_back(L'\n'); // TODO: normalize
-				}
-				else
-					++upper;
+				*i = replace_dest;
 			}
+			begin += results.position() + results.length();
 		}
-	}
-
-	bool replace_texts_t::lookup_break() const
-	{
-		if (!section.empty() && !section.back().empty())
-		{
-			return section.back().back() == L'\n';
-		}
-		return false;
+		node.first_child().set_value(to_utf8(texts).c_str());
 	}
 
 	filter_t::filter_t()
