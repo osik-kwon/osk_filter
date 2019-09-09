@@ -101,7 +101,11 @@ void test_hwpx()
 	typedef filter::hwpx::filter_t filter_t;
 	{
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
+		//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
+		auto consumer = filter.open(to_utf8(u"d:/filter/hwpx.hwpx"));
+		filter.save(to_utf8(u"d:/filter/hwpx.export.hwpx"), consumer);
+		//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.export.hwpx")));
+		//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
 		//print(filter.extract_all_texts(to_utf8(u"d:/filter/all_hwpx.hwpx")));
 	}
 }

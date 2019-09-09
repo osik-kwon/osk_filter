@@ -10,6 +10,7 @@ namespace filter
 {
 namespace hwpx
 {
+	class consumer_t;
 	class filter_t
 	{
 	public:
@@ -23,6 +24,8 @@ namespace hwpx
 		typedef std::vector<section_t> sections_t;
 		filter_t();
 		sections_t extract_all_texts(const std::string& path);
+		std::unique_ptr<consumer_t> open(const std::string& path);
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
 	private:
 		std::regex section_name_regex() const;
 	};
@@ -70,7 +73,9 @@ namespace hwpx
 		typedef xml_traits::path_t path_t;
 		typedef xml_traits::ozstream_t ozstream_t;
 		producer_t();
+		void save(const path_t& path, std::unique_ptr<consumer_t>& consumer);
 	private:
+		std::ofstream dest;
 	};
 }
 }

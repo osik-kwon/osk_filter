@@ -118,6 +118,35 @@ namespace hwpx
 		return sections_t();
 	}
 
+	std::unique_ptr<consumer_t> filter_t::open(const std::string& path)
+	{
+		try
+		{
+			std::unique_ptr<consumer_t> consumer = std::make_unique<consumer_t>();
+			consumer->open(path_t(path));
+			return consumer;
+
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return std::make_unique<consumer_t>();
+	}
+
+	void filter_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			producer_t producer;
+			producer.save(path_t(path), consumer);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
 	consumer_t::consumer_t()
 	{}
 
@@ -164,5 +193,32 @@ namespace hwpx
 
 	producer_t::producer_t()
 	{}
+
+	void producer_t::save(const path_t& path, std::unique_ptr<consumer_t>& consumer)
+	{
+		xlnt::detail::open_stream(dest, path.string());
+		std::unique_ptr<ozstream_t> archive;
+		archive.reset(new ozstream_t(dest));
+
+		auto& files = consumer->get_names();
+		for (auto file : files)
+		{
+			std::unique_ptr<std::streambuf> part_buf;
+			part_buf.reset();
+			part_buf = archive->open(file);
+
+			std::ostream part_stream(nullptr);
+			part_stream.rdbuf(part_buf.get());
+
+			auto& parts = consumer->get_parts();
+			auto part_doc = parts.find(file.string());
+			if (part_doc == parts.end())
+				continue;
+			part_doc->second->save(part_stream, PUGIXML_TEXT("\t"), pugi::parse_default, pugi::xml_encoding::encoding_auto);
+		}
+
+		archive.reset(nullptr);
+		dest.close();
+	}
 }
 }
