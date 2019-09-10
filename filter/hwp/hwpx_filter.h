@@ -39,11 +39,10 @@ namespace hwpx
 		typedef xml_traits::xml_document_t xml_document_t;
 		typedef xml_traits::path_t path_t;
 		typedef xml_traits::izstream_t izstream_t;
-
-		typedef std::map< std::string, std::unique_ptr<xml_document_t> > part_documents_t;
-		typedef std::vector< std::uint8_t > buffer_t;
-		typedef std::map< std::string, std::vector< std::uint8_t > > part_buffer_t;
-		typedef std::vector<path_t> part_names_t;
+		typedef xml_traits::part_documents_t part_documents_t;
+		typedef xml_traits::buffer_t buffer_t;
+		typedef xml_traits::part_buffer_t part_buffer_t;
+		typedef xml_traits::part_names_t part_names_t;
 		consumer_t();
 		void open(const path_t& path);
 		xml_document_t* get_part(const path_t& path)

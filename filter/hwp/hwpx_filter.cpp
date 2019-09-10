@@ -27,7 +27,7 @@ namespace hwpx
 	protected:
 		virtual void replace_privacy(const std::string& text, pugi::xml_node& node){}
 	private:
-		void end_element();
+		void end_paragraph_element();
 		bool lookup_break() const;
 	};
 
@@ -38,7 +38,7 @@ namespace hwpx
 
 	bool extract_texts_t::for_each(pugi::xml_node& node)
 	{
-		end_element();
+		end_paragraph_element();
 		auto name = std::string(node.name());
 		if (name == "hp:t")
 		{
@@ -63,7 +63,7 @@ namespace hwpx
 		return true;
 	}
 
-	void extract_texts_t::end_element()
+	void extract_texts_t::end_paragraph_element()
 	{
 		if (!para_nodes.empty())
 		{
