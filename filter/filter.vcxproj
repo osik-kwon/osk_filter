@@ -170,6 +170,7 @@
     <ClCompile Include="hwp\hwpx_filter.cpp" />
     <ClCompile Include="io\binary_iostream.cpp" />
     <ClCompile Include="io\compound_file_binary.cpp" />
+    <ClCompile Include="io\open_package_conventions.cpp" />
     <ClCompile Include="io\zlib.cpp" />
     <ClCompile Include="locale\charset_encoder.cpp" />
     <ClCompile Include="locale\hchar_converter.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="io\binary_iostream.h" />
     <ClInclude Include="io\compound_file_binary.h" />
     <ClInclude Include="io\endianness.h" />
+    <ClInclude Include="io\open_package_conventions.h" />
     <ClInclude Include="io\zlib.h" />
     <ClInclude Include="locale\charset_encoder.h" />
     <ClInclude Include="locale\cp_utf16.hpp" />

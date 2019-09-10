@@ -2,6 +2,7 @@
 #include "hwp/hwp30_filter.h"
 #include "hwp/hwp30_syntax.h"
 #include "hwp/hwpx_filter.h"
+#include "io/open_package_conventions.h"
 #include "locale/charset_encoder.h"
 
 void print(const filter::hwp50::filter_t::sections_t& sections)
