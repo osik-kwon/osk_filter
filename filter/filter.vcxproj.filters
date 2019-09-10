@@ -22,6 +22,9 @@
     <Filter Include="traits">
       <UniqueIdentifier>{cb10ea69-7969-4329-9f10-6bfe23a758db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="editor">
+      <UniqueIdentifier>{1aa0040f-f087-41c0-a59b-4c1c6ebdcd86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -72,6 +75,21 @@
     </ClCompile>
     <ClCompile Include="hwp\hwpml_filter.cpp">
       <Filter>hwp</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\editor.cpp">
+      <Filter>editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\extract_texts.cpp">
+      <Filter>editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\search_texts.cpp">
+      <Filter>editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\replace_texts.cpp">
+      <Filter>editor</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\find_and_replace_strategy.cpp">
+      <Filter>editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +180,24 @@
     </ClInclude>
     <ClInclude Include="hwp\hwpml_filter.h">
       <Filter>hwp</Filter>
+    </ClInclude>
+    <ClInclude Include="traits\editor_traits.h">
+      <Filter>traits</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor.h">
+      <Filter>editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\extract_texts.h">
+      <Filter>editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\search_texts.h">
+      <Filter>editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\replace_texts.h">
+      <Filter>editor</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\find_and_replace_strategy.h">
+      <Filter>editor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
