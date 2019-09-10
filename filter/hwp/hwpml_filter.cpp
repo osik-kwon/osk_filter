@@ -121,9 +121,6 @@ namespace hml
 	filter_t::filter_t()
 	{}
 
-	filter_t::~filter_t()
-	{}
-
 	std::unique_ptr<xml_document_t> filter_t::open(const std::string& path)
 	{
 		try
@@ -165,8 +162,6 @@ namespace hml
 		try
 		{
 			sections_t sections;
-			sections.resize(1);
-
 			extract_texts_t extract_texts;
 			document->traverse(extract_texts);
 			sections.emplace_back(std::move(extract_texts.section));

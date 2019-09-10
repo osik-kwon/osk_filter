@@ -98,33 +98,6 @@ void test_hwp30()
 	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
 }
 
-void test_hwpx()
-{
-	typedef filter::hwpx::filter_t filter_t;
-	{
-		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
-		auto consumer = filter.open(to_utf8(u"d:/filter/hwpx.hwpx"));
-		filter.save(to_utf8(u"d:/filter/hwpx.export.hwpx"), consumer);
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.export.hwpx")));
-		//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwpx.hwpx")));
-		//print(filter.extract_all_texts(to_utf8(u"d:/filter/all_hwpx.hwpx")));
-	}
-	
-	// test_replace_privacy
-	{
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		filter_t filter;
-
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/privacy.hwpx")));
-		auto consumer = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
-		filter.replace_privacy(resident_registration_number, u'@', consumer);
-		filter.save(to_utf8(u"d:/filter/privacy.export.hwpx"), consumer);
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/privacy.export.hwpx")));
-	}
-}
-
-
 #include <iostream>
 #include <xlnt/xlnt.hpp>
 
@@ -201,7 +174,7 @@ void test_hwpml()
 		auto src = filter.open(to_utf8(u"d:/filter/hml.hml"));
 		print(filter.extract_all_texts(src));
 		filter.save(to_utf8(u"d:/filter/hml.export.hml"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hml.hml"));
+		auto dest = filter.open(to_utf8(u"d:/filter/hml.export.hml"));
 		print(filter.extract_all_texts(dest));
 	}
 	{
@@ -215,6 +188,32 @@ void test_hwpml()
 		filter.save(to_utf8(u"d:/filter/privacy.export.hml"), src);
 
 		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.hml"));
+		print(filter.extract_all_texts(dest));
+	}
+}
+
+void test_hwpx()
+{
+	typedef filter::hwpx::filter_t filter_t;
+	{
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwpx.hwpx"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hwpx.export.hwpx"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwpx.export.hwpx"));
+		print(filter.extract_all_texts(dest));
+	}
+	{
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		filter_t filter;
+
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
+		print(filter.extract_all_texts(src));
+
+		filter.replace_privacy(resident_registration_number, u'@', src);
+		filter.save(to_utf8(u"d:/filter/privacy.export.hwpx"), src);
+
+		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.hwpx"));
 		print(filter.extract_all_texts(dest));
 	}
 }
@@ -241,7 +240,7 @@ int main()
 	}
 
 	test_hwpml();
-	//test_hwpx();
+	test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();

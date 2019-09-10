@@ -19,7 +19,6 @@ namespace hml
 		typedef std::vector<para_t> section_t;
 		typedef std::vector<section_t> sections_t;
 		filter_t();
-		~filter_t();
 
 		std::unique_ptr<xml_document_t> open(const std::string& path);
 		void save(const std::string& path, std::unique_ptr<xml_document_t>& document);

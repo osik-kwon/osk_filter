@@ -125,9 +125,6 @@ namespace hwpx
 	filter_t::filter_t()
 	{}
 
-	filter_t::~filter_t()
-	{}
-
 	std::regex filter_t::section_name_regex() const {
 		return std::regex("Contents/section\\d*.xml");
 	}
@@ -155,20 +152,16 @@ namespace hwpx
 		}
 	}
 
-	filter_t::sections_t filter_t::extract_all_texts(const std::string& path)
+	filter_t::sections_t filter_t::extract_all_texts(std::unique_ptr<consumer_t>& consumer)
 	{
 		try
 		{
 			sections_t sections;
-			sections.resize(1);
-			consumer_t consumer;
-			consumer.open(path_t(path));
-
 			const std::regex regex = section_name_regex();
 			extract_texts_t extract_texts;
-			for (auto& name : consumer.get_names())
+			for (auto& name : consumer->get_names())
 			{
-				auto document = consumer.get_part(name);
+				auto document = consumer->get_part(name);
 				if (!document)
 					continue;
 				if (std::regex_match(name.string(), regex))
