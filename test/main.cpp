@@ -23,6 +23,20 @@ void print(const filter::hwp50::filter_t::sections_t& sections)
 	}
 }
 
+void print(const filter::hwp50::filter_t::section_t& section)
+{
+	setlocale(LC_ALL, "korean");
+	for (auto& para : section)
+	{
+		if (!para.empty() && para.size() != 1)
+		{
+			std::wcout << para;
+			if (std::wcout.bad())
+				std::wcout.clear();
+		}
+	}
+}
+
 void test_decompress_save()
 {
 	filter::hwp50::filter_t filter;
@@ -171,6 +185,14 @@ void test_hwpml()
 	typedef filter::hml::filter_t filter_t;
 	{
 		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.hml"));
+		print(filter.extract_all_texts(src));
+
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy(resident_registration_number, src));
+	}
+	{
+		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hml.hml"));
 		print(filter.extract_all_texts(src));
 		filter.save(to_utf8(u"d:/filter/hml.export.hml"), src);
@@ -240,7 +262,7 @@ int main()
 	}
 
 	test_hwpml();
-	test_hwpx();
+	//test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();

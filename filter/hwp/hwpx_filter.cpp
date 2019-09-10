@@ -19,7 +19,7 @@ namespace hwpx
 		extract_texts_t();
 		typedef filter_t::section_t section_t;
 		typedef int depth_t;
-		std::map< depth_t, std::reference_wrapper<pugi::xml_node> > para_nodes;
+		std::map< depth_t, pugi::xml_node > para_nodes;
 
 		virtual bool for_each(pugi::xml_node& node);
 		section_t section;
@@ -57,7 +57,7 @@ namespace hwpx
 		{
 			if (para_nodes.find(depth()) != para_nodes.end())
 				throw std::runtime_error("invalid para end");
-			para_nodes.insert(std::make_pair(depth(), std::ref(node)));
+			para_nodes.insert(std::make_pair(depth(), node));
 		}
 		return true;
 	}

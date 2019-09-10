@@ -24,8 +24,11 @@ namespace hml
 		void save(const std::string& path, std::unique_ptr<xml_document_t>& document);
 
 		sections_t extract_all_texts(std::unique_ptr<xml_document_t>& document);
-		void replace_privacy(const std::wregex& pattern, char16_t replace_dest, std::unique_ptr<xml_document_t>& document);
+		void replace_privacy(const std::wregex& pattern, char16_t replacement, std::unique_ptr<xml_document_t>& document);
+		section_t search_privacy(const std::wregex& pattern, std::unique_ptr<xml_document_t>& document);
 	private:
+		std::string text_tag_name() const;
+		std::string para_tag_name() const;
 	};
 }
 }
