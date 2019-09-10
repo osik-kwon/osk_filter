@@ -17,20 +17,31 @@ namespace xml
 		para_tag = para;
 		return *this;
 	}
+
 	editor_t& editor_t::find(const rules_t& that)
 	{
 		rules = that;
 		return *this;
 	}
+
 	editor_t& editor_t::replace(char16_t that)
 	{
 		replacement = that;
 		return *this;
 	}
+
 	editor_t& editor_t::finalize(std::unique_ptr<xml_document_t>& document)
+	{
+		finalize(document.get());
+		return *this;
+	}
+
+	editor_t& editor_t::finalize(xml_document_t* document)
 	{
 		try
 		{
+			if(!document)
+				return *this;
 			strategy = std::make_unique<extract_texts_t>(text_tag, para_tag);
 			for (auto& rule : rules)
 			{

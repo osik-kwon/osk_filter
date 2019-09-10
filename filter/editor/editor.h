@@ -25,6 +25,7 @@ namespace xml
 		editor_t& find(const rules_t& rules);
 		editor_t& replace(char16_t replacement = u'*');
 		editor_t& finalize(std::unique_ptr<xml_document_t>& document);
+		editor_t& finalize(xml_document_t* document);
 
 		section_t get_extract_result();
 		sections_t get_find_result();

@@ -232,7 +232,7 @@ void test_hwpx()
 		auto src = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
 		print(filter.extract_all_texts(src));
 
-		filter.replace_privacy(resident_registration_number, u'@', src);
+		filter.replace_privacy({ resident_registration_number }, u'@', src);
 		filter.save(to_utf8(u"d:/filter/privacy.export.hwpx"), src);
 
 		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.hwpx"));
@@ -262,7 +262,7 @@ int main()
 	}
 
 	test_hwpml();
-	//test_hwpx();
+	test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();

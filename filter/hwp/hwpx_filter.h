@@ -5,6 +5,7 @@
 #include <regex>
 #include <string>
 #include "traits/xml_traits.h"
+#include "traits/editor_traits.h"
 
 namespace filter {
 namespace opc {
@@ -25,17 +26,21 @@ namespace hwpx
 		typedef xml_traits::path_t path_t;
 		typedef xml_traits::izstream_t izstream_t;
 		typedef xml_traits::ozstream_t ozstream_t;
+		typedef editor_traits::para_t para_t;
+		typedef editor_traits::section_t section_t;
+		typedef editor_traits::sections_t sections_t;
+		typedef editor_traits::rule_t rule_t;
+		typedef editor_traits::rules_t rules_t;
 
-		typedef std::wstring para_t;
-		typedef std::vector<para_t> section_t;
-		typedef std::vector<section_t> sections_t;
 		filter_t();
 		std::unique_ptr<consumer_t> open(const std::string& path);
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
 
 		sections_t extract_all_texts(std::unique_ptr<consumer_t>& consumer);
-		void replace_privacy(const std::wregex& pattern, char16_t replace_dest, std::unique_ptr<consumer_t>& consumer);
+		void replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<consumer_t>& consumer);
 	private:
+		std::string text_tag_name() const;
+		std::string para_tag_name() const;
 		std::regex section_name_regex() const;
 	};
 }
