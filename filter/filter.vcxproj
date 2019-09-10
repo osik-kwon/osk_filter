@@ -167,6 +167,7 @@
     <ClCompile Include="hwp\hwp30_syntax.cpp" />
     <ClCompile Include="hwp\hwp50_filter.cpp" />
     <ClCompile Include="hwp\hwp50_syntax.cpp" />
+    <ClCompile Include="hwp\hwpml_filter.cpp" />
     <ClCompile Include="hwp\hwpx_filter.cpp" />
     <ClCompile Include="io\binary_iostream.cpp" />
     <ClCompile Include="io\compound_file_binary.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="hwp\hwp30_syntax.h" />
     <ClInclude Include="hwp\hwp50_filter.h" />
     <ClInclude Include="hwp\hwp50_syntax.h" />
+    <ClInclude Include="hwp\hwpml_filter.h" />
     <ClInclude Include="hwp\hwpx_filter.h" />
     <ClInclude Include="io\binary_iostream.h" />
     <ClInclude Include="io\compound_file_binary.h" />

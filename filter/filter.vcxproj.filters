@@ -70,6 +70,9 @@
     <ClCompile Include="io\open_package_conventions.cpp">
       <Filter>io</Filter>
     </ClCompile>
+    <ClCompile Include="hwp\hwpml_filter.cpp">
+      <Filter>hwp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -156,6 +159,9 @@
     </ClInclude>
     <ClInclude Include="io\open_package_conventions.h">
       <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="hwp\hwpml_filter.h">
+      <Filter>hwp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

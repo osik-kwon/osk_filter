@@ -2,6 +2,7 @@
 #include "hwp/hwp30_filter.h"
 #include "hwp/hwp30_syntax.h"
 #include "hwp/hwpx_filter.h"
+#include "hwp/hwpml_filter.h"
 #include "io/open_package_conventions.h"
 #include "locale/charset_encoder.h"
 
@@ -192,6 +193,32 @@ void test_opc(const xlnt::path& open_path, const xlnt::path& save_path)
 }
 
 
+void test_hwpml()
+{
+	typedef filter::hml::filter_t filter_t;
+	{
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hml.hml"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hml.export.hml"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hml.hml"));
+		print(filter.extract_all_texts(dest));
+	}
+	{
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		filter_t filter;
+
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.hml"));
+		print(filter.extract_all_texts(src));
+
+		filter.replace_privacy(resident_registration_number, u'@', src);
+		filter.save(to_utf8(u"d:/filter/privacy.export.hml"), src);
+
+		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.hml"));
+		print(filter.extract_all_texts(dest));
+	}
+}
+
 int main()
 {
 	try
@@ -213,7 +240,8 @@ int main()
 		std::cout << e.what() << std::endl;
 	}
 
-	test_hwpx();
+	test_hwpml();
+	//test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();
