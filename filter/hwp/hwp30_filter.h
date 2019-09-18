@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "traits/binary_traits.h"
+#include "traits/editor_traits.h"
 
 namespace filter
 {
@@ -16,9 +17,9 @@ namespace hwp30
 		typedef binary_traits::buffer_t buffer_t;
 		typedef binary_traits::bufferstream bufferstream;
 		typedef binary_traits::streamsize streamsize;
-		typedef std::wstring para_t;
-		typedef std::vector<para_t> section_t;
-		typedef std::vector<section_t> sections_t;
+		typedef editor_traits::para_t para_t;
+		typedef editor_traits::section_t section_t;
+		typedef editor_traits::sections_t sections_t;
 		filter_t() = default;
 
 		sections_t extract_all_texts(const std::string& import_path);

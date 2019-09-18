@@ -240,6 +240,19 @@ void test_hwpx()
 	}
 }
 
+void test_hwp50()
+{
+	typedef filter::hwp50::filter_t filter_t;
+	{
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwp50.hwp"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hwp50.export.hwp"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp50.export.hwp"));
+		print(filter.extract_all_texts(dest));
+	}
+}
+
 int main()
 {
 	try
@@ -261,8 +274,9 @@ int main()
 		std::cout << e.what() << std::endl;
 	}
 
-	test_hwpml();
-	test_hwpx();
+	test_hwp50();
+	//test_hwpml();
+	//test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();

@@ -2,6 +2,8 @@
 #include <string>
 #include <bitset>
 #include <numeric>
+#include <map>
+#include <memory>
 #include "traits/binary_traits.h"
 #include "traits/compound_file_binary_traits.h"
 #include "io/binary_iostream.h"
@@ -133,6 +135,40 @@ namespace hwp50
 
 		size_t body_size;
 		std::vector<control_t> controls;
+	};
+
+	class filter_t;
+	class producer_t;
+	class consumer_t
+	{
+	public:
+		friend class producer_t;
+		friend class filter_t;
+		typedef cfb_traits::storage_t storage_t;
+		typedef cfb_traits::stream_t stream_t;
+		consumer_t();
+		void open(const std::string& path);
+	private:
+		std::string file_header_entry() const;
+		file_header_t read_file_header(std::unique_ptr<storage_t>& storage) const;
+		file_header_t read_file_header() const;
+		bool can_compress(const std::string& entry) const;
+		bool can_crypt(const std::string& entry) const;
+		bool has_paragraph(const std::string& entry) const;
+
+		const std::regex paragraph_rule;
+		const std::regex compress_rule;
+		const std::regex crypt_rule;
+		std::map<std::string, buffer_t> streams;
+	};
+
+	class producer_t
+	{
+	public:
+		producer_t() = default;
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
+	private:
+		
 	};
 
 	struct syntax_t

@@ -259,5 +259,71 @@ namespace hwp50
 		}
 		return section;
 	}
+
+	std::unique_ptr<consumer_t> filter_t::open(const std::string& path)
+	{
+		try
+		{
+			std::unique_ptr<consumer_t> consumer = std::make_unique<consumer_t>();
+			consumer->open(path);
+			return consumer;
+
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return std::make_unique<consumer_t>();
+	}
+
+	void filter_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			producer_t producer;
+			producer.save(path, consumer);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	filter_t::sections_t filter_t::extract_all_texts(std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			sections_t sections;
+			auto header = consumer->read_file_header();
+			for (auto entry : consumer->streams)
+			{
+				if (!consumer->has_paragraph(entry.first))
+					continue;
+				auto& section = entry.second;
+				bufferstream stream(&section[0], section.size());
+				auto records = read_records(stream);
+				auto section_text = extract_section_text(records);
+				sections.push_back(std::move(section_text));
+			}
+			return sections;
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return sections_t();
+	}
+
+	void filter_t::replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			// TODO:
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
 }
 }

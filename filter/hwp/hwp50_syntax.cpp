@@ -1,6 +1,9 @@
 #include "filter_pch.h"
+#include <regex>
 #include "hwp/hwp50_syntax.h"
 #include "cryptor/cryptor.h"
+#include "io/compound_file_binary.h"
+#include "io/zlib.h"
 
 namespace filter
 {
@@ -183,6 +186,119 @@ namespace hwp50
 			}
 		}
 		return stream;
+	}
+
+	consumer_t::consumer_t() :
+		compress_rule("(/BodyText/|/ViewText/|/BinData/|/DocHistory/).+"),
+		crypt_rule("/ViewText/.+"),
+		paragraph_rule("(/BodyText/|/ViewText/).+") // TODO: verify DocHistory
+	{}
+
+	std::string consumer_t::file_header_entry() const {
+		return std::string("/FileHeader");
+	}
+
+	file_header_t consumer_t::read_file_header(std::unique_ptr<storage_t>& storage) const
+	{
+		buffer_t buffer = cfb_t::extract_stream(storage, "/FileHeader");
+		bufferstream stream(&buffer[0], buffer.size());
+
+		file_header_t file_header;
+		stream >> file_header;
+		return file_header;
+	}
+
+	file_header_t consumer_t::read_file_header() const
+	{
+		auto entry = streams.find(file_header_entry());
+		if (entry == streams.end())
+			throw std::runtime_error("file header not exist");
+		bufferstream stream(const_cast<char*>(&entry->second[0]), entry->second.size());
+		file_header_t header;
+		stream >> header;
+		return header;
+	}
+
+	bool consumer_t::can_compress(const std::string& entry) const
+	{
+		return std::regex_match(entry, compress_rule);
+	}
+
+	bool consumer_t::can_crypt(const std::string& entry) const
+	{
+		return std::regex_match(entry, crypt_rule);
+	}
+
+	bool consumer_t::has_paragraph(const std::string& entry) const
+	{
+		return std::regex_match(entry, paragraph_rule);
+	}
+
+	void consumer_t::open(const std::string& path)
+	{
+		try
+		{
+			auto storage = cfb_t::make_read_only_storage(path);
+			auto entries = cfb_t::make_full_entries(storage, "/");
+			auto header = read_file_header(storage);
+			for (auto& entry : entries)
+			{
+				auto plain = cfb_t::extract_stream(storage, entry);
+				if (header.options[file_header_t::distribution] && can_crypt(entry))
+				{
+					bufferstream stream(&plain[0], plain.size());
+					distribute_doc_data_record_t record;
+					stream >> record;
+					plain = std::move(record.body);
+				}
+				if (header.options[file_header_t::compressed] && can_compress(entry))
+					plain = hwp_zip::decompress(plain);
+
+				if (streams.find(entry) != streams.end())
+					throw std::runtime_error(entry + " stream already exist");
+				if(!plain.empty())
+					streams.emplace(std::move(entry), std::move(plain));
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			auto storage = cfb_t::make_writable_storage(path);
+			file_header_t header = consumer->read_file_header();
+
+			for (auto& entry : consumer->streams)
+			{
+				auto& name = entry.first;
+				auto& data = entry.second;
+				if ( header.options[file_header_t::distribution] && consumer->can_crypt(name) )
+				{
+					// TODO: implement
+					cfb_t::make_stream(storage, name,
+						(header.options[file_header_t::compressed] && consumer->can_compress(name)) ?
+						hwp_zip::compress_noexcept(data) : data
+					);
+				}
+				else
+				{
+					cfb_t::make_stream(storage, name,
+						(header.options[file_header_t::compressed] && consumer->can_compress(name)) ?
+						hwp_zip::compress_noexcept(data) : data
+					);
+				}		
+			}
+			storage->close();
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 }
 }
