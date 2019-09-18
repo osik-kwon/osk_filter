@@ -6,12 +6,7 @@
 #include <string>
 #include "traits/xml_traits.h"
 #include "traits/editor_traits.h"
-
-namespace filter {
-namespace opc {
-	class consumer_t;
-	class producer_t;
-}}
+#include "io/open_package_conventions.h"
 
 namespace filter
 {
