@@ -20,7 +20,7 @@ namespace xml
 		bool empty() const {
 			return results.empty();
 		}
-		const std::wregex& get_pattern() const {
+		const rule_t& get_pattern() const {
 			return pattern;
 		}
 		char16_t get_replacement() const {

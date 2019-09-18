@@ -137,6 +137,8 @@ namespace hwp30
 	filter_t::buffer_t filter_t::read_file(const std::string& path)
 	{
 		std::ifstream file(path, std::ios::binary);
+		if (file.fail())
+			throw std::runtime_error("file I/O error");
 		file.unsetf(std::ios::skipws);
 		file.seekg(0, std::ios::end);
 		std::streampos size = file.tellg();

@@ -23,8 +23,8 @@ namespace hwp50
 		typedef editor_traits::para_t para_t;
 		typedef editor_traits::section_t section_t;
 		typedef editor_traits::sections_t sections_t;
-		typedef std::wregex rule_t;
-		typedef std::vector<std::wregex> rules_t;
+		typedef editor_traits::rule_t rule_t;
+		typedef editor_traits::rules_t rules_t;
 
 		filter_t() = default;
 
@@ -32,18 +32,7 @@ namespace hwp50
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
 		sections_t extract_all_texts(std::unique_ptr<consumer_t>& consumer);
 		void replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<consumer_t>& consumer);
-
-		bool replace_privacy(const std::string& import_path, const std::string& export_path, const std::wregex& pattern, char16_t replace_dest);
-		sections_t extract_all_texts(const std::string& import_path);
-		bool decompress_save(const std::string& import_path, const std::string& export_path);
 	private:
-		file_header_t read_file_header(std::unique_ptr<storage_t>& storage);
-		void write_file_header(std::unique_ptr<storage_t>& storage, const file_header_t& file_header);
-		std::vector<record_t> read_records(bufferstream& stream);
-		void write_records(bufferstream& stream, const std::vector<record_t>& records);
-
-		para_t extract_para_text(bufferstream& stream, streamsize size);
-		section_t extract_section_text(std::vector<record_t>& records);
 	};
 }
 }

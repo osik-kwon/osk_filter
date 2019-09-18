@@ -152,15 +152,14 @@ namespace hwp50
 		bool has_paragraph(const std::string& entry) const;
 		std::vector<record_t> read_records(bufferstream& stream) const;
 		void write_records(bufferstream& stream, const std::vector<record_t>& records) const;
-
-		std::map<std::string, buffer_t>& get_streams() {
+		std::map<std::string, std::unique_ptr<buffer_t> >& get_streams() {
 			return streams;
 		}
 	private:
 		const std::regex paragraph_rule;
 		const std::regex compress_rule;
 		const std::regex crypt_rule;
-		std::map<std::string, buffer_t> streams;
+		std::map<std::string, std::unique_ptr<buffer_t> >streams;
 	};
 
 	class producer_t

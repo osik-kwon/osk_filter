@@ -218,6 +218,19 @@ void test_hwp50()
 		auto dest = filter.open(to_utf8(u"d:/filter/hwp50.export.hwp"));
 		print(filter.extract_all_texts(dest));
 	}
+	{
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		filter_t filter;
+
+		auto src = filter.open(to_utf8(u"d:/filter/privacy2.hwp"));
+		print(filter.extract_all_texts(src));
+
+		filter.replace_privacy({ resident_registration_number }, u'@', src);
+		filter.save(to_utf8(u"d:/filter/privacy2.export.hwp"), src);
+
+		auto dest = filter.open(to_utf8(u"d:/filter/privacy2.export.hwp"));
+		print(filter.extract_all_texts(dest));
+	}
 }
 
 int main()
@@ -242,8 +255,8 @@ int main()
 	}
 
 	test_hwp50();
-	test_hwpml();
-	test_hwpx();
+	//test_hwpml();
+	//test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();

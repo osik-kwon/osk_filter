@@ -213,7 +213,7 @@ namespace hwp50
 		auto entry = streams.find(file_header_entry());
 		if (entry == streams.end())
 			throw std::runtime_error("file header not exist");
-		bufferstream stream(const_cast<char*>(&entry->second[0]), entry->second.size());
+		bufferstream stream(const_cast<char*>(&entry->second->at(0)), entry->second->size());
 		file_header_t header;
 		stream >> header;
 		return header;
@@ -287,7 +287,7 @@ namespace hwp50
 				if (streams.find(entry) != streams.end())
 					throw std::runtime_error(entry + " stream already exist");
 				if(!plain.empty())
-					streams.emplace(std::move(entry), std::move(plain));
+					streams.emplace(std::move(entry), std::make_unique<buffer_t>(std::move(plain)));
 			}
 		}
 		catch (const std::exception& e)
@@ -312,14 +312,14 @@ namespace hwp50
 					// TODO: implement
 					cfb_t::make_stream(storage, name,
 						(header.options[file_header_t::compressed] && consumer->can_compress(name)) ?
-						hwp_zip::compress_noexcept(data) : data
+						hwp_zip::compress_noexcept(*data) : *data
 					);
 				}
 				else
 				{
 					cfb_t::make_stream(storage, name,
 						(header.options[file_header_t::compressed] && consumer->can_compress(name)) ?
-						hwp_zip::compress_noexcept(data) : data
+						hwp_zip::compress_noexcept(*data) : *data
 					);
 				}		
 			}

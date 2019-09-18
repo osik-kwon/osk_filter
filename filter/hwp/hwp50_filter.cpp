@@ -8,256 +8,323 @@ namespace filter
 {
 namespace hwp50
 {
-	bool filter_t::replace_privacy(const std::string& import_path, const std::string& export_path, const std::wregex& pattern, char16_t replace_dest)
+	class search_texts_t
 	{
-		try
-		{
-			std::unique_ptr<storage_t> import_storage = cfb_t::make_read_only_storage(import_path);
-			std::unique_ptr<storage_t> export_storage = cfb_t::make_writable_storage(export_path);
-			auto import_header = read_file_header(import_storage);
-			auto section_streams = cfb_t::make_full_entries(import_storage, 
-				import_header.options[file_header_t::distribution] ? syntax_t::viewtext_root() : syntax_t::section_root()
-			);
-			auto all_streams_except_sections = cfb_t::make_all_streams_except(import_storage, section_streams);
-			
-			cfb_t::copy_streams(import_storage, export_storage, all_streams_except_sections);
-			for (auto& section_stream : section_streams)
-			{
-				auto section = cfb_t::extract_stream(import_storage, section_stream);
-				if (import_header.options[file_header_t::distribution])
-				{
-					bufferstream stream(&section[0], section.size());
-					distribute_doc_data_record_t record;
-					stream >> record;
-					section = std::move(record.body);
-				}
-				if (import_header.options[file_header_t::compressed])
-					section = hwp_zip::decompress_noexcept(section);
+	public:
+		typedef editor_traits::para_t para_t;
+		typedef editor_traits::section_t section_t;
+		typedef editor_traits::rule_t rule_t;
+		typedef editor_traits::rule_string rule_string;
+		typedef std::pair< std::reference_wrapper<record_t>, section_t > result_t;
 
-				bufferstream records_stream(&section[0], section.size());
-				auto records = read_records(records_stream);
-				std::vector<std::reference_wrapper<record_t>> para_text_record;
-				std::for_each(records.begin(), records.end(), [&para_text_record](record_t& record) {
-					if (syntax_t::is_para_text(record.header.tag))
-						para_text_record.push_back(record);
-				});
-
-				for (auto record : para_text_record)
-				{
-					bufferstream para_text_stream(&record.get().body[0], record.get().header.body_size);
-					para_text_t para_texts(record.get().header.body_size);
-					para_text_stream >> para_texts;
-					for (auto& para_text : para_texts.controls)
-					{
-						if (para_text.type == para_text_t::is_char_control)
-						{
-							std::wstring texts;
-							std::copy(para_text.body.begin(), para_text.body.end(), std::back_inserter(texts));
-							std::match_results<std::wstring::iterator> results;
-							auto begin = texts.begin();
-							while (std::regex_search(begin, texts.end(), results, pattern))
-							{
-								for (auto i = results[0].first; i != results[0].second; ++i)
-								{
-									*i = replace_dest;
-								}
-								begin += results.position() + results.length();
-							}
-
-							para_text.body.clear();
-							std::copy(texts.begin(), texts.end(), std::back_inserter(para_text.body));
-						}
-					}
-					record.get().header.body_size = para_texts.size();
-					buffer_t write_record_buffer;
-					write_record_buffer.resize(record.get().header.body_size);
-					bufferstream para_text_export_stream(&write_record_buffer[0], write_record_buffer.size());
-					para_text_export_stream << para_texts;
-					record.get().body = std::move(write_record_buffer);
-				}
-
-				auto write_size = std::accumulate(records.begin(), records.end(), 0, [](size_t size, auto& record) {
-					return size + record.size(); });
-
-				buffer_t write_buffer;
-				write_buffer.resize(write_size);
-				bufferstream write_records_stream(&write_buffer[0], write_buffer.size());
-				write_records(write_records_stream, records);
-
-				if (!write_buffer.empty())
-				{
-					if (import_header.options[file_header_t::compressed])
-						write_buffer = hwp_zip::compress_noexcept(write_buffer);
-					cfb_t::make_stream(export_storage, section_stream, write_buffer);
-				}
-			}
-			export_storage->close();
-			return true;
+		search_texts_t(const rule_t& pattern, char16_t replacement);
+		section_t results_to_section() const;
+		void search(rule_string& texts, std::reference_wrapper<record_t>& record);
+		bool empty() const {
+			return results.empty();
 		}
-		catch (const std::exception& e)
-		{
-			std::cout << e.what() << std::endl;
+		const rule_t& get_pattern() const {
+			return pattern;
 		}
-		return false;
+		char16_t get_replacement() const {
+			return replacement;
+		}
+		const std::vector< result_t >& get_results() const {
+			return results;
+		}
+	private:
+		std::vector< result_t > results;
+		rule_t pattern;
+		char16_t replacement;
+	};
+
+	search_texts_t::search_texts_t(const rule_t& pattern, char16_t replacement)
+		: pattern(pattern), replacement(replacement)
+	{}
+
+	void search_texts_t::search(rule_string& texts, std::reference_wrapper<record_t>& record)
+	{
+		std::match_results<para_t::iterator> match;
+
+		section_t lists;
+		auto begin = texts.begin();
+		while (std::regex_search(begin, texts.end(), match, pattern))
+		{
+			begin += match.position() + match.length();
+			lists.push_back(match.str());
+		}
+		results.emplace_back(std::make_pair(record, lists));
 	}
 
-	filter_t::sections_t filter_t::extract_all_texts(const std::string& import_path)
-	{
-		try
-		{
-			sections_t sections;
-			std::unique_ptr<storage_t> import_storage = cfb_t::make_read_only_storage(import_path);
-			auto header = read_file_header(import_storage);
-			auto section_streams = cfb_t::make_full_entries(import_storage,
-				header.options[file_header_t::distribution] ? syntax_t::viewtext_root() : syntax_t::section_root() );
-
-			for (auto& section_stream : section_streams)
-			{
-				auto section = cfb_t::extract_stream(import_storage, section_stream);
-				if (header.options[file_header_t::distribution])
-				{
-					bufferstream stream(&section[0], section.size());
-					distribute_doc_data_record_t record;
-					stream >> record;
-					section = std::move( record.body );
-				}
-				if (header.options[file_header_t::compressed])
-				{
-					section = hwp_zip::decompress(section);
-				}
-
-				bufferstream stream(&section[0], section.size());
-				auto records = read_records(stream);
-				auto section_text = extract_section_text(records);
-				sections.push_back(std::move(section_text));
-			}
-			return sections;
-		}
-		catch (const std::exception& e)
-		{
-			std::cout << e.what() << std::endl;
-		}
-		return sections_t();
-	}
-
-	bool filter_t::decompress_save(const std::string& import_path, const std::string& export_path)
-	{
-		try
-		{
-			std::unique_ptr<storage_t> import_storage = cfb_t::make_read_only_storage(import_path);
-			std::unique_ptr<storage_t> export_storage = cfb_t::make_writable_storage(export_path);
-			auto all_streams_except_file_header = cfb_t::make_all_streams_except(import_storage, "/FileHeader");
-			auto import_header = read_file_header(import_storage);
-			auto export_header = import_header;
-			export_header.options[file_header_t::compressed] = false;
-			write_file_header(export_storage, export_header);
-
-			for (auto& stream : all_streams_except_file_header)
-			{
-				auto plain = cfb_t::extract_stream(import_storage, stream);
-				if (import_header.options[file_header_t::compressed])
-					plain = hwp_zip::decompress_noexcept(plain);
-				if (!plain.empty())
-					cfb_t::make_stream(export_storage, stream, plain);
-			}
-			export_storage->close();
-			return true;
-		}
-		catch (const std::exception& e)
-		{
-			std::cout << e.what() << std::endl;
-		}
-		return false;
-	}
-
-	file_header_t filter_t::read_file_header(std::unique_ptr<storage_t>& storage)
-	{
-		buffer_t buffer = cfb_t::extract_stream(storage, "/FileHeader");
-		bufferstream stream(&buffer[0], buffer.size());
-
-		file_header_t file_header;
-		stream >> file_header;
-		return file_header;
-	}
-
-	void filter_t::write_file_header(std::unique_ptr<storage_t>& storage, const file_header_t& file_header)
-	{
-		buffer_t buffer;
-		buffer.resize(file_header.size());
-		bufferstream stream(&buffer[0], buffer.size());
-		stream << file_header;
-		cfb_t::make_stream(storage, "/FileHeader", buffer);
-	}
-
-	std::vector<record_t> filter_t::read_records(bufferstream& stream)
-	{
-		std::vector<record_t> records;
-		stream.seekg(0);
-		try
-		{
-			do
-			{
-				record_t record;
-				stream >> record;
-				records.push_back(std::move(record));
-			} while (!stream.eof());
-		}
-		catch (const std::exception&)
-		{
-			if (stream.eof())
-				return records;
-			throw std::runtime_error("read records error");
-		}
-		return records;
-	}
-
-	void filter_t::write_records(bufferstream& stream, const std::vector<record_t>& records)
-	{
-		for (auto& record : records)
-		{
-			stream << record;
-		}
-	}
-
-	filter_t::para_t filter_t::extract_para_text(bufferstream& stream, streamsize size)
-	{
-		para_t texts;
-		const streamsize size_of_control = sizeof(syntax_t::control_t);
-		for (streamsize offset = 0; offset < size; offset += size_of_control)
-		{
-			syntax_t::control_t code = binary_io::read_uint16(stream);
-			if (syntax_t::is_char_control(code))
-			{
-				if (syntax_t::is_carriage_return(code))
-					texts.push_back(L'\n'); // TODO: normalize
-				else
-					texts.push_back(static_cast<para_t::value_type>(code));
-			}
-			else
-			{
-				if (syntax_t::is_tab(code))
-					texts.push_back(L'\t'); // TODO: normalize
-				auto inline_contol = binary_io::read(stream, syntax_t::sizeof_inline_control());
-				offset += syntax_t::sizeof_inline_control();
-			}
-		}
-		return texts;
-	}
-
-	filter_t::section_t filter_t::extract_section_text(std::vector<record_t>& records)
+	search_texts_t::section_t search_texts_t::results_to_section() const
 	{
 		section_t section;
+		for (auto& result : results)
+		{
+			section.reserve(section.size() + result.second.size());
+			std::copy(result.second.begin(), result.second.end(), std::back_inserter(section));
+		}
+		return section;
+	}
+
+	class replace_texts_t
+	{
+	public:
+		typedef editor_traits::para_t para_t;
+		typedef editor_traits::section_t section_t;
+		typedef editor_traits::rule_t rule_t;
+		typedef editor_traits::rule_string rule_string;
+		replace_texts_t();
+		static void replace(rule_string& texts, std::reference_wrapper<record_t>& record, const rule_t& pattern, char16_t replacement);
+	};
+
+	replace_texts_t::replace_texts_t()
+	{}
+
+	void replace_texts_t::replace(rule_string& texts, std::reference_wrapper<record_t>& record, const rule_t& pattern, char16_t replacement)
+	{
+		std::match_results<para_t::iterator> results;
+		auto begin = texts.begin();
+		while (std::regex_search(begin, texts.end(), results, pattern))
+		{
+			for (auto i = results[0].first; i != results[0].second; ++i)
+			{
+				*i = replacement;
+			}
+			begin += results.position() + results.length();
+		}
+	}
+
+	struct find_and_replace_strategy_t
+	{
+		typedef editor_traits::rule_string rule_string;
+		static void do_nothing(rule_string& texts, std::reference_wrapper<record_t>& record, std::vector<search_texts_t>& rules);
+		static void find_only(rule_string& texts, std::reference_wrapper<record_t>& record, std::vector<search_texts_t>& rules);
+		static void find_and_replace(rule_string& texts, std::reference_wrapper<record_t>& record, std::vector<search_texts_t>& rules);
+	};
+
+	void find_and_replace_strategy_t::do_nothing(rule_string& texts, std::reference_wrapper<record_t>& record, std::vector<search_texts_t>& rules)
+	{}
+
+	void find_and_replace_strategy_t::find_only(rule_string& texts, std::reference_wrapper<record_t>& record, std::vector<search_texts_t>& rules)
+	{
+		for (auto& rule : rules)
+			rule.search(texts, record);
+	}
+
+	void find_and_replace_strategy_t::find_and_replace(rule_string& texts, std::reference_wrapper<record_t>& record, std::vector<search_texts_t>& rules)
+	{
+		for (auto& rule : rules)
+		{
+			rule.search(texts, record);
+			if (!rule.empty())
+			{
+				replace_texts_t::replace(texts, record, rule.get_pattern(), rule.get_replacement());
+			}
+		}
+	}
+
+	class editor_t;
+	class extract_texts_t
+	{
+	public:
+		friend class editor_t;
+		typedef editor_traits::para_t para_t;
+		typedef editor_traits::section_t section_t;
+		typedef editor_traits::rule_t rule_t;
+		typedef editor_traits::rule_string rule_string;
+		typedef std::vector<std::reference_wrapper<record_t>> record_refs_t;
+		typedef std::function<void(rule_string&, std::reference_wrapper<record_t>&, std::vector<search_texts_t>&)> ruler_t;
+		extract_texts_t();
+		~extract_texts_t();
+		extract_texts_t& make_rule(const rule_t& pattern, char16_t replacement = u'*');
+		void change_rule(ruler_t that);
+		const std::vector<search_texts_t>& get_rules() const {
+			return rules;
+		}
+		void run(record_refs_t& record_refs);
+	private:
+		section_t section;
+		std::vector<search_texts_t> rules;
+		ruler_t ruler;
+	};
+
+	extract_texts_t::extract_texts_t() : ruler(&find_and_replace_strategy_t::do_nothing)
+	{
+		section.resize(1); // IMPORTANT!
+	}
+
+	extract_texts_t::~extract_texts_t()
+	{}
+
+	extract_texts_t& extract_texts_t::make_rule(const rule_t& pattern, char16_t replacement)
+	{
+		rules.emplace_back(search_texts_t(pattern, replacement));
+		return *this;
+	}
+
+	void extract_texts_t::change_rule(ruler_t that) {
+		ruler = that;
+	}
+
+	void extract_texts_t::run(record_refs_t& record_refs)
+	{
+		for (auto record : record_refs)
+		{
+			bufferstream para_text_stream(&record.get().body[0], record.get().header.body_size);
+			para_text_t para_texts(record.get().header.body_size);
+			para_text_stream >> para_texts;
+			for (auto contol = para_texts.controls.begin(); contol != para_texts.controls.end(); ++contol)
+			{
+				if (contol->type == para_text_t::is_char_control)
+				{
+					rule_string texts;
+					for (auto code : contol->body)
+					{
+						texts.push_back(static_cast<para_t::value_type>(code));
+						if (syntax_t::is_carriage_return(code))
+						{
+							section.back().push_back(L'\n'); // TODO: normalize
+							section.emplace_back(para_t());
+						}
+						else
+						{
+							section.back() += static_cast<para_t::value_type>(code);
+						}
+					}
+
+					ruler(texts, record, rules);
+
+					contol->body.clear();
+					std::copy(texts.begin(), texts.end(), std::back_inserter(contol->body));
+				}
+				else if (contol->type == para_text_t::is_inline_control)
+				{
+					if(!contol->body.empty() && syntax_t::is_tab(contol->body[0]))
+						section.back().push_back(L'\t'); // TODO: normalize
+				}
+			}
+			record.get().header.body_size = para_texts.size();
+			buffer_t dest;
+			dest.resize(record.get().header.body_size);
+			bufferstream para_text_export_stream(&dest[0], dest.size());
+			para_text_export_stream << para_texts;
+			record.get().body = std::move(dest);
+		}
+	}
+
+	class editor_t
+	{
+	public:
+		typedef editor_traits::para_t para_t;
+		typedef editor_traits::section_t section_t;
+		typedef editor_traits::sections_t sections_t;
+		typedef editor_traits::rule_t rule_t;
+		typedef editor_traits::rules_t rules_t;
+		typedef binary_traits::byte_t byte_t;
+		typedef binary_traits::buffer_t buffer_t;
+		typedef binary_traits::bufferstream bufferstream;
+		typedef binary_traits::streamsize streamsize;
+		typedef std::vector<record_t> records_t;
+		typedef std::vector<std::reference_wrapper<record_t>> record_refs_t;
+
+		editor_t();
+		editor_t& extract(records_t&& that);
+		editor_t& find(const rules_t& rules);
+		editor_t& replace(char16_t replacement = u'*');
+		editor_t& finalize(std::unique_ptr<consumer_t>& consumer, std::unique_ptr<buffer_t>& src);
+
+		section_t get_extract_result();
+		sections_t get_find_result();
+	private:
+		void write_records(std::unique_ptr<consumer_t>& consumer, std::unique_ptr<buffer_t>& src);
+		std::unique_ptr<extract_texts_t> strategy;
+		rules_t rules;
+		char16_t replacement;
+		records_t records;
+		record_refs_t para_text_record_refs;
+	};
+
+	editor_t::editor_t() : strategy(nullptr), replacement(0)
+	{}
+
+	editor_t& editor_t::extract(records_t&& that)
+	{
+		records = std::move(that);
 		for (auto& record : records)
 		{
 			if (syntax_t::is_para_text(record.header.tag))
-			{
-				bufferstream stream(&record.body[0], record.header.body_size);
-				auto para = extract_para_text(stream, record.header.body_size);
-				if (!para.empty())
-					section.push_back(para);
-			}
+				para_text_record_refs.push_back(record);
 		}
-		return section;
+		return *this;
+	}
+
+	editor_t& editor_t::find(const rules_t& that)
+	{
+		rules = that;
+		return *this;
+	}
+
+	editor_t& editor_t::replace(char16_t that)
+	{
+		replacement = that;
+		return *this;
+	}
+
+	void editor_t::write_records(std::unique_ptr<consumer_t>& consumer, std::unique_ptr<buffer_t>& src)
+	{
+		auto write_size = std::accumulate(records.begin(), records.end(), 0, [](size_t size, auto& record) {
+			return size + record.size(); });
+		buffer_t dest;
+		dest.resize(write_size);
+		bufferstream write_records_stream(&dest[0], dest.size());
+		consumer->write_records(write_records_stream, records);
+		std::swap(*src.get(), dest);
+	}
+
+	editor_t& editor_t::finalize(std::unique_ptr<consumer_t>& consumer, std::unique_ptr<buffer_t>& src)
+	{
+		try
+		{
+			if (src->empty())
+				return *this;
+			strategy = std::make_unique<extract_texts_t>();
+			for (auto& rule : rules)
+			{
+				strategy->make_rule(rule);
+			}
+			if (!rules.empty())
+				strategy->change_rule(find_and_replace_strategy_t::find_only);
+			if (replacement != 0)
+				strategy->change_rule(find_and_replace_strategy_t::find_and_replace);
+
+			strategy->run(para_text_record_refs);
+			write_records(consumer, src);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return *this;
+	}
+
+	editor_t::section_t editor_t::get_extract_result() {
+		if (strategy)
+			return strategy->section;
+		return section_t();
+	}
+
+	editor_t::sections_t editor_t::get_find_result()
+	{
+		if (strategy && !strategy->get_rules().empty())
+		{
+			sections_t sections;
+			auto& rules = strategy->get_rules();
+			for (auto& rule : rules)
+				sections.emplace_back(rule.results_to_section());
+			return sections;
+		}
+		return sections_t();
 	}
 
 	std::unique_ptr<consumer_t> filter_t::open(const std::string& path)
@@ -294,16 +361,17 @@ namespace hwp50
 		try
 		{
 			sections_t sections;
-			auto header = consumer->read_file_header();
-			for (auto entry : consumer->get_streams())
+			auto& entries = consumer->get_streams();
+			for (auto entry = entries.begin(); entry != entries.end(); ++entry)
 			{
-				if (!consumer->has_paragraph(entry.first))
+				if (!consumer->has_paragraph(entry->first))
 					continue;
-				auto& section = entry.second;
-				bufferstream stream(&section[0], section.size());
-				auto records = consumer->read_records(stream);
-				auto section_text = extract_section_text(records);
-				sections.push_back(std::move(section_text));
+				auto& section = entry->second;
+				bufferstream stream(&section->at(0), section->size());
+				editor_t editor;
+				editor.extract(consumer->read_records(stream))
+					.finalize(consumer, section);
+				sections.emplace_back(editor.get_extract_result());
 			}
 			return sections;
 		}
@@ -318,66 +386,18 @@ namespace hwp50
 	{
 		try
 		{
-			for (auto entry : consumer->get_streams())
+			auto& entries = consumer->get_streams();
+			for (auto entry = entries.begin(); entry != entries.end(); ++entry)
 			{
-				if (!consumer->has_paragraph(entry.first))
+				if (!consumer->has_paragraph(entry->first))
 					continue;
-				auto& section = entry.second;
-				bufferstream stream(&section[0], section.size());
-				auto records = consumer->read_records(stream);
-
-				std::vector<std::reference_wrapper<record_t>> para_text_record;
-				std::for_each(records.begin(), records.end(), [&para_text_record](record_t& record) {
-					if (syntax_t::is_para_text(record.header.tag))
-						para_text_record.push_back(record);
-					});
-
-				for (auto record : para_text_record)
-				{
-					bufferstream para_text_stream(&record.get().body[0], record.get().header.body_size);
-					para_text_t para_texts(record.get().header.body_size);
-					para_text_stream >> para_texts;
-					for (auto& para_text : para_texts.controls)
-					{
-						if (para_text.type == para_text_t::is_char_control)
-						{
-							// TODO:
-							/*
-							std::wstring texts;
-							std::copy(para_text.body.begin(), para_text.body.end(), std::back_inserter(texts));
-							std::match_results<std::wstring::iterator> results;
-							auto begin = texts.begin();
-							while (std::regex_search(begin, texts.end(), results, pattern))
-							{
-								for (auto i = results[0].first; i != results[0].second; ++i)
-								{
-									*i = replacement;
-								}
-								begin += results.position() + results.length();
-							}
-
-							para_text.body.clear();
-							std::copy(texts.begin(), texts.end(), std::back_inserter(para_text.body));
-							*/
-						}
-					}
-					record.get().header.body_size = para_texts.size();
-					buffer_t write_record_buffer;
-					write_record_buffer.resize(record.get().header.body_size);
-					bufferstream para_text_export_stream(&write_record_buffer[0], write_record_buffer.size());
-					para_text_export_stream << para_texts;
-					record.get().body = std::move(write_record_buffer);
-				}
-
-				auto write_size = std::accumulate(records.begin(), records.end(), 0, [](size_t size, auto& record) {
-					return size + record.size(); });
-
-				buffer_t write_buffer;
-				write_buffer.resize(write_size);
-				bufferstream write_records_stream(&write_buffer[0], write_buffer.size());
-				write_records(write_records_stream, records);
-
-				std::swap(entry.second, write_buffer);
+				auto& section = entry->second;
+				bufferstream stream(&section->at(0), section->size());
+				editor_t editor;
+				editor.extract( consumer->read_records(stream) )
+					.find(rules)
+					.replace(replacement)
+					.finalize(consumer, section);
 			}
 		}
 		catch (const std::exception& e)
