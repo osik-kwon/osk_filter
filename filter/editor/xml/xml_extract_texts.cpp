@@ -1,6 +1,6 @@
 #include "filter_pch.h"
-#include "editor/xml/extract_texts.h"
-#include "editor/xml/find_and_replace_strategy.h"
+#include "editor/xml/xml_extract_texts.h"
+#include "editor/xml/xml_find_and_replace_strategy.h"
 #include "locale/charset_encoder.h"
 #include "traits/xml_traits.h"
 

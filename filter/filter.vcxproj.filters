@@ -82,21 +82,6 @@
     <ClCompile Include="hwp\hwpml_filter.cpp">
       <Filter>hwp</Filter>
     </ClCompile>
-    <ClCompile Include="editor\xml\editor.cpp">
-      <Filter>editor\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\xml\extract_texts.cpp">
-      <Filter>editor\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\xml\find_and_replace_strategy.cpp">
-      <Filter>editor\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\xml\replace_texts.cpp">
-      <Filter>editor\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\xml\search_texts.cpp">
-      <Filter>editor\xml</Filter>
-    </ClCompile>
     <ClCompile Include="editor\hwp50\hwp50_editor.cpp">
       <Filter>editor\hwp50</Filter>
     </ClCompile>
@@ -111,6 +96,21 @@
     </ClCompile>
     <ClCompile Include="editor\hwp50\hwp50_search_texts.cpp">
       <Filter>editor\hwp50</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\xml\xml_editor.cpp">
+      <Filter>editor\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\xml\xml_extract_texts.cpp">
+      <Filter>editor\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\xml\xml_find_and_replace_strategy.cpp">
+      <Filter>editor\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\xml\xml_replace_texts.cpp">
+      <Filter>editor\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\xml\xml_search_texts.cpp">
+      <Filter>editor\xml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,21 +205,6 @@
     <ClInclude Include="traits\editor_traits.h">
       <Filter>traits</Filter>
     </ClInclude>
-    <ClInclude Include="editor\xml\editor.h">
-      <Filter>editor\xml</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\xml\extract_texts.h">
-      <Filter>editor\xml</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\xml\find_and_replace_strategy.h">
-      <Filter>editor\xml</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\xml\replace_texts.h">
-      <Filter>editor\xml</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\xml\search_texts.h">
-      <Filter>editor\xml</Filter>
-    </ClInclude>
     <ClInclude Include="editor\hwp50\hwp50_editor.h">
       <Filter>editor\hwp50</Filter>
     </ClInclude>
@@ -234,6 +219,21 @@
     </ClInclude>
     <ClInclude Include="editor\hwp50\hwp50_search_texts.h">
       <Filter>editor\hwp50</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\xml\xml_editor.h">
+      <Filter>editor\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\xml\xml_extract_texts.h">
+      <Filter>editor\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\xml\xml_find_and_replace_strategy.h">
+      <Filter>editor\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\xml\xml_replace_texts.h">
+      <Filter>editor\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\xml\xml_search_texts.h">
+      <Filter>editor\xml</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

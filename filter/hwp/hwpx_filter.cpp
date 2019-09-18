@@ -4,8 +4,8 @@
 #include <map>
 #include "locale/charset_encoder.h"
 #include "io/open_package_conventions.h"
-#include "editor/xml/extract_texts.h"
-#include "editor/xml/editor.h"
+#include "editor/xml/xml_extract_texts.h"
+#include "editor/xml/xml_editor.h"
 
 namespace filter
 {
