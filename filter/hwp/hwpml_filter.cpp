@@ -1,7 +1,7 @@
 #include <filter_pch.h>
 #include "hwp/hwpml_filter.h"
-#include "editor/extract_texts.h"
-#include "editor/editor.h"
+#include "editor/xml/extract_texts.h"
+#include "editor/xml/editor.h"
 #include <xlnt/detail/serialization/open_stream.hpp>
 #include "locale/charset_encoder.h"
 

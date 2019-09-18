@@ -25,6 +25,9 @@
     <Filter Include="editor">
       <UniqueIdentifier>{1aa0040f-f087-41c0-a59b-4c1c6ebdcd86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="editor\xml">
+      <UniqueIdentifier>{72392752-d4ae-4b11-9046-db44dab64669}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -76,20 +79,20 @@
     <ClCompile Include="hwp\hwpml_filter.cpp">
       <Filter>hwp</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor.cpp">
-      <Filter>editor</Filter>
+    <ClCompile Include="editor\xml\editor.cpp">
+      <Filter>editor\xml</Filter>
     </ClCompile>
-    <ClCompile Include="editor\extract_texts.cpp">
-      <Filter>editor</Filter>
+    <ClCompile Include="editor\xml\extract_texts.cpp">
+      <Filter>editor\xml</Filter>
     </ClCompile>
-    <ClCompile Include="editor\search_texts.cpp">
-      <Filter>editor</Filter>
+    <ClCompile Include="editor\xml\find_and_replace_strategy.cpp">
+      <Filter>editor\xml</Filter>
     </ClCompile>
-    <ClCompile Include="editor\replace_texts.cpp">
-      <Filter>editor</Filter>
+    <ClCompile Include="editor\xml\replace_texts.cpp">
+      <Filter>editor\xml</Filter>
     </ClCompile>
-    <ClCompile Include="editor\find_and_replace_strategy.cpp">
-      <Filter>editor</Filter>
+    <ClCompile Include="editor\xml\search_texts.cpp">
+      <Filter>editor\xml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,20 +187,20 @@
     <ClInclude Include="traits\editor_traits.h">
       <Filter>traits</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor.h">
-      <Filter>editor</Filter>
+    <ClInclude Include="editor\xml\editor.h">
+      <Filter>editor\xml</Filter>
     </ClInclude>
-    <ClInclude Include="editor\extract_texts.h">
-      <Filter>editor</Filter>
+    <ClInclude Include="editor\xml\extract_texts.h">
+      <Filter>editor\xml</Filter>
     </ClInclude>
-    <ClInclude Include="editor\search_texts.h">
-      <Filter>editor</Filter>
+    <ClInclude Include="editor\xml\find_and_replace_strategy.h">
+      <Filter>editor\xml</Filter>
     </ClInclude>
-    <ClInclude Include="editor\replace_texts.h">
-      <Filter>editor</Filter>
+    <ClInclude Include="editor\xml\replace_texts.h">
+      <Filter>editor\xml</Filter>
     </ClInclude>
-    <ClInclude Include="editor\find_and_replace_strategy.h">
-      <Filter>editor</Filter>
+    <ClInclude Include="editor\xml\search_texts.h">
+      <Filter>editor\xml</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -157,11 +157,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cryptor\cryptor.cpp" />
-    <ClCompile Include="editor\editor.cpp" />
-    <ClCompile Include="editor\extract_texts.cpp" />
-    <ClCompile Include="editor\find_and_replace_strategy.cpp" />
-    <ClCompile Include="editor\replace_texts.cpp" />
-    <ClCompile Include="editor\search_texts.cpp" />
+    <ClCompile Include="editor\xml\editor.cpp" />
+    <ClCompile Include="editor\xml\extract_texts.cpp" />
+    <ClCompile Include="editor\xml\find_and_replace_strategy.cpp" />
+    <ClCompile Include="editor\xml\replace_texts.cpp" />
+    <ClCompile Include="editor\xml\search_texts.cpp" />
     <ClCompile Include="filter_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -186,11 +186,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cryptor\cryptor.h" />
-    <ClInclude Include="editor\editor.h" />
-    <ClInclude Include="editor\extract_texts.h" />
-    <ClInclude Include="editor\find_and_replace_strategy.h" />
-    <ClInclude Include="editor\replace_texts.h" />
-    <ClInclude Include="editor\search_texts.h" />
+    <ClInclude Include="editor\xml\editor.h" />
+    <ClInclude Include="editor\xml\extract_texts.h" />
+    <ClInclude Include="editor\xml\find_and_replace_strategy.h" />
+    <ClInclude Include="editor\xml\replace_texts.h" />
+    <ClInclude Include="editor\xml\search_texts.h" />
     <ClInclude Include="filter_pch.h" />
     <ClInclude Include="hwp\hwp30_filter.h" />
     <ClInclude Include="hwp\hwp30_syntax.h" />

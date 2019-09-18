@@ -37,39 +37,6 @@ void print(const filter::hwp50::filter_t::section_t& section)
 	}
 }
 
-void test_decompress_save()
-{
-	filter::hwp50::filter_t filter;
-	filter.decompress_save("d:/filter/sample_compress.hwp", "d:/filter/sample_compress.hwp.hwp");
-	filter.decompress_save("d:/filter/text.hwp", "d:/filter/text.hwp.hwp");
-	filter.decompress_save("d:/filter/sample2.hwp", "d:/filter/sample2.hwp.hwp");
-}
-
-void test_extract_all_texts()
-{
-	filter::hwp50::filter_t filter;
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/dist.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/resume.hwp")));
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/tab.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/table_nested.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/table_cr.hwp")));
-	//print( filter.extract_all_texts(to_utf8(u"d:/filter/[여성부]김현진_우리아이지키기_종합대책(08.5.27).hwp")) );
-	//print( filter.extract_all_texts(to_utf8(u"d:/filter/[국립공원관리공단]조선희_북한산독립유공자묘역정비[이미지].hwp")) );
-	print( filter.extract_all_texts("d:/filter/sample2.hwp") );
-	//print( filter.extract_all_texts("d:/filter/sample_compress.hwp") );
-	//print( filter.extract_all_texts("d:/filter/text.hwp") );
-}
-
-void test_replace_privacy()
-{
-	std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-	filter::hwp50::filter_t filter;
-
-	print( filter.extract_all_texts(to_utf8(u"d:/filter/privacy.hwp")) );
-	filter.replace_privacy(to_utf8(u"d:/filter/privacy.hwp"), to_utf8(u"d:/filter/privacy.hwp.hwp"), resident_registration_number, u'*');
-	print(filter.extract_all_texts(to_utf8(u"d:/filter/privacy.hwp.hwp")));
-}
-
 void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
@@ -275,8 +242,8 @@ int main()
 	}
 
 	test_hwp50();
-	//test_hwpml();
-	//test_hwpx();
+	test_hwpml();
+	test_hwpx();
 	//test_decompress_save();
 	//test_extract_all_texts();
 	//test_replace_privacy();

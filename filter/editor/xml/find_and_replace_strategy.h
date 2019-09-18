@@ -1,6 +1,6 @@
 #pragma once
 #include "traits/xml_traits.h"
-#include "editor/search_texts.h"
+#include "editor/xml/search_texts.h"
 
 namespace filter
 {

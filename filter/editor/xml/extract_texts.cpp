@@ -1,8 +1,8 @@
 #include "filter_pch.h"
-#include "editor/extract_texts.h"
+#include "editor/xml/extract_texts.h"
+#include "editor/xml/find_and_replace_strategy.h"
 #include "locale/charset_encoder.h"
 #include "traits/xml_traits.h"
-#include "editor/find_and_replace_strategy.h"
 
 namespace filter
 {

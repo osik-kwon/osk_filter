@@ -1,5 +1,5 @@
 #include "filter_pch.h"
-#include "editor/replace_texts.h"
+#include "editor/xml/replace_texts.h"
 #include "locale/charset_encoder.h"
 
 namespace filter

@@ -234,6 +234,36 @@ namespace hwp50
 		return std::regex_match(entry, paragraph_rule);
 	}
 
+	std::vector<record_t> consumer_t::read_records(bufferstream& stream) const
+	{
+		std::vector<record_t> records;
+		stream.seekg(0);
+		try
+		{
+			do
+			{
+				record_t record;
+				stream >> record;
+				records.push_back(std::move(record));
+			} while (!stream.eof());
+		}
+		catch (const std::exception&)
+		{
+			if (stream.eof())
+				return records;
+			throw std::runtime_error("read records error");
+		}
+		return records;
+	}
+
+	void consumer_t::write_records(bufferstream& stream, const std::vector<record_t>& records) const
+	{
+		for (auto& record : records)
+		{
+			stream << record;
+		}
+	}
+
 	void consumer_t::open(const std::string& path)
 	{
 		try
@@ -273,7 +303,7 @@ namespace hwp50
 			auto storage = cfb_t::make_writable_storage(path);
 			file_header_t header = consumer->read_file_header();
 
-			for (auto& entry : consumer->streams)
+			for (auto& entry : consumer->get_streams())
 			{
 				auto& name = entry.first;
 				auto& data = entry.second;

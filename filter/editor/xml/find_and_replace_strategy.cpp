@@ -1,6 +1,6 @@
 #include "filter_pch.h"
-#include "editor/find_and_replace_strategy.h"
-#include "editor/replace_texts.h"
+#include "editor/xml/find_and_replace_strategy.h"
+#include "editor/xml/replace_texts.h"
 
 namespace filter
 {

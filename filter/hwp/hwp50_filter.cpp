@@ -295,13 +295,13 @@ namespace hwp50
 		{
 			sections_t sections;
 			auto header = consumer->read_file_header();
-			for (auto entry : consumer->streams)
+			for (auto entry : consumer->get_streams())
 			{
 				if (!consumer->has_paragraph(entry.first))
 					continue;
 				auto& section = entry.second;
 				bufferstream stream(&section[0], section.size());
-				auto records = read_records(stream);
+				auto records = consumer->read_records(stream);
 				auto section_text = extract_section_text(records);
 				sections.push_back(std::move(section_text));
 			}
@@ -318,7 +318,67 @@ namespace hwp50
 	{
 		try
 		{
-			// TODO:
+			for (auto entry : consumer->get_streams())
+			{
+				if (!consumer->has_paragraph(entry.first))
+					continue;
+				auto& section = entry.second;
+				bufferstream stream(&section[0], section.size());
+				auto records = consumer->read_records(stream);
+
+				std::vector<std::reference_wrapper<record_t>> para_text_record;
+				std::for_each(records.begin(), records.end(), [&para_text_record](record_t& record) {
+					if (syntax_t::is_para_text(record.header.tag))
+						para_text_record.push_back(record);
+					});
+
+				for (auto record : para_text_record)
+				{
+					bufferstream para_text_stream(&record.get().body[0], record.get().header.body_size);
+					para_text_t para_texts(record.get().header.body_size);
+					para_text_stream >> para_texts;
+					for (auto& para_text : para_texts.controls)
+					{
+						if (para_text.type == para_text_t::is_char_control)
+						{
+							// TODO:
+							/*
+							std::wstring texts;
+							std::copy(para_text.body.begin(), para_text.body.end(), std::back_inserter(texts));
+							std::match_results<std::wstring::iterator> results;
+							auto begin = texts.begin();
+							while (std::regex_search(begin, texts.end(), results, pattern))
+							{
+								for (auto i = results[0].first; i != results[0].second; ++i)
+								{
+									*i = replacement;
+								}
+								begin += results.position() + results.length();
+							}
+
+							para_text.body.clear();
+							std::copy(texts.begin(), texts.end(), std::back_inserter(para_text.body));
+							*/
+						}
+					}
+					record.get().header.body_size = para_texts.size();
+					buffer_t write_record_buffer;
+					write_record_buffer.resize(record.get().header.body_size);
+					bufferstream para_text_export_stream(&write_record_buffer[0], write_record_buffer.size());
+					para_text_export_stream << para_texts;
+					record.get().body = std::move(write_record_buffer);
+				}
+
+				auto write_size = std::accumulate(records.begin(), records.end(), 0, [](size_t size, auto& record) {
+					return size + record.size(); });
+
+				buffer_t write_buffer;
+				write_buffer.resize(write_size);
+				bufferstream write_records_stream(&write_buffer[0], write_buffer.size());
+				write_records(write_records_stream, records);
+
+				std::swap(entry.second, write_buffer);
+			}
 		}
 		catch (const std::exception& e)
 		{
