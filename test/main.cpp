@@ -40,15 +40,15 @@ void test_hwp30()
 	typedef filter::hwp30::filter_t filter_t;
 	{
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_group4.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30_group4.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30_group4.export.hwp"));
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_group3.hwp")));
+		auto document = filter.open(to_utf8(u"d:/filter/hwp30_group3.hwp"));
+		filter.save(document, to_utf8(u"d:/filter/hwp30_group3.export.hwp"));
 	}
 	{
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_1.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30_1.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30_1.export.hwp"));
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30.hwp")));
+		auto document = filter.open(to_utf8(u"d:/filter/hwp30.hwp"));
+		filter.save(document, to_utf8(u"d:/filter/hwp30.export.hwp"));
 	}	
 }
 

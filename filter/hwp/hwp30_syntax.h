@@ -953,6 +953,8 @@ namespace hwp30
 				offset += object->size();
 			return offset;
 		}
+		void read_by_preorder(bufferstream& stream);
+
 		frame_header_t frame_header;
 		std::vector< std::unique_ptr<object_t> > objects;
 	};

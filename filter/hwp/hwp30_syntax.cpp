@@ -819,26 +819,34 @@ namespace hwp30
 		return stream;
 	}
 
-	bufferstream& operator >> (bufferstream& stream, drawing_object_t& data)
+	void drawing_object_t::read_by_preorder(bufferstream& stream)
 	{
-		stream >> data.frame_header;
 		while (true)
 		{
 			common_header_t common_header;
 			stream >> common_header;
 			if (common_header.object_type == 0)
 			{
-				data.objects.emplace_back(std::make_unique<container_t>(common_header));
-				data.objects.back()->read(stream);
+				objects.emplace_back(std::make_unique<container_t>(common_header));
+				objects.back()->read(stream);
+				if (common_header.has_child())
+					read_by_preorder(stream);
 			}
 			else if (common_header.object_type == 2)
 			{
-				data.objects.emplace_back(std::make_unique<textbox_t>(common_header));
-				data.objects.back()->read(stream);
+				objects.emplace_back(std::make_unique<textbox_t>(common_header));
+				objects.back()->read(stream);
 			}
-			if (!common_header.has_child() && !common_header.has_sibling())
+			// TODO: implement
+			if (!common_header.has_sibling())
 				break;
 		}
+	}
+
+	bufferstream& operator >> (bufferstream& stream, drawing_object_t& data)
+	{
+		stream >> data.frame_header;
+		data.read_by_preorder(stream);
 		return stream;
 	}
 
@@ -867,8 +875,11 @@ namespace hwp30
 	{
 		first_info_length = binary_io::read_uint32(stream);
 		second_info_length = binary_io::read_uint32(stream);
-		para_lists.resize(1);
-		stream >> para_lists[0];
+		if (common_header.option[19]) // bit 19 : 그리기를 글상자로 만들 것인지의 여부
+		{
+			para_lists.resize(1);
+			stream >> para_lists[0];
+		}
 		stream >> detail_info;
 		return stream;
 	}
