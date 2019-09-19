@@ -40,27 +40,24 @@ void test_hwp30()
 	typedef filter::hwp30::filter_t filter_t;
 	{
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_shape.hwp")));
 		auto src = filter.open(to_utf8(u"d:/filter/hwp30_shape.hwp"));
+		print(filter.extract_all_texts(src));
 		filter.save(to_utf8(u"d:/filter/hwp30_shape.export.hwp"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp30_shape.export.hwp"));
+		print(filter.extract_all_texts(dest));
 	}
 	{
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_ole.hwp")));
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30_ole.hwp"));
-		filter.save(to_utf8(u"d:/filter/hwp30_ole.export.hwp"), src);
-	}
-	{
-		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_group3.hwp")));
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30_group3.hwp"));
-		filter.save(to_utf8(u"d:/filter/hwp30_group3.export.hwp"), src);
-	}
-	{
-		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30.hwp")));
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30.hwp"));
-		filter.save(to_utf8(u"d:/filter/hwp30.export.hwp"), src);
+
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30_privacy.hwp"));
+		print(filter.extract_all_texts(src));
+
+		filter.replace_privacy({ resident_registration_number }, u'@', src);
+		filter.save(to_utf8(u"d:/filter/hwp30_privacy.export.hwp"), src);
+
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp30_privacy.export.hwp"));
+		print(filter.extract_all_texts(dest));
 	}
 }
 

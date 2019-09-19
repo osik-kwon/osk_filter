@@ -157,6 +157,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cryptor\cryptor.cpp" />
+    <ClCompile Include="editor\hwp30\hwp30_editor.cpp" />
+    <ClCompile Include="editor\hwp30\hwp30_extract_texts.cpp" />
+    <ClCompile Include="editor\hwp30\hwp30_find_and_replace_strategy.cpp" />
+    <ClCompile Include="editor\hwp30\hwp30_replace_texts.cpp" />
+    <ClCompile Include="editor\hwp30\hwp30_search_texts.cpp" />
     <ClCompile Include="editor\hwp50\hwp50_editor.cpp" />
     <ClCompile Include="editor\hwp50\hwp50_extract_texts.cpp" />
     <ClCompile Include="editor\hwp50\hwp50_find_and_replace_strategy.cpp" />
@@ -191,6 +196,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cryptor\cryptor.h" />
+    <ClInclude Include="editor\hwp30\hwp30_editor.h" />
+    <ClInclude Include="editor\hwp30\hwp30_extract_texts.h" />
+    <ClInclude Include="editor\hwp30\hwp30_find_and_replace_strategy.h" />
+    <ClInclude Include="editor\hwp30\hwp30_replace_texts.h" />
+    <ClInclude Include="editor\hwp30\hwp30_search_texts.h" />
     <ClInclude Include="editor\hwp50\hwp50_editor.h" />
     <ClInclude Include="editor\hwp50\hwp50_extract_texts.h" />
     <ClInclude Include="editor\hwp50\hwp50_find_and_replace_strategy.h" />

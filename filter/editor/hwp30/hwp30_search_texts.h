@@ -1,10 +1,10 @@
 #pragma once
-#include "hwp/hwp50_syntax.h"
+#include "hwp/hwp30_syntax.h"
 #include "traits/editor_traits.h"
 
 namespace filter
 {
-namespace hwp50
+namespace hwp30
 {
 	class search_texts_t
 	{
@@ -13,11 +13,13 @@ namespace hwp50
 		typedef editor_traits::section_t section_t;
 		typedef editor_traits::rule_t rule_t;
 		typedef editor_traits::rule_string rule_string;
-		typedef std::pair< std::reference_wrapper<record_t>, section_t > result_t;
+		typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
+		typedef std::vector<para_ref_t> para_list_ref_t;
+		typedef std::pair< para_list_ref_t, section_t > result_t;
 
 		search_texts_t(const rule_t& pattern, char16_t replacement);
 		section_t results_to_section() const;
-		void search(rule_string& texts, std::reference_wrapper<record_t>& record);
+		void search(rule_string& texts, para_list_ref_t& para_list_ref);
 		bool empty() const {
 			return results.empty();
 		}

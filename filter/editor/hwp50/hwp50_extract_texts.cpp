@@ -31,12 +31,12 @@ namespace hwp50
 			bufferstream para_text_stream(&record.get().body[0], record.get().header.body_size);
 			para_text_t para_texts(record.get().header.body_size);
 			para_text_stream >> para_texts;
-			for (auto contol = para_texts.controls.begin(); contol != para_texts.controls.end(); ++contol)
+			for (auto control = para_texts.controls.begin(); control != para_texts.controls.end(); ++control)
 			{
-				if (contol->type == para_text_t::is_char_control)
+				if (control->type == para_text_t::is_char_control)
 				{
 					rule_string texts;
-					for (auto code : contol->body)
+					for (auto code : control->body)
 					{
 						texts.push_back(static_cast<para_t::value_type>(code));
 						if (syntax_t::is_carriage_return(code))
@@ -52,12 +52,12 @@ namespace hwp50
 
 					ruler(texts, record, rules);
 
-					contol->body.clear();
-					std::copy(texts.begin(), texts.end(), std::back_inserter(contol->body));
+					control->body.clear();
+					std::copy(texts.begin(), texts.end(), std::back_inserter(control->body));
 				}
-				else if (contol->type == para_text_t::is_inline_control)
+				else if (control->type == para_text_t::is_inline_control)
 				{
-					if (!contol->body.empty() && syntax_t::is_tab(contol->body[0]))
+					if (!control->body.empty() && syntax_t::is_tab(control->body[0]))
 						section.back().push_back(L'\t'); // TODO: normalize
 				}
 			}

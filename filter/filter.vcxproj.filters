@@ -31,6 +31,9 @@
     <Filter Include="editor\hwp50">
       <UniqueIdentifier>{3e3c1a20-67a6-4c19-b5f8-c4f902c8b00f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="editor\hwp30">
+      <UniqueIdentifier>{24542692-37fa-4cff-8d3b-358d6a5414dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -111,6 +114,21 @@
     </ClCompile>
     <ClCompile Include="editor\xml\xml_search_texts.cpp">
       <Filter>editor\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hwp30\hwp30_editor.cpp">
+      <Filter>editor\hwp30</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hwp30\hwp30_extract_texts.cpp">
+      <Filter>editor\hwp30</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hwp30\hwp30_find_and_replace_strategy.cpp">
+      <Filter>editor\hwp30</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hwp30\hwp30_replace_texts.cpp">
+      <Filter>editor\hwp30</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\hwp30\hwp30_search_texts.cpp">
+      <Filter>editor\hwp30</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +252,21 @@
     </ClInclude>
     <ClInclude Include="editor\xml\xml_search_texts.h">
       <Filter>editor\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hwp30\hwp30_editor.h">
+      <Filter>editor\hwp30</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hwp30\hwp30_extract_texts.h">
+      <Filter>editor\hwp30</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hwp30\hwp30_find_and_replace_strategy.h">
+      <Filter>editor\hwp30</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hwp30\hwp30_replace_texts.h">
+      <Filter>editor\hwp30</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\hwp30\hwp30_search_texts.h">
+      <Filter>editor\hwp30</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
