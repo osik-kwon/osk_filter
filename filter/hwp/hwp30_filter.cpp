@@ -105,18 +105,18 @@ namespace hwp30
 				}
 				else if ( control->has_drawing_object() )
 				{
-					if( control->get_code() != syntax_t::picture )
+					if( control->get_code() != syntax_t::drawing_object )
 						throw std::runtime_error("invalid syntax : drawing object should follow picture");
 
-					picture_t* picture = dynamic_cast<picture_t*>(control.get());
-					if (!picture)
+					drawing_object_t* drawing_object = dynamic_cast<drawing_object_t*>(control.get());
+					if (!drawing_object)
 						throw std::runtime_error("invalid syntax : drawing object should follow picture");
 
 					if (!para_ref.empty())
 						para_list_ref.push_back(std::move(para_ref));
 					para_ref = para_ref_t();
 
-					for (auto& object : picture->drawing_object.objects)
+					for (auto& object : drawing_object->drawing_object.objects)
 					{
 						para_ref_t control_para_ref;
 						if (object->get_para_lists())

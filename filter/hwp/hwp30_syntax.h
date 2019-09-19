@@ -941,12 +941,12 @@ namespace hwp30
 		common_header_t common_header;
 	};
 
-	struct drawing_object_t
+	struct drawing_object_impl_t
 	{
-		drawing_object_t()
+		drawing_object_impl_t()
 		{}
-		~drawing_object_t() {}
-		DECLARE_BINARY_SERIALIZER(drawing_object_t);
+		~drawing_object_impl_t() {}
+		DECLARE_BINARY_SERIALIZER(drawing_object_impl_t);
 		size_t size() const {
 			size_t offset = frame_header.size();
 			for (auto& object : objects)
@@ -959,6 +959,7 @@ namespace hwp30
 		std::vector< std::unique_ptr<object_t> > objects;
 	};
 
+	// 0 : 그룹
 	struct container_t : object_t
 	{
 		container_t(const common_header_t& common_header) : object_t(common_header)
@@ -975,12 +976,13 @@ namespace hwp30
 		detail_info_t detail_info;
 	};
 
-	struct textbox_t : object_t
+	// 1 : 선, 2 : 사각형, 3 : 타원, 4 : 호, 5 : 다각형, 6 : 글상자, 7 : 곡선, 8 : 변형된 타원, 9 : 변형된 호, 10: 변형된 곡선, 기타
+	struct any_object_t : object_t
 	{
-		textbox_t(const common_header_t& common_header) : object_t(common_header),
+		any_object_t(const common_header_t& common_header) : object_t(common_header),
 			first_info_length(0), second_info_length(0)
 		{}
-		~textbox_t() {}
+		~any_object_t() {}
 		virtual bufferstream& read(bufferstream& stream);
 		virtual bufferstream& write(bufferstream& stream);
 		virtual bool has_para_list() const {
@@ -1004,12 +1006,12 @@ namespace hwp30
 		detail_info_t detail_info;
 	};
 
-	struct picture_t : control_code_t
+	struct drawing_object_t : control_code_t
 	{
 		typedef control_code_t::control_t control_t;
-		picture_t(control_t code) : code(code), reserved(0), end_code(0), length(0), type(0)
+		drawing_object_t(control_t code) : code(code), reserved(0), end_code(0), length(0), type(0)
 		{}
-		~picture_t() {}
+		~drawing_object_t() {}
 		virtual bufferstream& read(bufferstream& stream);
 		virtual bufferstream& write(bufferstream& stream);
 		virtual control_t get_code() const {
@@ -1043,7 +1045,7 @@ namespace hwp30
 		buffer_t data3; // length
 		paragraph_list_t caption;
 
-		drawing_object_t drawing_object;
+		drawing_object_impl_t drawing_object;
 	};
 
 #pragma endregion definition of control codes
@@ -1171,7 +1173,7 @@ namespace hwp30
 			date_code = 8,
 			tab = 9,
 			table = 10,
-			picture = 11,
+			drawing_object = 11,
 			para_break = 13,
 			line_shape = 14,
 			hidden_text = 15,
