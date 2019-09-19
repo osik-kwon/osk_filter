@@ -4,12 +4,12 @@
 #include <memory>
 #include "traits/binary_traits.h"
 #include "traits/editor_traits.h"
+#include "hwp/hwp30_syntax.h"
 
 namespace filter
 {
 namespace hwp30
 {
-	struct document_t;
 	class filter_t
 	{
 	public:

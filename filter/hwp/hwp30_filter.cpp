@@ -103,6 +103,32 @@ namespace hwp30
 						break;
 					}
 				}
+				else if ( control->has_drawing_object() )
+				{
+					if( control->get_code() != syntax_t::picture )
+						throw std::runtime_error("invalid syntax : drawing object should follow picture");
+
+					picture_t* picture = dynamic_cast<picture_t*>(control.get());
+					if (!picture)
+						throw std::runtime_error("invalid syntax : drawing object should follow picture");
+
+					if (!para_ref.empty())
+						para_list_ref.push_back(std::move(para_ref));
+					para_ref = para_ref_t();
+
+					for (auto& object : picture->drawing_object.objects)
+					{
+						para_ref_t control_para_ref;
+						if (object->get_para_lists())
+						{
+							auto& para_lists = *object->get_para_lists();
+							for (auto& para_list : para_lists)
+								extract_para_list_ref(para_list, para_list_ref);
+						}
+						if (!control_para_ref.empty())
+							para_list_ref.push_back(std::move(control_para_ref));
+					}
+				}
 				else if (control->has_para_list())
 				{
 					if (!para_ref.empty())

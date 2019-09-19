@@ -1,6 +1,5 @@
 #include "hwp/hwp50_filter.h"
 #include "hwp/hwp30_filter.h"
-#include "hwp/hwp30_syntax.h"
 #include "hwp/hwpx_filter.h"
 #include "hwp/hwpml_filter.h"
 #include "locale/charset_encoder.h"
@@ -40,42 +39,17 @@ void test_hwp30()
 {
 	typedef filter::hwp30::filter_t filter_t;
 	{
-		//filter_t filter;
-		//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/CSP-3852.hwp")));
-		//auto document = filter.open(to_utf8(u"d:/filter/hwp30/CSP-3852.hwp"));
-		//filter.save(document, to_utf8(u"d:/filter/hwp30/CSP-3852.hwp.hwp"));
+		filter_t filter;
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_group4.hwp")));
+		auto document = filter.open(to_utf8(u"d:/filter/hwp30_group4.hwp"));
+		filter.save(document, to_utf8(u"d:/filter/hwp30_group4.export.hwp"));
 	}
 	{
 		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/pic.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30/pic.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30/pic.hwp.hwp"));
-	}
-	
-	{
-		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/tab.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30/tab.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30/tab.hwp.hwp"));
-	}
-	
-	{
-		filter_t filter;
-		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table2.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30/table2.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30/table2.hwp.hwp"));
-	}
-	
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table3.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/table.hwp")));
-	//auto document = filter.open(to_utf8(u"d:/filter/hwp30/hwp97_all.hwp"));
-	//filter.save(document, to_utf8(u"d:/filter/hwp30/hwp97_all.hwp.hwp"));
-
-	//filter.save(to_utf8(u"d:/filter/hwp30/0F0034.hwp"), to_utf8(u"d:/filter/hwp30/0F0034.hwp.hwp"));
-	//filter.save(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp"), to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp.hwp"));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_hangul.hwp")));
-	//print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30/hwp97_1.hwp")));
+		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_1.hwp")));
+		auto document = filter.open(to_utf8(u"d:/filter/hwp30_1.hwp"));
+		filter.save(document, to_utf8(u"d:/filter/hwp30_1.export.hwp"));
+	}	
 }
 
 void test_hwp50()

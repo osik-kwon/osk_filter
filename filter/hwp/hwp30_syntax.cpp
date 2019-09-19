@@ -736,6 +736,154 @@ namespace hwp30
 		return stream;
 	}
 
+	bufferstream& operator >> (bufferstream& stream, frame_header_t& data)
+	{
+		data.length = binary_io::read_uint32(stream);
+		if (data.length > 0)
+			data.data = binary_io::read(stream, data.length);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const frame_header_t& data)
+	{
+		binary_io::write_uint32(stream, data.length);
+		if (data.length > 0)
+			binary_io::write(stream, data.data);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, common_header_t& data)
+	{
+		data.length = binary_io::read_uint32(stream);
+		data.object_type = binary_io::read_uint16(stream);
+		data.link = binary_io::read_uint16(stream);
+		data.basic_info = binary_io::read(stream, 40);
+		data.basic_attr = binary_io::read(stream, 40);
+		data.option = binary_io::read_uint32(stream);
+
+		if (data.length == 88)
+			return stream;
+
+		if (data.option[17])
+			data.rotation = binary_io::read(stream, 32);
+		if (data.option[16])
+			data.gradation = binary_io::read(stream, 28);
+		if (data.option[18])
+			data.bitmap_pattern = binary_io::read(stream, 278);
+		if (data.option[20])
+			data.watermark = binary_io::read(stream, 3);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const common_header_t& data)
+	{
+		binary_io::write_uint32(stream, data.length);
+		binary_io::write_uint16(stream, data.object_type);
+		binary_io::write_uint16(stream, (uint16_t)data.link.to_ulong());
+		binary_io::write(stream, data.basic_info);
+		binary_io::write(stream, data.basic_attr);
+		binary_io::write_uint32(stream, (uint32_t)data.option.to_ulong());
+		if (data.length == 88)
+			return stream;
+
+		if (data.option[17])
+			binary_io::write(stream, data.rotation);
+		if (data.option[16])
+			binary_io::write(stream, data.gradation);
+		if (data.option[18])
+			binary_io::write(stream, data.bitmap_pattern);
+		if (data.option[20])
+			binary_io::write(stream, data.watermark);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, detail_info_t& data)
+	{
+		data.first_detail_length = binary_io::read_uint32(stream);
+		if( data.first_detail_length > 0 )
+			data.first_detail = binary_io::read(stream, data.first_detail_length);
+		data.second_detail_length = binary_io::read_uint32(stream);
+		if (data.second_detail_length > 0)
+			data.second_detail = binary_io::read(stream, data.second_detail_length);
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const detail_info_t& data)
+	{
+		binary_io::write_uint32(stream, data.first_detail_length);
+		if (data.first_detail_length > 0)
+			binary_io::write(stream, data.first_detail);
+		binary_io::write_uint32(stream, data.second_detail_length);
+		if (data.second_detail_length > 0)
+			binary_io::write(stream, data.second_detail);
+		return stream;
+	}
+
+	bufferstream& operator >> (bufferstream& stream, drawing_object_t& data)
+	{
+		stream >> data.frame_header;
+		while (true)
+		{
+			common_header_t common_header;
+			stream >> common_header;
+			if (common_header.object_type == 0)
+			{
+				data.objects.emplace_back(std::make_unique<container_t>(common_header));
+				data.objects.back()->read(stream);
+			}
+			else if (common_header.object_type == 2)
+			{
+				data.objects.emplace_back(std::make_unique<textbox_t>(common_header));
+				data.objects.back()->read(stream);
+			}
+			if (!common_header.has_child() && !common_header.has_sibling())
+				break;
+		}
+		return stream;
+	}
+
+	bufferstream& operator << (bufferstream& stream, const drawing_object_t& data)
+	{
+		stream << data.frame_header;
+		for (auto& object : data.objects)
+			object->write(stream);
+		return stream;
+	}
+
+	bufferstream& container_t::read(bufferstream& stream)
+	{
+		stream >> detail_info;
+		return stream;
+	}
+
+	bufferstream& container_t::write(bufferstream& stream)
+	{
+		stream << common_header;
+		stream << detail_info;
+		return stream;
+	}
+
+	bufferstream& textbox_t::read(bufferstream& stream)
+	{
+		first_info_length = binary_io::read_uint32(stream);
+		second_info_length = binary_io::read_uint32(stream);
+		para_lists.resize(1);
+		stream >> para_lists[0];
+		stream >> detail_info;
+		return stream;
+	}
+
+	bufferstream& textbox_t::write(bufferstream& stream)
+	{
+		stream << common_header;
+		binary_io::write_uint32(stream, first_info_length);
+		binary_io::write_uint32(stream, second_info_length);
+		for (auto& para_list : para_lists)
+			stream << para_list;
+		stream << detail_info;
+		return stream;
+	}
+
 	bufferstream& picture_t::read(bufferstream& stream)
 	{
 		reserved = binary_io::read_uint32(stream);
@@ -748,6 +896,8 @@ namespace hwp30
 
 		if (type != 3 && length > 0)
 			data3 = binary_io::read(stream, length);
+		else if (type == 3) // drawing object
+			stream >> drawing_object;
 
 		stream >> caption;
 		return stream;
@@ -764,6 +914,9 @@ namespace hwp30
 		binary_io::write(stream, data2);
 		if (type != 3 && length > 0)
 			binary_io::write(stream, data3);
+		else if (type == 3) // drawing object
+			stream << drawing_object;
+
 		stream << caption;
 		return stream;
 	}

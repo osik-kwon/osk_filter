@@ -1,6 +1,7 @@
 #pragma once
 #include <bitset>
 #include <string>
+#include <memory>
 #include "traits/binary_traits.h"
 #include "io/binary_iostream.h"
 
@@ -213,6 +214,9 @@ namespace hwp30
 		virtual control_t get_code() const = 0;
 		virtual bool is_control_code() const {
 			return true;
+		}
+		virtual bool has_drawing_object() const {
+			return false;
 		}
 		virtual bool has_para_list() const{
 			return false;
@@ -836,6 +840,168 @@ namespace hwp30
 		paragraph_list_t caption;
 	};
 
+	struct frame_header_t
+	{
+		frame_header_t() : length(0)
+		{}
+		~frame_header_t() {}
+		DECLARE_BINARY_SERIALIZER(frame_header_t);
+		size_t size() const {
+			return sizeof(length) + data.size();
+		}
+		uint32_t length;
+		buffer_t data;
+	};
+
+	struct common_header_t
+	{
+		common_header_t() : length(0), object_type(0), link(0)
+		{}
+		~common_header_t() {}
+		DECLARE_BINARY_SERIALIZER(common_header_t);
+		size_t size() const {
+			return 4 + 2 + 2 + basic_info.size() + basic_attr.size() + 4
+				+ rotation.size() + gradation.size() + bitmap_pattern.size() + watermark.size();
+		}
+		bool has_child() {
+			return link[1];
+		}
+		bool has_sibling() {
+			return link[0];
+		}
+		uint32_t length;
+		/*
+		0 = 컨테이너
+		1 = 선
+		2 = 사각형
+		3 = 타원
+		4 = 호
+		5 = 다각형
+		6 = 글상자
+		7 = 곡선
+		8 = 변형된 타원 (회전되거나 호로 편집된 타원)
+		9 = 변형된 호 (회전된 호)
+		10 = 선을 그릴 수 있도록 확장된 곡선
+		*/
+		uint16_t object_type;
+		std::bitset<16> link; // bit 0 = sibling이 존재하는지 여부, bit 1 = child가 존재하는지 여부
+		buffer_t basic_info; // 40
+		buffer_t basic_attr; // 40
+		std::bitset<32> option;
+		// optional
+		buffer_t rotation; // 32
+		buffer_t gradation; // 28
+		buffer_t bitmap_pattern; // 278
+		buffer_t watermark; // 3
+	};
+
+	struct detail_info_t
+	{
+		detail_info_t() : first_detail_length(0), second_detail_length(0)
+		{}
+		~detail_info_t() {}
+		DECLARE_BINARY_SERIALIZER(detail_info_t);
+		size_t size() const {
+			return 4 + first_detail.size() + 4 + second_detail.size();
+		}
+		uint32_t first_detail_length;
+		buffer_t first_detail;
+		uint32_t second_detail_length;
+		buffer_t second_detail;
+	};
+
+	struct object_t
+	{
+		object_t(const common_header_t& common_header) : common_header(common_header)
+		{}
+		virtual ~object_t(){}
+		virtual size_t size() const = 0;
+		virtual bufferstream& read(bufferstream& stream) = 0;
+		virtual bufferstream& write(bufferstream& stream) = 0;
+
+		bool has_child() {
+			return common_header.has_child();
+		}
+		bool has_sibling() {
+			return common_header.has_sibling();
+		}
+		virtual bool has_para_list() const {
+			return false;
+		}
+		virtual bool has_caption() const {
+			return false;
+		}
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
+			return nullptr;
+		}
+		virtual paragraph_list_t* get_caption() {
+			return nullptr;
+		}
+
+		common_header_t common_header;
+	};
+
+	struct drawing_object_t
+	{
+		drawing_object_t()
+		{}
+		~drawing_object_t() {}
+		DECLARE_BINARY_SERIALIZER(drawing_object_t);
+		size_t size() const {
+			size_t offset = frame_header.size();
+			for (auto& object : objects)
+				offset += object->size();
+			return offset;
+		}
+		frame_header_t frame_header;
+		std::vector< std::unique_ptr<object_t> > objects;
+	};
+
+	struct container_t : object_t
+	{
+		container_t(const common_header_t& common_header) : object_t(common_header)
+		{}
+		~container_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual size_t size() const {
+			size_t offset = 0;
+			offset += common_header.size();
+			offset += detail_info.size();
+			return offset;
+		}
+		detail_info_t detail_info;
+	};
+
+	struct textbox_t : object_t
+	{
+		textbox_t(const common_header_t& common_header) : object_t(common_header),
+			first_info_length(0), second_info_length(0)
+		{}
+		~textbox_t() {}
+		virtual bufferstream& read(bufferstream& stream);
+		virtual bufferstream& write(bufferstream& stream);
+		virtual bool has_para_list() const {
+			return true;
+		}
+		virtual std::vector<paragraph_list_t>* get_para_lists() {
+			return &para_lists;
+		}
+		virtual size_t size() const {
+			size_t offset = 0;
+			offset += common_header.size();
+			offset += 8;
+			offset += std::accumulate(para_lists.begin(), para_lists.end(), 0, [](size_t size, auto& para_list) {
+				return size + para_list.size(); });
+			offset += detail_info.size();
+			return offset;
+		}
+		uint32_t first_info_length;
+		uint32_t second_info_length;
+		std::vector<paragraph_list_t> para_lists;
+		detail_info_t detail_info;
+	};
+
 	struct picture_t : control_code_t
 	{
 		typedef control_code_t::control_t control_t;
@@ -847,6 +1013,9 @@ namespace hwp30
 		virtual control_t get_code() const {
 			return code;
 		}
+		virtual bool has_drawing_object() const {
+			return drawing_object.objects.size() > 0;
+		}
 		virtual bool has_caption() const {
 			return true;
 		}
@@ -854,7 +1023,10 @@ namespace hwp30
 			return &caption;
 		}
 		size_t size() const {
-			return 8 + 4 + data.size() + 1 + data2.size() + data3.size() + caption.size();
+			size_t offset = 8 + 4 + data.size() + 1 + data2.size() + data3.size() + caption.size();
+			if (has_drawing_object())
+				offset += drawing_object.size();
+			return offset;
 		}
 		control_t code;
 		uint32_t reserved;
@@ -868,6 +1040,8 @@ namespace hwp30
 		// variable data
 		buffer_t data3; // length
 		paragraph_list_t caption;
+
+		drawing_object_t drawing_object;
 	};
 
 #pragma endregion definition of control codes
