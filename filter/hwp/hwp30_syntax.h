@@ -1203,5 +1203,37 @@ namespace hwp30
 		control_builder() {}
 		static uint16_t push_back(control_t code, controls_t& controls);
 	};
+
+	class consumer_t
+	{
+	public:
+		typedef binary_traits::byte_t byte_t;
+		typedef binary_traits::buffer_t buffer_t;
+		typedef binary_traits::bufferstream bufferstream;
+		typedef binary_traits::streamsize streamsize;
+		consumer_t();
+		void open(const std::string& path);
+		std::unique_ptr<document_t>& get_document(){
+			return document;
+		}
+	private:
+		buffer_t read_file(const std::string& path);
+		std::unique_ptr<document_t> parse(buffer_t& buffer);
+		buffer_t extract_body(buffer_t& buffer, bufferstream& stream, std::unique_ptr<document_t>& document);
+
+		std::unique_ptr<document_t> document;
+	};
+
+	class producer_t
+	{
+	public:
+		typedef binary_traits::byte_t byte_t;
+		typedef binary_traits::buffer_t buffer_t;
+		typedef binary_traits::bufferstream bufferstream;
+		typedef binary_traits::streamsize streamsize;
+		producer_t();
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
+	private:
+	};
 }
 }

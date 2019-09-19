@@ -2,6 +2,8 @@
 #include "hwp/hwp30_syntax.h"
 #include "locale/hchar_converter.h"
 #include "locale/charset_encoder.h"
+#include "io/binary_iostream.h"
+#include "io/zlib.h"
 
 namespace filter
 {
@@ -1111,6 +1113,118 @@ namespace hwp30
 		stream << data.first;
 		stream << data.second;
 		return stream;
+	}
+
+	consumer_t::consumer_t()
+	{}
+
+	consumer_t::buffer_t consumer_t::read_file(const std::string& path)
+	{
+		std::ifstream file(path, std::ios::binary);
+		if (file.fail())
+			throw std::runtime_error("file I/O error");
+		file.unsetf(std::ios::skipws);
+		file.seekg(0, std::ios::end);
+		std::streampos size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		buffer_t buffer;
+		buffer.reserve(size_t(size));
+		std::copy(std::istream_iterator<byte_t>(file), std::istream_iterator<byte_t>(), std::back_inserter(buffer));
+		return buffer;
+	}
+
+	std::unique_ptr<document_t> consumer_t::parse(buffer_t& buffer)
+	{
+		std::unique_ptr<document_t> document(std::make_unique<document_t>());
+		bufferstream header_stream(&buffer[0], buffer.size());
+		header_stream >> document->header;
+
+		buffer_t body_tail = extract_body(buffer, header_stream, document);
+		if (body_tail.empty())
+			throw std::runtime_error("hwp30 parse body error");
+		bufferstream body_tail_stream(&body_tail[0], body_tail.size());
+		body_tail_stream >> document->body;
+		body_tail_stream >> document->tail;
+		return document;
+	}
+
+	buffer_t consumer_t::extract_body(buffer_t& buffer, bufferstream& stream, std::unique_ptr<document_t>& document)
+	{
+		streamsize stream_cur = stream.tellg();
+		streamsize stream_end = buffer.size();
+		streamsize body_size = stream_end - stream_cur;
+		buffer_t body = binary_io::read(stream, body_size);
+		if (document->header.doc_info.compressed != 0) // decompress : 0
+			return hwp_zip::decompress_noexcept(body);
+		return body;
+	}
+
+	void consumer_t::open(const std::string& path)
+	{
+		try
+		{
+			auto import_buffer = read_file(path);
+			document = parse(import_buffer);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	producer_t::producer_t()
+	{}
+
+	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			auto& document = consumer->get_document();
+			if(!document)
+				throw std::runtime_error("document is not exist");
+			buffer_t header_buffer;
+			header_buffer.resize(document->header.size());
+			if (header_buffer.size() == 0)
+				throw std::runtime_error("save buffer size error");
+			bufferstream header_stream(&header_buffer[0], header_buffer.size());
+			header_stream << document->header;
+
+			buffer_t body_tail_buffer;
+			body_tail_buffer.resize(document->body.size() + document->tail.first.size());
+			if (body_tail_buffer.size() == 0)
+				throw std::runtime_error("save buffer size error");
+			bufferstream body_tail_stream(&body_tail_buffer[0], body_tail_buffer.size());
+			body_tail_stream << document->body;
+			body_tail_stream << document->tail.first;
+
+			// compress
+			if (document->header.doc_info.compressed != 0)
+			{
+				streamsize buffer_size = body_tail_stream.tellp(); // IMPORTANT!
+				body_tail_buffer = hwp_zip::compress_noexcept((char*)& body_tail_buffer[0], (size_t)buffer_size);
+			}
+
+			std::ofstream fout(path, std::ios::out | std::ios::binary);
+			fout.write((char*)& header_buffer[0], header_buffer.size());
+			fout.write((char*)& body_tail_buffer[0], body_tail_buffer.size());
+			if (document->tail.has_second_extra_block())
+			{
+				buffer_t second_extra_block_buffer;
+				second_extra_block_buffer.resize(document->tail.second.size());
+				if (second_extra_block_buffer.size() == 0)
+					throw std::runtime_error("save buffer size error");
+				bufferstream second_extra_block_stream(&second_extra_block_buffer[0], second_extra_block_buffer.size());
+				second_extra_block_stream << document->tail.second;
+
+				fout.write((char*)& second_extra_block_buffer[0], second_extra_block_buffer.size());
+			}
+			fout.close();
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 }
 }

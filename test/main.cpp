@@ -41,27 +41,27 @@ void test_hwp30()
 	{
 		filter_t filter;
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_shape.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30_shape.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30_shape.export.hwp"));
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30_shape.hwp"));
+		filter.save(to_utf8(u"d:/filter/hwp30_shape.export.hwp"), src);
 	}
 	{
 		filter_t filter;
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_ole.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30_ole.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30_ole.export.hwp"));
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30_ole.hwp"));
+		filter.save(to_utf8(u"d:/filter/hwp30_ole.export.hwp"), src);
 	}
 	{
 		filter_t filter;
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30_group3.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30_group3.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30_group3.export.hwp"));
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30_group3.hwp"));
+		filter.save(to_utf8(u"d:/filter/hwp30_group3.export.hwp"), src);
 	}
 	{
 		filter_t filter;
 		print(filter.extract_all_texts(to_utf8(u"d:/filter/hwp30.hwp")));
-		auto document = filter.open(to_utf8(u"d:/filter/hwp30.hwp"));
-		filter.save(document, to_utf8(u"d:/filter/hwp30.export.hwp"));
-	}	
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30.hwp"));
+		filter.save(to_utf8(u"d:/filter/hwp30.export.hwp"), src);
+	}
 }
 
 void test_hwp50()
