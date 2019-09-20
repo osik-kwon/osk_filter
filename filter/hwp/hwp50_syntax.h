@@ -162,11 +162,14 @@ namespace hwp50
 			return distribute_doc_data_records;
 		}
 	private:
+		const std::regex crypt_paragraph_rule;
 		const std::regex paragraph_rule;
 		const std::regex compress_rule;
 		const std::regex crypt_rule;
 		std::map<std::string, std::unique_ptr<buffer_t> >streams;
 		std::map<std::string, std::unique_ptr<distribute_doc_data_record_t> > distribute_doc_data_records;
+
+		file_header_t header;
 	};
 
 	class producer_t

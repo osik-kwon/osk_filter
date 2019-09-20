@@ -192,7 +192,15 @@ namespace hwp50
 	consumer_t::consumer_t() :
 		compress_rule("(/BodyText/|/ViewText/|/BinData/|/DocHistory/).+"),
 		crypt_rule("/ViewText/.+"),
-		paragraph_rule("(/BodyText/|/ViewText/).+") // TODO: verify DocHistory
+		paragraph_rule("/BodyText/.+"),
+		crypt_paragraph_rule("/ViewText/.+")
+		/*
+		// TODO: verify paragraph_rule, crypt_paragraph_rule
+		/Scripts/JScriptVersion
+		/Scripts/DefaultJScript
+		/DocHistory/HistoryLastDoc
+		/DocHistory/VersionLog0 ... N
+		*/
 	{}
 
 	std::string consumer_t::file_header_entry() const {
@@ -232,6 +240,10 @@ namespace hwp50
 
 	bool consumer_t::has_paragraph(const std::string& entry) const
 	{
+		if (header.options[file_header_t::distribution])
+		{
+			return std::regex_match(entry, crypt_paragraph_rule);
+		}
 		return std::regex_match(entry, paragraph_rule);
 	}
 
@@ -271,7 +283,7 @@ namespace hwp50
 		{
 			auto storage = cfb_t::make_read_only_storage(path);
 			auto entries = cfb_t::make_full_entries(storage, "/");
-			auto header = read_file_header(storage);
+			header = read_file_header(storage);
 			for (auto& entry : entries)
 			{
 				auto plain = cfb_t::extract_stream(storage, entry);
