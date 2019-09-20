@@ -31,6 +31,7 @@ namespace hwp50
 		std::unique_ptr<consumer_t> open(const std::string& path);
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
 		sections_t extract_all_texts(std::unique_ptr<consumer_t>& consumer);
+		sections_t search_privacy(const rules_t& rules, std::unique_ptr<consumer_t>& consumer);
 		void replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<consumer_t>& consumer);
 	private:
 	};

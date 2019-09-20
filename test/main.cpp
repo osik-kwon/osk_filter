@@ -37,8 +37,10 @@ void print(const filter::hwp50::filter_t::section_t& section)
 
 void test_hwp30()
 {
+	std::cout << "===== hwp30 test =====" << std::endl;
 	typedef filter::hwp30::filter_t filter_t;
 	{
+		std::cout << "===== hwp30 open/save test =====" << std::endl;
 		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hwp30_shape.hwp"));
 		print(filter.extract_all_texts(src));
@@ -47,6 +49,15 @@ void test_hwp30()
 		print(filter.extract_all_texts(dest));
 	}
 	{
+		std::cout << "===== hwp30 search privacy test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30_privacy.hwp"));
+		print(filter.extract_all_texts(src));
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy({ resident_registration_number }, src));
+	}
+	{
+		std::cout << "===== hwp30 replace privacy test =====" << std::endl;
 		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
 		filter_t filter;
 
@@ -63,8 +74,10 @@ void test_hwp30()
 
 void test_hwp50()
 {
+	std::cout << "===== hwp50 test =====" << std::endl;
 	typedef filter::hwp50::filter_t filter_t;
 	{
+		std::cout << "===== hwp50 open/save test =====" << std::endl;
 		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hwp50.hwp"));
 		print(filter.extract_all_texts(src));
@@ -73,6 +86,15 @@ void test_hwp50()
 		print(filter.extract_all_texts(dest));
 	}
 	{
+		std::cout << "===== hwp50 search privacy test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/privacy2.hwp"));
+		print(filter.extract_all_texts(src));
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy({ resident_registration_number }, src));
+	}
+	{
+		std::cout << "===== hwp50 replace privacy test =====" << std::endl;
 		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
 		filter_t filter;
 
@@ -89,16 +111,10 @@ void test_hwp50()
 
 void test_hwpml()
 {
+	std::cout << "===== hwpml test =====" << std::endl;
 	typedef filter::hml::filter_t filter_t;
 	{
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/privacy.hml"));
-		print(filter.extract_all_texts(src));
-
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		print(filter.search_privacy({ resident_registration_number }, src));
-	}
-	{
+		std::cout << "===== hwpml open/save test =====" << std::endl;
 		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hml.hml"));
 		print(filter.extract_all_texts(src));
@@ -107,6 +123,15 @@ void test_hwpml()
 		print(filter.extract_all_texts(dest));
 	}
 	{
+		std::cout << "===== hwpml search privacy test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.hml"));
+		print(filter.extract_all_texts(src));
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy({ resident_registration_number }, src));
+	}
+	{
+		std::cout << "===== hwpml replace privacy test =====" << std::endl;
 		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
 		filter_t filter;
 
@@ -123,8 +148,10 @@ void test_hwpml()
 
 void test_hwpx()
 {
+	std::cout << "===== hwpx test =====" << std::endl;
 	typedef filter::hwpx::filter_t filter_t;
 	{
+		std::cout << "===== hwpx open/save test =====" << std::endl;
 		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hwpx.hwpx"));
 		print(filter.extract_all_texts(src));
@@ -133,6 +160,15 @@ void test_hwpx()
 		print(filter.extract_all_texts(dest));
 	}
 	{
+		std::cout << "===== hwpx search privacy test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
+		print(filter.extract_all_texts(src));
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy({ resident_registration_number }, src));
+	}
+	{
+		std::cout << "===== hwpx replace privacy test =====" << std::endl;
 		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
 		filter_t filter;
 
@@ -151,10 +187,10 @@ int main()
 {
 	try
 	{
-		//test_hwp50();
-		//test_hwpml();
-		//test_hwpx();
+		test_hwpml();
+		test_hwpx();
 		test_hwp30();
+		test_hwp50();
 	}
 	catch (const std::exception& e)
 	{

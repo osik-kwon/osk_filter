@@ -78,22 +78,6 @@ namespace hml
 		return sections_t();
 	}
 
-	void filter_t::replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<xml_document_t>& document)
-	{
-		try
-		{
-			editor_t editor;
-			editor.extract(text_tag_name(), para_tag_name())
-				.find(rules)
-				.replace(replacement)
-				.finalize(document);
-		}
-		catch (const std::exception& e)
-		{
-			std::cout << e.what() << std::endl;
-		}
-	}
-
 	filter_t::sections_t filter_t::search_privacy(const rules_t& rules, std::unique_ptr<xml_document_t>& document)
 	{
 		try
@@ -109,6 +93,22 @@ namespace hml
 			std::cout << e.what() << std::endl;
 		}
 		return sections_t();
+	}
+
+	void filter_t::replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<xml_document_t>& document)
+	{
+		try
+		{
+			editor_t editor;
+			editor.extract(text_tag_name(), para_tag_name())
+				.find(rules)
+				.replace(replacement)
+				.finalize(document);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 }
 }

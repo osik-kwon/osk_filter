@@ -20,7 +20,9 @@ namespace xml
 		while (std::regex_search(begin, texts.end(), match, pattern))
 		{
 			begin += match.position() + match.length();
-			lists.push_back(match.str());
+			auto text = match.str();
+			text.push_back(L'\n'); // TODO: normalize
+			lists.push_back(text);
 		}
 		results.emplace_back(std::make_pair(node, lists));
 	}

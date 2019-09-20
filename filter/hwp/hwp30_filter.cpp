@@ -59,6 +59,27 @@ namespace hwp30
 		return sections_t();
 	}
 
+	filter_t::sections_t filter_t::search_privacy(const rules_t& rules, std::unique_ptr<consumer_t>& consumer)
+	{
+		try
+		{
+			sections_t sections;
+			sections.resize(1);
+			editor_t editor;
+			editor.extract(consumer)
+				.find(rules)
+				.finalize();
+			auto find_result = editor.get_find_result();
+			std::copy(find_result.begin(), find_result.end(), std::back_inserter(sections));
+			return sections;
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return sections_t();
+	}
+
 	void filter_t::replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<consumer_t>& consumer)
 	{
 		try

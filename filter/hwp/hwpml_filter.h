@@ -25,10 +25,9 @@ namespace hml
 
 		std::unique_ptr<xml_document_t> open(const std::string& path);
 		void save(const std::string& path, std::unique_ptr<xml_document_t>& document);
-
 		sections_t extract_all_texts(std::unique_ptr<xml_document_t>& document);
-		void replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<xml_document_t>& document);
 		sections_t search_privacy(const rules_t& rules, std::unique_ptr<xml_document_t>& document);
+		void replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<xml_document_t>& document);
 	private:
 		std::string text_tag_name() const;
 		std::string para_tag_name() const;
