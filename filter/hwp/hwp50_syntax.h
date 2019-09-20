@@ -7,6 +7,7 @@
 #include "traits/binary_traits.h"
 #include "traits/compound_file_binary_traits.h"
 #include "io/binary_iostream.h"
+#include "cryptor/cryptor.h"
 
 namespace filter
 {
@@ -81,6 +82,8 @@ namespace hwp50
 
 		// edit
 		std::bitset<8> options; // 0 : 복사 제한, 1 : 인쇄 제한
+		// cryptor
+		cryptor_t cryptor;
 	};
 
 	struct record_t
@@ -155,11 +158,15 @@ namespace hwp50
 		std::map<std::string, std::unique_ptr<buffer_t> >& get_streams() {
 			return streams;
 		}
+		std::map<std::string, std::unique_ptr<distribute_doc_data_record_t> >& get_distribute_doc_data_records() {
+			return distribute_doc_data_records;
+		}
 	private:
 		const std::regex paragraph_rule;
 		const std::regex compress_rule;
 		const std::regex crypt_rule;
 		std::map<std::string, std::unique_ptr<buffer_t> >streams;
+		std::map<std::string, std::unique_ptr<distribute_doc_data_record_t> > distribute_doc_data_records;
 	};
 
 	class producer_t

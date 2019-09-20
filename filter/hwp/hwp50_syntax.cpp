@@ -1,7 +1,6 @@
 #include "filter_pch.h"
 #include <regex>
 #include "hwp/hwp50_syntax.h"
-#include "cryptor/cryptor.h"
 #include "io/compound_file_binary.h"
 #include "io/zlib.h"
 
@@ -89,8 +88,9 @@ namespace hwp50
 		record.body = binary_io::read(stream, record.header.body_size);
 		bufferstream body_stream(&record.body[0], record.body.size());	
 
-		cryptor_t cryptor( binary_io::read_uint32(body_stream) );
-		cryptor.make_hwp50_distribution_key(record.body);
+		auto& cryptor = record.cryptor;
+		cryptor.reset( binary_io::read_uint32(body_stream) );
+		cryptor.decrypt_hwp50_distribution_key(record.body);
 		if(!cryptor.options.empty())
 			record.options = cryptor.options[0];
 
@@ -110,9 +110,10 @@ namespace hwp50
 
 	bufferstream& operator << (bufferstream& stream, const distribute_doc_data_record_t& record)
 	{
-		// TODO: implement
+		cryptor_t& cryptor = const_cast<cryptor_t&>(record.cryptor);
+		auto data = cryptor.encrypt_hwp50_distribution_key();
 		stream << record.header;
-		binary_io::write(stream, record.body);
+		binary_io::write(stream, data);
 		return stream;
 	}
 
@@ -279,6 +280,9 @@ namespace hwp50
 					bufferstream stream(&plain[0], plain.size());
 					distribute_doc_data_record_t record;
 					stream >> record;
+					distribute_doc_data_records.insert(
+						{ entry, std::make_unique<distribute_doc_data_record_t>(record) }
+					);				
 					plain = std::move(record.body);
 				}
 				if (header.options[file_header_t::compressed] && can_compress(entry))
@@ -309,11 +313,34 @@ namespace hwp50
 				auto& data = entry.second;
 				if ( header.options[file_header_t::distribution] && consumer->can_crypt(name) )
 				{
-					// TODO: implement
-					cfb_t::make_stream(storage, name,
-						(header.options[file_header_t::compressed] && consumer->can_compress(name)) ?
-						hwp_zip::compress_noexcept(*data) : *data
-					);
+					buffer_t compressed = *data;
+					if (header.options[file_header_t::compressed] && consumer->can_compress(name))
+						compressed = hwp_zip::compress_noexcept(*data);
+
+					if (header.options[file_header_t::distribution])
+					{
+						auto& distribute_doc_data_records = consumer->get_distribute_doc_data_records();
+						if (distribute_doc_data_records.find(name) == distribute_doc_data_records.end())
+							throw std::runtime_error(name + " distribute_doc_data_record is not exist");
+
+						distribute_doc_data_record_t record = *distribute_doc_data_records.find(name)->second;
+						if(compressed.size() % 16 != 0)
+						{
+							int upper = compressed.size() + (16 - compressed.size() % 16);
+							int mod = upper - compressed.size();
+							for (int i = 0; i < mod; ++i)
+								compressed.push_back(0);
+						}
+						auto cipher_text = record.cryptor.encrypt_aes128_ecb_nopadding(compressed);
+						buffer_t buffer;
+						buffer.resize( 4 + 256 + cipher_text.size() );
+						
+						bufferstream stream(&buffer[0], buffer.size());
+						stream << record;
+						binary_io::write(stream, cipher_text);
+						compressed = std::move(buffer);
+					}
+					cfb_t::make_stream(storage, name, compressed);
 				}
 				else
 				{

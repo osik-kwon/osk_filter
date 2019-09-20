@@ -109,6 +109,21 @@ void test_hwp50()
 	}
 }
 
+void test_hwp50_distribution()
+{
+	std::cout << "===== hwp50 distribution test =====" << std::endl;
+	typedef filter::hwp50::filter_t filter_t;
+	{
+		std::cout << "===== hwp50 open/save test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwp50_dist.hwp"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hwp50_dist.export.hwp"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_dist.export.hwp"));
+		print(filter.extract_all_texts(dest));
+	}
+}
+
 void test_hwpml()
 {
 	std::cout << "===== hwpml test =====" << std::endl;
@@ -187,10 +202,11 @@ int main()
 {
 	try
 	{
-		test_hwpml();
-		test_hwpx();
-		test_hwp30();
-		test_hwp50();
+		test_hwp50_distribution();
+		//test_hwpml();
+		//test_hwpx();
+		//test_hwp30();
+		//test_hwp50();
 	}
 	catch (const std::exception& e)
 	{
