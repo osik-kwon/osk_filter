@@ -224,11 +224,11 @@ int main()
 {
 	try
 	{
+		test_hwpml();
+		test_hwpx();
+		test_hwp30();
+		test_hwp50();
 		test_hwp50_distribution();
-		//test_hwpml();
-		//test_hwpx();
-		//test_hwp30();
-		//test_hwp50();
 	}
 	catch (const std::exception& e)
 	{

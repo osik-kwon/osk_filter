@@ -300,7 +300,7 @@ namespace hwp50
 		}
 	}
 
-	void producer_t::to_cipher_text(const std::string& name, std::unique_ptr<consumer_t>& consumer, buffer_t& src)
+	void producer_t::encrypt_to_distribute_stream(const std::string& name, std::unique_ptr<consumer_t>& consumer, buffer_t& src)
 	{
 		auto& distribute_doc_data_records = consumer->get_distribute_doc_data_records();
 		if (distribute_doc_data_records.find(name) == distribute_doc_data_records.end())
@@ -341,7 +341,7 @@ namespace hwp50
 					if (header.options[file_header_t::compressed] && consumer->can_compress(name))
 						compressed = hwp_zip::compress_noexcept(*data);
 					if (header.options[file_header_t::distribution])
-						to_cipher_text(name, consumer, compressed);
+						encrypt_to_distribute_stream(name, consumer, compressed);
 					cfb_t::make_stream(storage, name, compressed);
 				}
 				else
