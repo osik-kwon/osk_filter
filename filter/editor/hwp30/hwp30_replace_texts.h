@@ -16,7 +16,7 @@ namespace hwp30
 		typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
 		typedef std::vector<para_ref_t> para_list_ref_t;
 		replace_texts_t();
-		static void replace(rule_string& texts, para_list_ref_t& para_list_ref, const rule_t& pattern, char16_t replacement);
+		static void replace(rule_string& texts, para_ref_t& para_ref, const rule_t& pattern, char16_t replacement);
 	};
 }
 }

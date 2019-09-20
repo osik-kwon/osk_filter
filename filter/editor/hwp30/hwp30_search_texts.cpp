@@ -10,7 +10,7 @@ namespace hwp30
 		: pattern(pattern), replacement(replacement)
 	{}
 
-	void search_texts_t::search(rule_string& texts, para_list_ref_t& para_list_ref)
+	void search_texts_t::search(rule_string& texts, para_ref_t& para_ref)
 	{
 		std::match_results<para_t::iterator> match;
 
@@ -21,7 +21,7 @@ namespace hwp30
 			begin += match.position() + match.length();
 			lists.push_back(match.str());
 		}
-		results.emplace_back(std::make_pair(para_list_ref, lists));
+		results.emplace_back(std::make_pair(para_ref, lists));
 	}
 
 	search_texts_t::section_t search_texts_t::results_to_section() const

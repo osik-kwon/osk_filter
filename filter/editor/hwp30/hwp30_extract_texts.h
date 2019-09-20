@@ -43,7 +43,7 @@ namespace hwp30
 		typedef editor_traits::rule_string rule_string;
 		typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
 		typedef std::vector<para_ref_t> para_list_ref_t;
-		typedef std::function<void(rule_string&, para_list_ref_t&, std::vector<search_texts_t>&)> ruler_t;
+		typedef std::function<void(rule_string&, para_ref_t&, std::vector<search_texts_t>&)> ruler_t;
 		extract_texts_t();
 		~extract_texts_t();
 		extract_texts_t& make_rule(const rule_t& pattern, char16_t replacement = u'*');

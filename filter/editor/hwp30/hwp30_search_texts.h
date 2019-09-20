@@ -15,11 +15,11 @@ namespace hwp30
 		typedef editor_traits::rule_string rule_string;
 		typedef std::vector< std::reference_wrapper<hchar_t> > para_ref_t;
 		typedef std::vector<para_ref_t> para_list_ref_t;
-		typedef std::pair< para_list_ref_t, section_t > result_t;
+		typedef std::pair< para_ref_t, section_t > result_t;
 
 		search_texts_t(const rule_t& pattern, char16_t replacement);
 		section_t results_to_section() const;
-		void search(rule_string& texts, para_list_ref_t& para_list_ref);
+		void search(rule_string& texts, para_ref_t& para_ref);
 		bool empty() const {
 			return results.empty();
 		}

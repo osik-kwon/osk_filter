@@ -184,7 +184,6 @@ namespace hwp30
 
 	void extract_texts_t::run(para_list_ref_t& para_list_ref)
 	{
-		// TODO: implement
 		for (auto& para_ref : para_list_ref)
 		{
 			rule_string para_text;
@@ -207,17 +206,7 @@ namespace hwp30
 						para_text.push_back(utf16[0]);
 				}
 			}
-			if (!para_text.empty())
-			{
-				if (para_text.back() != L'\n') // TODO: normalize
-					para_text.push_back(L'\n'); // TODO: normalize
-			}
-			// TODO: implement
-			ruler(para_text, para_list_ref, rules);
-			/*for (size_t i = 0; i < para_text.size(); ++i)
-			{
-				para_ref[i].get().code = para_text[i];
-			}*/
+			ruler(para_text, para_ref, rules);
 		}
 		extractor_t::extract_texts(para_list_ref, section);
 	}
