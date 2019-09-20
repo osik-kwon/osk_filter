@@ -175,6 +175,7 @@ namespace hwp50
 		producer_t() = default;
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
 	private:
+		void to_cipher_text(const std::string& name, std::unique_ptr<consumer_t>& consumer, buffer_t& src);
 	};
 
 	struct syntax_t

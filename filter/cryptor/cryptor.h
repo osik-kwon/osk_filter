@@ -38,6 +38,8 @@ namespace filter
 		buffer_t encrypt_aes128_ecb_nopadding(std::vector<uint8_t>&& plain);
 		buffer_t encrypt_aes128_ecb_nopadding(buffer_t& plain);
 
+		void xor_merge(buffer_t& data);
+
 		hwp50_distribution_srand_t seed;
 		buffer_t symmetric_key;
 		buffer_t hash_key;

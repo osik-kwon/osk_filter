@@ -23,10 +23,8 @@ namespace filter
 		return random_seed;
 	}
 
-	void cryptor_t::decrypt_hwp50_distribution_key(const buffer_t& hint)
+	void cryptor_t::xor_merge(buffer_t& data)
 	{
-		buffer_t data;
-		std::copy(hint.begin(), hint.end(), std::back_inserter(data));
 		uint8_t _xor = 0;
 		for (int32_t i = 0, n = 0; i < 256; i++, n--)
 		{
@@ -39,6 +37,13 @@ namespace filter
 			if (i >= 4)
 				data[i] ^= _xor;
 		}
+	}
+
+	void cryptor_t::decrypt_hwp50_distribution_key(const buffer_t& hint)
+	{
+		buffer_t data;
+		std::copy(hint.begin(), hint.end(), std::back_inserter(data));
+		xor_merge(data);
 		size_t start_offset = 4 + (data[0] & 0xF);
 		std::copy(data.begin() + start_offset, data.begin() + (start_offset + 16), std::back_inserter(symmetric_key));
 		std::copy(data.begin() + start_offset, data.begin() + (start_offset + 80), std::back_inserter(hash_key));
@@ -59,23 +64,9 @@ namespace filter
 		size_t start_offset = 4 + (data[0] & 0xF);
 		std::copy(hash_key.begin(), hash_key.end(), data.begin() + start_offset);
 		std::copy(options.begin(), options.end(), data.begin() + start_offset + hash_key.size() );
-
 		const uint8_t SHA_signature = 0x80;
 		data[start_offset + hash_key.size() + options.size()] = SHA_signature;
-
-		uint8_t _xor = 0;
-		for (int32_t i = 0, n = 0; i < 256; i++, n--)
-		{
-			if (n == 0)
-			{
-				_xor = seed.rand() & 0xFF;
-				n = (seed.rand() & 0xF) + 1;
-			}
-
-			if (i >= 4)
-				data[i] ^= _xor;
-		}
-
+		xor_merge(data);
 		return data;
 	}
 

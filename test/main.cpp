@@ -122,6 +122,28 @@ void test_hwp50_distribution()
 		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_dist.export.hwp"));
 		print(filter.extract_all_texts(dest));
 	}
+	{
+		std::cout << "===== hwp50 search privacy test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwp50_privacy_dist.hwp"));
+		print(filter.extract_all_texts(src));
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy({ resident_registration_number }, src));
+	}
+	{
+		std::cout << "===== hwp50 replace privacy test =====" << std::endl;
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		filter_t filter;
+
+		auto src = filter.open(to_utf8(u"d:/filter/hwp50_privacy_dist.hwp"));
+		print(filter.extract_all_texts(src));
+
+		filter.replace_privacy({ resident_registration_number }, u'@', src);
+		filter.save(to_utf8(u"d:/filter/hwp50_privacy_dist.export.hwp"), src);
+
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_privacy_dist.export.hwp"));
+		print(filter.extract_all_texts(dest));
+	}
 }
 
 void test_hwpml()

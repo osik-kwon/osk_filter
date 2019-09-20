@@ -300,6 +300,30 @@ namespace hwp50
 		}
 	}
 
+	void producer_t::to_cipher_text(const std::string& name, std::unique_ptr<consumer_t>& consumer, buffer_t& src)
+	{
+		auto& distribute_doc_data_records = consumer->get_distribute_doc_data_records();
+		if (distribute_doc_data_records.find(name) == distribute_doc_data_records.end())
+			throw std::runtime_error(name + " distribute_doc_data_record is not exist");
+
+		distribute_doc_data_record_t record = *distribute_doc_data_records.find(name)->second;
+		if (src.size() % 16 != 0) // 16 byte padding for AES128 ECB encrypt
+		{
+			int upper = src.size() + (16 - src.size() % 16);
+			int mod = upper - src.size();
+			for (int i = 0; i < mod; ++i)
+				src.push_back(0);
+		}
+		auto cipher_text = record.cryptor.encrypt_aes128_ecb_nopadding(src);
+		buffer_t buffer;
+		buffer.resize(4 + 256 + cipher_text.size());
+
+		bufferstream stream(&buffer[0], buffer.size());
+		stream << record;
+		binary_io::write(stream, cipher_text);
+		src = std::move(buffer);
+	}
+
 	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer)
 	{
 		try
@@ -316,30 +340,8 @@ namespace hwp50
 					buffer_t compressed = *data;
 					if (header.options[file_header_t::compressed] && consumer->can_compress(name))
 						compressed = hwp_zip::compress_noexcept(*data);
-
 					if (header.options[file_header_t::distribution])
-					{
-						auto& distribute_doc_data_records = consumer->get_distribute_doc_data_records();
-						if (distribute_doc_data_records.find(name) == distribute_doc_data_records.end())
-							throw std::runtime_error(name + " distribute_doc_data_record is not exist");
-
-						distribute_doc_data_record_t record = *distribute_doc_data_records.find(name)->second;
-						if(compressed.size() % 16 != 0)
-						{
-							int upper = compressed.size() + (16 - compressed.size() % 16);
-							int mod = upper - compressed.size();
-							for (int i = 0; i < mod; ++i)
-								compressed.push_back(0);
-						}
-						auto cipher_text = record.cryptor.encrypt_aes128_ecb_nopadding(compressed);
-						buffer_t buffer;
-						buffer.resize( 4 + 256 + cipher_text.size() );
-						
-						bufferstream stream(&buffer[0], buffer.size());
-						stream << record;
-						binary_io::write(stream, cipher_text);
-						compressed = std::move(buffer);
-					}
+						to_cipher_text(name, consumer, compressed);
 					cfb_t::make_stream(storage, name, compressed);
 				}
 				else
