@@ -16,15 +16,23 @@ namespace txt
 		typedef std::vector< para_t > document_t;
 		consumer_t();
 		void open(const std::string& path);
+		static std::string detect_charset(const std::string& path);
+		document_t& get_document() {
+			return document;
+		}
+		const std::string& get_charset() const {
+			return charset;
+		}
 	private:
 		document_t document;
+		std::string charset;
 	};
 
 	class producer_t
 	{
 	public:
 		producer_t();
-		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset = "");
 	};
 
 	class filter_t
@@ -37,8 +45,9 @@ namespace txt
 		typedef editor_traits::rules_t rules_t;
 
 		filter_t();
+		std::string detect_charset(const std::string& path);
 		std::unique_ptr<consumer_t> open(const std::string& path);
-		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer);
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string dest_charset = "");
 		sections_t extract_all_texts(std::unique_ptr<consumer_t>& consumer);
 		sections_t search_privacy(const rules_t& rules, std::unique_ptr<consumer_t>& consumer);
 		void replace_privacy(const rules_t& rules, char16_t replacement, std::unique_ptr<consumer_t>& consumer);

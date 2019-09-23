@@ -41,6 +41,15 @@ void test_hwp30()
 	std::cout << "===== hwp30 test =====" << std::endl;
 	typedef filter::hwp30::filter_t filter_t;
 	{
+		std::cout << "===== hwp30 non ascii path test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwp30_한글경로.hwp"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hwp30_한글경로.export.hwp"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp30_한글경로.export.hwp"));
+		print(filter.extract_all_texts(dest));
+	}
+	{
 		std::cout << "===== hwp30 open/save test =====" << std::endl;
 		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hwp30_shape.hwp"));
@@ -77,6 +86,15 @@ void test_hwp50()
 {
 	std::cout << "===== hwp50 test =====" << std::endl;
 	typedef filter::hwp50::filter_t filter_t;
+	{
+		std::cout << "===== hwp50 non ascii path test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwp50_한글경로.hwp"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hwp50_한글경로.export.hwp"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_한글경로.export.hwp"));
+		print(filter.extract_all_texts(dest));
+	}
 	{
 		std::cout << "===== hwp50 open/save test =====" << std::endl;
 		filter_t filter;
@@ -152,6 +170,15 @@ void test_hwpml()
 	std::cout << "===== hwpml test =====" << std::endl;
 	typedef filter::hml::filter_t filter_t;
 	{
+		std::cout << "===== hwpml non ascii path test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hml_한글경로.hml"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hml_한글경로.export.hml"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hml_한글경로.export.hml"));
+		print(filter.extract_all_texts(dest));
+	}
+	{
 		std::cout << "===== hwpml open/save test =====" << std::endl;
 		filter_t filter;
 		auto src = filter.open(to_utf8(u"d:/filter/hml.hml"));
@@ -188,6 +215,15 @@ void test_hwpx()
 {
 	std::cout << "===== hwpx test =====" << std::endl;
 	typedef filter::hwpx::filter_t filter_t;
+	{
+		std::cout << "===== hwpx non ascii path test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/hwpx_한글경로.hwpx"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/hwpx_한글경로.export.hwpx"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/hwpx_한글경로.export.hwpx"));
+		print(filter.extract_all_texts(dest));
+	}
 	{
 		std::cout << "===== hwpx open/save test =====" << std::endl;
 		filter_t filter;
@@ -228,10 +264,12 @@ void test_txt()
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/euckr.txt"));
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/euckr_한글경로.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/euckr_한글경로.txt"));
 		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/euckr.export.txt"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/euckr.export.txt"));
+		filter.save(to_utf8(u"d:/filter/euckr_한글경로.export.txt"), src, "UTF-8");
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/euckr_한글경로.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/euckr_한글경로.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
 }
@@ -241,12 +279,12 @@ int main()
 	try
 	{
 		test_txt();
-		/*test_hwpml();
-		test_hwpx();
-		test_hwp30();
-		test_hwp50();
-		test_hwp50_distribution();
-		*/
+		//test_hwpml();
+		//test_hwpx();
+		//test_hwp30();
+		//test_hwp50();
+		//test_hwp50_distribution();
+		
 	}
 	catch (const std::exception& e)
 	{

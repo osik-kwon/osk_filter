@@ -4,6 +4,7 @@
 #include "locale/charset_encoder.h"
 #include "io/binary_iostream.h"
 #include "io/zlib.h"
+#include "io/file_stream.h"
 
 namespace filter
 {
@@ -1120,7 +1121,7 @@ namespace hwp30
 
 	consumer_t::buffer_t consumer_t::read_file(const std::string& path)
 	{
-		std::ifstream file(path, std::ios::binary);
+		std::ifstream file(to_fstream_path(path), std::ios::binary);
 		if (file.fail())
 			throw std::runtime_error("file I/O error");
 		file.unsetf(std::ios::skipws);
@@ -1205,7 +1206,7 @@ namespace hwp30
 				body_tail_buffer = hwp_zip::compress_noexcept((char*)& body_tail_buffer[0], (size_t)buffer_size);
 			}
 
-			std::ofstream fout(path, std::ios::out | std::ios::binary);
+			std::ofstream fout(to_fstream_path(path), std::ios::out | std::ios::binary);
 			fout.write((char*)& header_buffer[0], header_buffer.size());
 			fout.write((char*)& body_tail_buffer[0], body_tail_buffer.size());
 			if (document->tail.has_second_extra_block())

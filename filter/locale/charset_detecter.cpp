@@ -18,7 +18,6 @@ namespace filter
 		if (retval != 0)
 			return std::string();
 		uchardet_data_end(handle.get());
-
 		return std::string(uchardet_get_charset(handle.get()));
 	}
 
