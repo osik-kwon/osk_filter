@@ -64,11 +64,11 @@ namespace txt
 			filtering_stream.push(boost::iostreams::newline_filter(boost::iostreams::newline::posix));
 			filtering_stream.push(file);
 
-			para_t line;
+			std::string line;
 			while (!filtering_stream.eof())
 			{
 				std::getline(filtering_stream, line);
-				document.push_back(boost::locale::conv::to_utf<char>(line, charset));
+				document.push_back(boost::locale::conv::to_utf<char_t>(line, charset));
 			}
 		}
 		catch (const std::exception& e)
@@ -93,10 +93,10 @@ namespace txt
 			int last_para_id = document.size() - 1;
 			for (int i = 0; i < last_para_id; ++i)
 			{
-				file << boost::locale::conv::from_utf<char>(document[i], charset);
+				file << boost::locale::conv::from_utf<char_t>(document[i], charset);
 				file << newline;
 			}
-			file << boost::locale::conv::from_utf<char>(document[last_para_id], charset);
+			file << boost::locale::conv::from_utf<char_t>(document[last_para_id], charset);
 		}
 		catch (const std::exception& e)
 		{
@@ -143,9 +143,25 @@ namespace txt
 
 	filter_t::sections_t filter_t::extract_all_texts(std::unique_ptr<consumer_t>& consumer)
 	{
-		sections_t sections;
-		// TODO: implement
-		return sections;
+		try
+		{
+			if (consumer->get_document().size() == 0)
+				throw std::runtime_error("txt document is empty");
+			sections_t sections;
+			sections.resize(1);
+			auto& document = consumer->get_document();
+			for (auto& para: document)
+			{
+				sections[0].push_back(para);
+				sections[0].back().push_back(L'\n'); // TODO: normalize
+			}
+			return sections;
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return sections_t();
 	}
 
 	filter_t::sections_t filter_t::search_privacy(const rules_t& rules, std::unique_ptr<consumer_t>& consumer)

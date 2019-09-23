@@ -267,7 +267,7 @@ void test_txt()
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/euckr_한글경로.txt")) << std::endl;
 		auto src = filter.open(to_utf8(u"d:/filter/euckr_한글경로.txt"));
 		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/euckr_한글경로.export.txt"), src, "UTF-8");
+		filter.save(to_utf8(u"d:/filter/euckr_한글경로.export.txt"), src);
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/euckr_한글경로.export.txt")) << std::endl;
 		auto dest = filter.open(to_utf8(u"d:/filter/euckr_한글경로.export.txt"));
 		print(filter.extract_all_texts(dest));

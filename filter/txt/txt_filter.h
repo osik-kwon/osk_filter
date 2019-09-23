@@ -12,7 +12,8 @@ namespace txt
 	class consumer_t
 	{
 	public:
-		typedef std::string para_t;
+		typedef std::wstring::value_type char_t;
+		typedef std::wstring para_t;
 		typedef std::vector< para_t > document_t;
 		consumer_t();
 		void open(const std::string& path);
@@ -31,6 +32,7 @@ namespace txt
 	class producer_t
 	{
 	public:
+		typedef consumer_t::char_t char_t;
 		producer_t();
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset = "");
 	};
@@ -38,6 +40,7 @@ namespace txt
 	class filter_t
 	{
 	public:
+		typedef consumer_t::char_t char_t;
 		typedef editor_traits::para_t para_t;
 		typedef editor_traits::section_t section_t;
 		typedef editor_traits::sections_t sections_t;
