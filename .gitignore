@@ -24,7 +24,7 @@
 *.lai
 *.la
 *.a
-*.lib
+
 
 # Executables
 *.exe
@@ -42,6 +42,9 @@ filter/x64/
 xlnt/Debug/
 xlnt/Release/
 xlnt/x64/
+uchardet/Debug/
+uchardet/Release/
+uchardet/x64/
 
 #Visual Studio files
 *.user
