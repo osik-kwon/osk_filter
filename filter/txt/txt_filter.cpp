@@ -56,14 +56,18 @@ namespace txt
 		try
 		{
 			charset = consumer_t::detect_charset(path);
-			boost::iostreams::filtering_istream in;
-			in.push(boost::iostreams::newline_filter(boost::iostreams::newline::posix));
-			in.push(boost::iostreams::file_source(path));
+			std::ifstream file(to_fstream_path(path), std::ios::binary);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
+			boost::iostreams::filtering_istream filtering_stream;
+			filtering_stream.push(boost::iostreams::newline_filter(boost::iostreams::newline::posix));
+			filtering_stream.push(file);
 
 			para_t line;
-			while (!in.eof())
+			while (!filtering_stream.eof())
 			{
-				std::getline(in, line);
+				std::getline(filtering_stream, line);
 				document.push_back(boost::locale::conv::to_utf<char>(line, charset));
 			}
 		}
