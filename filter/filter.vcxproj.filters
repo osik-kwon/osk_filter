@@ -34,6 +34,9 @@
     <Filter Include="editor\hwp30">
       <UniqueIdentifier>{24542692-37fa-4cff-8d3b-358d6a5414dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="txt">
+      <UniqueIdentifier>{7d410e68-f096-4ce8-9b13-0e623490a498}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -129,6 +132,12 @@
     </ClCompile>
     <ClCompile Include="editor\hwp30\hwp30_search_texts.cpp">
       <Filter>editor\hwp30</Filter>
+    </ClCompile>
+    <ClCompile Include="locale\charset_detecter.cpp">
+      <Filter>locale</Filter>
+    </ClCompile>
+    <ClCompile Include="txt\txt_filter.cpp">
+      <Filter>txt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +276,12 @@
     </ClInclude>
     <ClInclude Include="editor\hwp30\hwp30_search_texts.h">
       <Filter>editor\hwp30</Filter>
+    </ClInclude>
+    <ClInclude Include="locale\charset_detecter.h">
+      <Filter>locale</Filter>
+    </ClInclude>
+    <ClInclude Include="txt\txt_filter.h">
+      <Filter>txt</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

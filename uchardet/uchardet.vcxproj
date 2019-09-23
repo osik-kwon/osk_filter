@@ -20,32 +20,32 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{2913798F-B4AC-4DEB-8544-108BE8B5AF1A}</ProjectGuid>
-    <RootNamespace>test</RootNamespace>
+    <ProjectGuid>{91562509-1767-42DE-9BBA-2F49E0052754}</ProjectGuid>
+    <RootNamespace>uchardet</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -69,29 +69,17 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(SolutionDir)\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>$(SolutionDir)\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(SolutionDir)\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter;$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;$(SolutionDir)/uchardet/src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(OutDir)/filter.lib;$(OutDir)/xlnt.lib;$(OutDir)/uchardet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -100,11 +88,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter;$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;$(SolutionDir)/uchardet/src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(OutDir)/filter.lib;$(OutDir)/xlnt.lib;$(OutDir)/uchardet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,13 +102,12 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter;$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;$(SolutionDir)/uchardet/src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)/filter.lib;$(OutDir)/xlnt.lib;$(OutDir)/uchardet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,17 +118,84 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter;$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;$(SolutionDir)/uchardet/src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)/filter.lib;$(OutDir)/xlnt.lib;$(OutDir)/uchardet.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\CharDistribution.cpp" />
+    <ClCompile Include="src\JpCntx.cpp" />
+    <ClCompile Include="src\LangModels\LangArabicModel.cpp" />
+    <ClCompile Include="src\LangModels\LangBulgarianModel.cpp" />
+    <ClCompile Include="src\LangModels\LangDanishModel.cpp" />
+    <ClCompile Include="src\LangModels\LangEsperantoModel.cpp" />
+    <ClCompile Include="src\LangModels\LangFrenchModel.cpp" />
+    <ClCompile Include="src\LangModels\LangGermanModel.cpp" />
+    <ClCompile Include="src\LangModels\LangGreekModel.cpp" />
+    <ClCompile Include="src\LangModels\LangHebrewModel.cpp" />
+    <ClCompile Include="src\LangModels\LangHungarianModel.cpp" />
+    <ClCompile Include="src\LangModels\LangRussianModel.cpp" />
+    <ClCompile Include="src\LangModels\LangSpanishModel.cpp" />
+    <ClCompile Include="src\LangModels\LangThaiModel.cpp" />
+    <ClCompile Include="src\LangModels\LangTurkishModel.cpp" />
+    <ClCompile Include="src\LangModels\LangVietnameseModel.cpp" />
+    <ClCompile Include="src\nsBig5Prober.cpp" />
+    <ClCompile Include="src\nsCharSetProber.cpp" />
+    <ClCompile Include="src\nsEscCharsetProber.cpp" />
+    <ClCompile Include="src\nsEscSM.cpp" />
+    <ClCompile Include="src\nsEUCJPProber.cpp" />
+    <ClCompile Include="src\nsEUCKRProber.cpp" />
+    <ClCompile Include="src\nsEUCTWProber.cpp" />
+    <ClCompile Include="src\nsGB2312Prober.cpp" />
+    <ClCompile Include="src\nsHebrewProber.cpp" />
+    <ClCompile Include="src\nsLatin1Prober.cpp" />
+    <ClCompile Include="src\nsMBCSGroupProber.cpp" />
+    <ClCompile Include="src\nsMBCSSM.cpp" />
+    <ClCompile Include="src\nsSBCharSetProber.cpp" />
+    <ClCompile Include="src\nsSBCSGroupProber.cpp" />
+    <ClCompile Include="src\nsSJISProber.cpp" />
+    <ClCompile Include="src\nsUniversalDetector.cpp" />
+    <ClCompile Include="src\nsUTF8Prober.cpp" />
+    <ClCompile Include="src\uchardet.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Big5Freq.tab" />
+    <None Include="src\EUCKRFreq.tab" />
+    <None Include="src\EUCTWFreq.tab" />
+    <None Include="src\GB2312Freq.tab" />
+    <None Include="src\JISFreq.tab" />
+    <None Include="src\symbols.cmake" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CharDistribution.h" />
+    <ClInclude Include="src\JpCntx.h" />
+    <ClInclude Include="src\nsBig5Prober.h" />
+    <ClInclude Include="src\nsCharSetProber.h" />
+    <ClInclude Include="src\nsCodingStateMachine.h" />
+    <ClInclude Include="src\nscore.h" />
+    <ClInclude Include="src\nsEscCharsetProber.h" />
+    <ClInclude Include="src\nsEUCJPProber.h" />
+    <ClInclude Include="src\nsEUCKRProber.h" />
+    <ClInclude Include="src\nsEUCTWProber.h" />
+    <ClInclude Include="src\nsGB2312Prober.h" />
+    <ClInclude Include="src\nsHebrewProber.h" />
+    <ClInclude Include="src\nsLatin1Prober.h" />
+    <ClInclude Include="src\nsMBCSGroupProber.h" />
+    <ClInclude Include="src\nsPkgInt.h" />
+    <ClInclude Include="src\nsSBCharSetProber.h" />
+    <ClInclude Include="src\nsSBCSGroupProber.h" />
+    <ClInclude Include="src\nsSJISProber.h" />
+    <ClInclude Include="src\nsUniversalDetector.h" />
+    <ClInclude Include="src\nsUTF8Prober.h" />
+    <ClInclude Include="src\prmem.h" />
+    <ClInclude Include="src\uchardet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

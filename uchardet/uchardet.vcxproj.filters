@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4190c9c4-21e1-4362-bc64-8ea128a20133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\LangModels">
+      <UniqueIdentifier>{e87473d4-28b1-4af5-9a19-093addb21d85}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\LangModels\LangArabicModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangBulgarianModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangDanishModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangEsperantoModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangFrenchModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangGermanModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangGreekModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangHebrewModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangHungarianModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangRussianModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangSpanishModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangThaiModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangTurkishModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LangModels\LangVietnameseModel.cpp">
+      <Filter>src\LangModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharDistribution.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JpCntx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsBig5Prober.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsCharSetProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsEscCharsetProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsEscSM.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsEUCJPProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsEUCKRProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsEUCTWProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsGB2312Prober.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsHebrewProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsLatin1Prober.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsMBCSGroupProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsMBCSSM.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsSBCharSetProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsSBCSGroupProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsSJISProber.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsUniversalDetector.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nsUTF8Prober.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\uchardet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Big5Freq.tab">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\EUCKRFreq.tab">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\EUCTWFreq.tab">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\GB2312Freq.tab">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\JISFreq.tab">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\symbols.cmake">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CharDistribution.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JpCntx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsBig5Prober.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsCharSetProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsCodingStateMachine.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nscore.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsEscCharsetProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsEUCJPProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsEUCKRProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsEUCTWProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsGB2312Prober.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsHebrewProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsLatin1Prober.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsMBCSGroupProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsPkgInt.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsSBCharSetProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsSBCSGroupProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsSJISProber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsUniversalDetector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nsUTF8Prober.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\prmem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uchardet.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\CMakeLists.txt">
+      <Filter>src</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

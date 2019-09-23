@@ -2,6 +2,7 @@
 #include "hwp/hwp30_filter.h"
 #include "hwp/hwpx_filter.h"
 #include "hwp/hwpml_filter.h"
+#include "txt/txt_filter.h"
 #include "locale/charset_encoder.h"
 
 void print(const filter::hwp50::filter_t::sections_t& sections)
@@ -220,15 +221,32 @@ void test_hwpx()
 	}
 }
 
+void test_txt()
+{
+	std::cout << "===== txt test =====" << std::endl;
+	typedef filter::txt::filter_t filter_t;
+	{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/euckr.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/euckr.export.txt"), src);
+		auto dest = filter.open(to_utf8(u"d:/filter/euckr.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}
+}
+
 int main()
 {
 	try
 	{
-		test_hwpml();
+		test_txt();
+		/*test_hwpml();
 		test_hwpx();
 		test_hwp30();
 		test_hwp50();
 		test_hwp50_distribution();
+		*/
 	}
 	catch (const std::exception& e)
 	{
