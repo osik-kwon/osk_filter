@@ -1,5 +1,6 @@
 #include "filter_pch.h"
 #include "txt/txt_document.h"
+
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/newline.hpp>
 #include <boost/iostreams/device/file.hpp>
@@ -16,7 +17,7 @@ namespace filter
 {
 namespace txt
 {
-	consumer_t::consumer_t()
+	consumer_t::consumer_t() : newline_type(boost::iostreams::newline::posix)
 	{}
 
 	std::string consumer_t::detect_charset(const std::string& path)
@@ -62,9 +63,8 @@ namespace txt
 			if (file.fail())
 				throw std::runtime_error("file I/O error");
 
-			boost::iostreams::newline_checker newline_checker;
 			boost::iostreams::filtering_istream stream;
-			stream.push(newline_checker);
+			stream.push(boost::iostreams::newline_checker());
 			stream.push(file);
 
 			std::string para;
@@ -98,6 +98,7 @@ namespace txt
 
 			std::ifstream file(to_fstream_path(path), std::ios::binary);					
 			boost::iostreams::filtering_istream stream;
+
 			stream.push(boost::iostreams::newline_filter(boost::iostreams::newline::posix));
 			stream.push(file);
 
