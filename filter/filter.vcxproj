@@ -167,6 +167,11 @@
     <ClCompile Include="editor\hwp50\hwp50_find_and_replace_strategy.cpp" />
     <ClCompile Include="editor\hwp50\hwp50_replace_texts.cpp" />
     <ClCompile Include="editor\hwp50\hwp50_search_texts.cpp" />
+    <ClCompile Include="editor\txt\txt_editor.cpp" />
+    <ClCompile Include="editor\txt\txt_extract_texts.cpp" />
+    <ClCompile Include="editor\txt\txt_find_and_replace_strategy.cpp" />
+    <ClCompile Include="editor\txt\txt_replace_texts.cpp" />
+    <ClCompile Include="editor\txt\txt_search_texts.cpp" />
     <ClCompile Include="editor\xml\xml_editor.cpp" />
     <ClCompile Include="editor\xml\xml_extract_texts.cpp" />
     <ClCompile Include="editor\xml\xml_find_and_replace_strategy.cpp" />
@@ -194,6 +199,7 @@
     <ClCompile Include="locale\hchar_converter.cpp" />
     <ClCompile Include="locale\kssm_ks_converter.cpp" />
     <ClCompile Include="pole\pole.cpp" />
+    <ClCompile Include="txt\txt_document.cpp" />
     <ClCompile Include="txt\txt_filter.cpp" />
     <ClCompile Include="xml\pugixml.cpp" />
   </ItemGroup>
@@ -209,6 +215,11 @@
     <ClInclude Include="editor\hwp50\hwp50_find_and_replace_strategy.h" />
     <ClInclude Include="editor\hwp50\hwp50_replace_texts.h" />
     <ClInclude Include="editor\hwp50\hwp50_search_texts.h" />
+    <ClInclude Include="editor\txt\txt_editor.h" />
+    <ClInclude Include="editor\txt\txt_extract_texts.h" />
+    <ClInclude Include="editor\txt\txt_find_and_replace_strategy.h" />
+    <ClInclude Include="editor\txt\txt_replace_texts.h" />
+    <ClInclude Include="editor\txt\txt_search_texts.h" />
     <ClInclude Include="editor\xml\xml_editor.h" />
     <ClInclude Include="editor\xml\xml_extract_texts.h" />
     <ClInclude Include="editor\xml\xml_find_and_replace_strategy.h" />
@@ -244,6 +255,7 @@
     <ClInclude Include="traits\compound_file_binary_traits.h" />
     <ClInclude Include="traits\editor_traits.h" />
     <ClInclude Include="traits\xml_traits.h" />
+    <ClInclude Include="txt\txt_document.h" />
     <ClInclude Include="txt\txt_filter.h" />
     <ClInclude Include="xml\pugiconfig.hpp" />
     <ClInclude Include="xml\pugixml.hpp" />

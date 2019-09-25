@@ -37,6 +37,9 @@
     <Filter Include="txt">
       <UniqueIdentifier>{7d410e68-f096-4ce8-9b13-0e623490a498}</UniqueIdentifier>
     </Filter>
+    <Filter Include="editor\txt">
+      <UniqueIdentifier>{c1d0531c-450d-4413-a9bd-5eca45b631ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -141,6 +144,24 @@
     </ClCompile>
     <ClCompile Include="io\file_stream.cpp">
       <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\txt\txt_editor.cpp">
+      <Filter>editor\txt</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\txt\txt_extract_texts.cpp">
+      <Filter>editor\txt</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\txt\txt_find_and_replace_strategy.cpp">
+      <Filter>editor\txt</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\txt\txt_replace_texts.cpp">
+      <Filter>editor\txt</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\txt\txt_search_texts.cpp">
+      <Filter>editor\txt</Filter>
+    </ClCompile>
+    <ClCompile Include="txt\txt_document.cpp">
+      <Filter>txt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +309,24 @@
     </ClInclude>
     <ClInclude Include="io\file_stream.h">
       <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\txt\txt_editor.h">
+      <Filter>editor\txt</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\txt\txt_extract_texts.h">
+      <Filter>editor\txt</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\txt\txt_find_and_replace_strategy.h">
+      <Filter>editor\txt</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\txt\txt_replace_texts.h">
+      <Filter>editor\txt</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\txt\txt_search_texts.h">
+      <Filter>editor\txt</Filter>
+    </ClInclude>
+    <ClInclude Include="txt\txt_document.h">
+      <Filter>txt</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

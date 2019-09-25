@@ -261,7 +261,41 @@ void test_txt()
 {
 	std::cout << "===== txt test =====" << std::endl;
 	typedef filter::txt::filter_t filter_t;
+	/*{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/ascii.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/ascii.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/ascii.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/ascii.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/ascii.txt"));
+		print(filter.extract_all_texts(dest));
+	}*/
 	{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/utf8.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/utf8.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/utf8.txt"));
+		print(filter.extract_all_texts(dest));
+	}
+	/*{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/iso-8859-8.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/iso-8859-8.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/iso-8859-8.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/iso-8859-8.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/iso-8859-8.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}
+	*/
+	/*{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/euckr_한글경로.txt")) << std::endl;
@@ -272,6 +306,28 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/euckr_한글경로.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
+	{
+		std::cout << "===== txt search privacy test =====" << std::endl;
+		filter_t filter;
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.txt"));
+		print(filter.extract_all_texts(src));
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		print(filter.search_privacy({ resident_registration_number }, src));
+	}
+	{
+		std::cout << "===== hwpx replace privacy test =====" << std::endl;
+		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		filter_t filter;
+
+		auto src = filter.open(to_utf8(u"d:/filter/privacy.txt"));
+		print(filter.extract_all_texts(src));
+
+		filter.replace_privacy({ resident_registration_number }, u'@', src);
+		filter.save(to_utf8(u"d:/filter/privacy.export.txt"), src);
+
+		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}*/
 }
 
 int main()
