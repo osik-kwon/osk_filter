@@ -261,7 +261,7 @@ void test_txt()
 {
 	std::cout << "===== txt test =====" << std::endl;
 	typedef filter::txt::filter_t filter_t;
-	/*{
+	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/ascii.txt")) << std::endl;
@@ -269,21 +269,21 @@ void test_txt()
 		print(filter.extract_all_texts(src));
 		filter.save(to_utf8(u"d:/filter/ascii.export.txt"), src);
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/ascii.export.txt")) << std::endl;
-		auto dest = filter.open(to_utf8(u"d:/filter/ascii.txt"));
+		auto dest = filter.open(to_utf8(u"d:/filter/ascii.export.txt"));
 		print(filter.extract_all_texts(dest));
-	}*/
+	}
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
-		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8.txt")) << std::endl;
-		auto src = filter.open(to_utf8(u"d:/filter/utf8.txt"));
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_bom.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/utf8_bom.txt"));
 		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/utf8.export.txt"), src);
-		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8.export.txt")) << std::endl;
-		auto dest = filter.open(to_utf8(u"d:/filter/utf8.txt"));
+		filter.save(to_utf8(u"d:/filter/utf8_bom.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_bom.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/utf8_bom.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
-	/*{
+	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/iso-8859-8.txt")) << std::endl;
@@ -294,8 +294,7 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/iso-8859-8.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
-	*/
-	/*{
+	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/euckr_한글경로.txt")) << std::endl;
@@ -327,7 +326,7 @@ void test_txt()
 
 		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.txt"));
 		print(filter.extract_all_texts(dest));
-	}*/
+	}
 }
 
 int main()

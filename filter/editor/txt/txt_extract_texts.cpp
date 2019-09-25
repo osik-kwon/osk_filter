@@ -8,9 +8,7 @@ namespace filter
 namespace txt
 {	
 	extract_texts_t::extract_texts_t() : ruler(&find_and_replace_strategy_t::do_nothing)
-	{
-		section.resize(1); // IMPORTANT!
-	}
+	{}
 
 	extract_texts_t::~extract_texts_t()
 	{}

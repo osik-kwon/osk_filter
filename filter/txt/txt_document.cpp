@@ -42,7 +42,10 @@ namespace txt
 			std::string buffer(buffer_size, ' ');
 			file.read(&buffer[0], buffer_size);
 			file.close();
-			return ::filter::charset_detecter::detect(buffer);
+			auto charset = ::filter::charset_detecter::detect(buffer);
+			if (charset == "ASCII")
+				charset = "UTF-8"; // IMPORTANT!
+			return charset;
 		}
 		catch (const std::exception& e)
 		{
@@ -56,8 +59,6 @@ namespace txt
 		try
 		{
 			charset = consumer_t::detect_charset(path);
-			if (charset == "ASCII")
-				charset = "UTF-8"; // IMPORTANT!
 			std::ifstream file(to_fstream_path(path), std::ios::binary);
 			if (file.fail())
 				throw std::runtime_error("file I/O error");
@@ -70,7 +71,15 @@ namespace txt
 			while (!filtering_stream.eof())
 			{
 				std::getline(filtering_stream, line);
-				document.push_back(boost::locale::conv::to_utf<char_t>(line, charset));
+				auto para = boost::locale::conv::to_utf<wchar_t>(line, charset);
+				document.emplace_back(std::move(para));
+			}
+
+			// remove BOM
+			if (!document.empty())
+			{
+				if (!document.front().empty() && document.front()[0] == 0xfeff)
+					document.front().erase(document.front().begin());
 			}
 		}
 		catch (const std::exception& e)
@@ -95,10 +104,10 @@ namespace txt
 			int last_para_id = document.size() - 1;
 			for (int i = 0; i < last_para_id; ++i)
 			{
-				file << boost::locale::conv::from_utf<char_t>(document[i], charset);
+				file << boost::locale::conv::from_utf<wchar_t>(document[i], charset);
 				file << newline;
 			}
-			file << boost::locale::conv::from_utf<char_t>(document[last_para_id], charset);
+			file << boost::locale::conv::from_utf<wchar_t>(document[last_para_id], charset);
 		}
 		catch (const std::exception& e)
 		{
