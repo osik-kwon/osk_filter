@@ -264,6 +264,29 @@ void test_txt()
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf16_be.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/utf16_be.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/utf16_be.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf16_be.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/utf16_be.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}
+	{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf16_le.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/utf16_le.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/utf16_le.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf16_le.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/utf16_le.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}
+	/*
+	{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/ascii.txt")) << std::endl;
 		auto src = filter.open(to_utf8(u"d:/filter/ascii.txt"));
 		print(filter.extract_all_texts(src));
@@ -283,6 +306,8 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/utf8_bom.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
+	*/
+	/*
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
@@ -294,6 +319,8 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/iso-8859-8.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
+	*/
+	/*
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
@@ -327,6 +354,7 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
+	*/
 }
 
 int main()

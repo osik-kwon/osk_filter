@@ -71,16 +71,16 @@ namespace txt
 			while (!filtering_stream.eof())
 			{
 				std::getline(filtering_stream, line);
-				auto para = boost::locale::conv::to_utf<wchar_t>(line, charset);
+				auto para = boost::locale::conv::to_utf<char_t>(line, charset);
 				document.emplace_back(std::move(para));
 			}
 
 			// remove BOM
-			if (!document.empty())
+			/*if (!document.empty())
 			{
 				if (!document.front().empty() && document.front()[0] == 0xfeff)
 					document.front().erase(document.front().begin());
-			}
+			}*/
 		}
 		catch (const std::exception& e)
 		{
@@ -104,10 +104,10 @@ namespace txt
 			int last_para_id = document.size() - 1;
 			for (int i = 0; i < last_para_id; ++i)
 			{
-				file << boost::locale::conv::from_utf<wchar_t>(document[i], charset);
+				file << boost::locale::conv::from_utf<char_t>(document[i], charset);
 				file << newline;
 			}
-			file << boost::locale::conv::from_utf<wchar_t>(document[last_para_id], charset);
+			file << boost::locale::conv::from_utf<char_t>(document[last_para_id], charset);
 		}
 		catch (const std::exception& e)
 		{
