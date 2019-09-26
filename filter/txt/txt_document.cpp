@@ -119,7 +119,7 @@ namespace txt
 		auto first = buffer[0];
 		auto second = buffer[1];
 		auto third = buffer[2];
-		if (first == '\xEF' && second == '\xBF')
+		if (first == '\xEF' && second == '\xBB' && third == '\xBF')
 			return byte_order_t::utf8_bom; // EF BB BF: UTF-8 encoded BOM
 		if (first == '\xFE' && second == '\xFF')
 			return byte_order_t::big_endian; // FE FF: UTF-16, big endian BOM
@@ -316,7 +316,7 @@ namespace txt
 		return wnewline;
 	}
 
-	void producer_t::save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset, int newline_type)
+	void producer_t::save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
 	{
 		try
 		{
@@ -326,26 +326,26 @@ namespace txt
 			if (file.fail())
 				throw std::runtime_error("file I/O error");
 
-			if (consumer->get_byte_order() == byte_order_t::utf8_bom)
+			if (*params.byte_order == byte_order_t::utf8_bom)
 			{
 				const auto option = (std::codecvt_mode)(std::generate_header);
-				locale_t::imbue<std::wofstream, option >(charset, file);
+				locale_t::imbue<std::wofstream, option >(*params.charset, file);
 			}
-			else if (consumer->get_byte_order() == byte_order_t::little_endian)
+			else if (*params.byte_order == byte_order_t::little_endian)
 			{
 				const auto option = (std::codecvt_mode)(std::generate_header | std::little_endian);
-				locale_t::imbue<std::wofstream, option >(charset, file);
+				locale_t::imbue<std::wofstream, option >(*params.charset, file);
 			}
-			else if(consumer->get_byte_order() == byte_order_t::big_endian)
-				locale_t::imbue<std::wofstream, std::generate_header>(charset, file);
+			else if(*params.byte_order == byte_order_t::big_endian)
+				locale_t::imbue<std::wofstream, std::generate_header>(*params.charset, file);
 			else
-				locale_t::imbue<std::wofstream, (std::codecvt_mode)(0)>(charset, file);
+				locale_t::imbue<std::wofstream, (std::codecvt_mode)(0)>(*params.charset, file);
 
 			boost::iostreams::filtering_wostream stream;
-			stream.push(boost::iostreams::wnewline_filter(newline_type > 0 ? newline_type : consumer->get_newline_type()));
+			stream.push(boost::iostreams::wnewline_filter(*params.newline_type ));
 			stream.push(file);
 
-			auto newline = make_wnewline(consumer, newline_type);
+			auto newline = make_wnewline(consumer, *params.newline_type);
 			auto& document = consumer->get_document();
 			int last_para_id = document.size() - 1;
 			for (int i = 0; i < last_para_id; ++i)
@@ -361,7 +361,7 @@ namespace txt
 		}
 	}
 
-	void producer_t::save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset, int newline_type)
+	void producer_t::save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
 	{
 		try
 		{
@@ -369,15 +369,15 @@ namespace txt
 				throw std::runtime_error("txt document is empty");
 
 			std::ofstream file(to_fstream_path(path), std::ios::binary | std::ios::out);
-			auto newline = make_newline(consumer, newline_type);
+			auto newline = make_newline(consumer, *params.newline_type);
 			auto& document = consumer->get_document();
 			int last_para_id = document.size() - 1;
 			for (int i = 0; i < last_para_id; ++i)
 			{
-				file << boost::locale::conv::from_utf<char_t>(document[i], charset);
+				file << boost::locale::conv::from_utf<char_t>(document[i], *params.charset);
 				file << newline;
 			}
-			file << boost::locale::conv::from_utf<char_t>(document[last_para_id], charset);
+			file << boost::locale::conv::from_utf<char_t>(document[last_para_id], *params.charset);
 		}
 		catch (const std::exception& e)
 		{
@@ -385,18 +385,23 @@ namespace txt
 		}
 	}
 
-	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset, int newline)
+	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
 	{
 		try
 		{
 			if (consumer->get_document().size() == 0)
 				throw std::runtime_error("txt document is empty");
-			charset = charset.empty() ? consumer->get_charset() : charset;
-			newline = newline > 0 ? newline : consumer->get_newline_type();
-			if (locale_t::is_international(charset))
-				save_international(path, consumer, charset, newline);
+			params.charset = params.charset ?
+				params.charset : consumer->get_charset();
+			params.newline_type = params.newline_type ?
+				params.newline_type : consumer->get_newline_type();
+			params.byte_order = params.byte_order ?
+				params.byte_order : consumer->get_byte_order();
+
+			if (locale_t::is_international(*params.charset))
+				save_international(path, consumer, params);
 			else
-				save_non_international(path, consumer, charset, newline);
+				save_non_international(path, consumer, params);
 		}
 		catch (const std::exception& e)
 		{

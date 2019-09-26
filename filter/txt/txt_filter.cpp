@@ -31,12 +31,15 @@ namespace txt
 		return std::make_unique<consumer_t>();
 	}
 
-	void filter_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string dest_charset)
+	void filter_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset)
 	{
 		try
 		{
+			custom_params_t params;
+			if(!charset.empty())
+				params.charset = charset;
 			producer_t producer;
-			producer.save(path, consumer, dest_charset);
+			producer.save(path, consumer, params);
 		}
 		catch (const std::exception& e)
 		{

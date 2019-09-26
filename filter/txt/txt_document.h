@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <boost/optional.hpp>
 
 namespace filter
 {
@@ -41,17 +42,26 @@ namespace txt
 		byte_order_t byte_order;
 	};
 
+	struct custom_params_t
+	{
+		typedef consumer_t::byte_order_t byte_order_t;
+		custom_params_t() = default;
+		boost::optional<std::string> charset;
+		boost::optional<int> newline_type;
+		boost::optional<byte_order_t> byte_order;
+	};
+
 	class producer_t
 	{
 	public:
 		typedef consumer_t::char_t char_t;
 		typedef consumer_t::byte_order_t byte_order_t;
 		producer_t();
-		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset = "", int newline = original_newline);
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params = custom_params_t() );
 	private:
 		static const int original_newline = -1;
-		void save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset = "", int newline = original_newline);
-		void save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset = "", int newline = original_newline);
+		void save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
+		void save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
 		
 		std::string make_newline(std::unique_ptr<consumer_t>& consumer, int custom_type = original_newline) const;
 		std::wstring make_wnewline(std::unique_ptr<consumer_t>& consumer, int custom_type = original_newline) const;
