@@ -1,6 +1,9 @@
 #include "filter_pch.h"
 #include "txt/txt_document.h"
 
+#include <locale>
+#include <codecvt>
+
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/newline.hpp>
 #include <boost/iostreams/device/file.hpp>
@@ -10,6 +13,7 @@
 #include <boost/locale.hpp>
 
 #include "io/file_stream.h"
+#include "io/newline_filter.h"
 #include "locale/charset_detecter.h"
 #include "locale/charset_encoder.h"
 
@@ -17,10 +21,37 @@ namespace filter
 {
 namespace txt
 {
-	consumer_t::consumer_t() : newline_type(boost::iostreams::newline::posix)
-	{}
+	class locale_t
+	{
+	public:
+		locale_t() = default;
+		template <class stream_t, std::codecvt_mode option>
+		static void imbue(const std::string& charset, stream_t& stream)
+		{
+			if (charset == "UTF-8")
+				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf8<wchar_t, 0x10ffff, option>));
+			else if (charset == "UTF-16")
+				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, option>));
+			//else if (charset == "UTF-32")
+			//	stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::consume_header>));
+		}
 
-	std::string consumer_t::detect_charset(const std::string& path)
+		static std::wstring non_international_to_wstring(std::string& src, const std::string& charset)
+		{
+			return boost::locale::conv::to_utf<wchar_t>(src, charset);
+		}
+	};
+
+	class detecter_t
+	{
+	public:
+		detecter_t() = default;
+		static std::string detect_charset(const std::string& path);
+		static int detect_newline_type(const std::string& path);
+		static int detect_wnewline_type(const std::string& path, const std::string& charset);
+	};
+
+	std::string detecter_t::detect_charset(const std::string& path)
 	{
 		try
 		{
@@ -55,7 +86,7 @@ namespace txt
 		return std::string();
 	}
 
-	int consumer_t::detect_newline_type(const std::string& path)
+	int detecter_t::detect_newline_type(const std::string& path)
 	{
 		try
 		{
@@ -70,7 +101,7 @@ namespace txt
 			std::string para;
 			std::getline(stream, para);
 			auto filter = stream.filters().component<boost::iostreams::newline_checker>(0);
-			if(!filter)
+			if (!filter)
 				throw std::runtime_error("boost::iostreams::newline_checker is null");
 
 			int newline_type = boost::iostreams::newline::posix;
@@ -88,17 +119,58 @@ namespace txt
 		}
 		return boost::iostreams::newline::posix;
 	}
-	
-	void consumer_t::open(const std::string& path)
+
+	int detecter_t::detect_wnewline_type(const std::string& path, const std::string& charset)
 	{
 		try
 		{
-			charset = consumer_t::detect_charset(path);
-			newline_type = consumer_t::detect_newline_type(path);
+			std::wifstream file(to_fstream_path(path), std::ios::binary);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+			locale_t::imbue<std::wifstream, std::consume_header>(charset, file);
 
-			std::ifstream file(to_fstream_path(path), std::ios::binary);					
+			boost::iostreams::filtering_wistream stream;
+			stream.push(boost::iostreams::wnewline_checker());
+			stream.push(file);
+
+			std::wstring para;
+			std::getline(stream, para);
+			auto filter = stream.filters().component<boost::iostreams::wnewline_checker>(0);
+			if (!filter)
+				throw std::runtime_error("boost::iostreams::wnewline_checker is null");
+
+			int newline_type = boost::iostreams::newline::posix;
+			if (filter->is_dos())
+				newline_type = boost::iostreams::newline::dos;
+			else if (filter->is_mac())
+				newline_type = boost::iostreams::newline::mac;
+			else if (filter->is_posix())
+				newline_type = boost::iostreams::newline::posix;
+			return newline_type;
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return boost::iostreams::newline::posix;
+	}
+
+	consumer_t::consumer_t() : newline_type(boost::iostreams::newline::posix)
+	{}
+
+	std::string consumer_t::detect_charset(const std::string& path) {
+		return detecter_t::detect_charset(path);
+	}
+	
+	void consumer_t::open_non_international(const std::string& path)
+	{
+		try
+		{
+			std::ifstream file(to_fstream_path(path), std::ios::binary);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
 			boost::iostreams::filtering_istream stream;
-
 			stream.push(boost::iostreams::newline_filter(boost::iostreams::newline::posix));
 			stream.push(file);
 
@@ -106,30 +178,71 @@ namespace txt
 			while (!stream.eof())
 			{
 				std::getline(stream, line);
- 				auto para = boost::locale::conv::to_utf<char_t>(line, charset);
+				auto para = locale_t::non_international_to_wstring(line, charset);
 				document.emplace_back(std::move(para));
 			}
-
-			// TODO: remove BOM
-			// TODO: UTF16
-			/*if (!document.empty())
-			{
-				if (!document.front().empty() && document.front()[0] == 0xfeff)
-					document.front().erase(document.front().begin());
-			}*/
 		}
 		catch (const std::exception& e)
 		{
 			std::cout << e.what() << std::endl;
-		}	
+		}
+	}
+
+	void consumer_t::open_international(const std::string& path)
+	{
+		try
+		{
+			std::wifstream file(to_fstream_path(path), std::ios::binary);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
+			locale_t::imbue<std::wifstream, std::consume_header>(charset, file);
+			boost::iostreams::filtering_wistream stream;
+			stream.push(boost::iostreams::wnewline_filter(boost::iostreams::newline::posix));
+			stream.push(file);
+
+			while (!stream.eof())
+			{
+				std::wstring para;
+				std::getline(stream, para);
+				document.emplace_back(std::move(para));
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	void consumer_t::open(const std::string& path)
+	{
+		try
+		{
+			charset = detecter_t::detect_charset(path);	
+			if (charset == "UTF-8" || charset == "UTF-16")
+			{
+				newline_type = detecter_t::detect_wnewline_type(path, charset);
+				open_international(path);
+			}
+			else
+			{
+				newline_type = detecter_t::detect_newline_type(path);
+				open_non_international(path);
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 
 	producer_t::producer_t()
 	{}
 
-	std::string producer_t::make_newline(int type)
+	std::string producer_t::make_newline(std::unique_ptr<consumer_t>& consumer, int custom_type) const
 	{
-		switch (type)
+		custom_type = custom_type > 0 ? custom_type : consumer->get_newline_type();
+		switch (custom_type)
 		{
 		case boost::iostreams::newline::posix:
 			return std::string("\n");
@@ -142,19 +255,54 @@ namespace txt
 		}
 	}
 
-	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string dest_charset, int newline_type)
+	std::wstring producer_t::make_wnewline(std::unique_ptr<consumer_t>& consumer, int custom_type) const
+	{
+		auto newline = make_newline(consumer, custom_type);
+		std::wstring wnewline;
+		std::copy(newline.begin(), newline.end(), std::back_inserter(wnewline));
+		return wnewline;
+	}
+
+	void producer_t::save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset, int newline_type)
 	{
 		try
 		{
-			if(consumer->get_document().size() == 0)
+			if (consumer->get_document().size() == 0)
+				throw std::runtime_error("txt document is empty");			
+			std::wofstream file(to_fstream_path(path), std::ios::binary | std::ios::out);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
+			locale_t::imbue<std::wofstream, std::generate_header>(charset, file);
+			boost::iostreams::filtering_wostream stream;
+			stream.push(boost::iostreams::wnewline_filter(newline_type > 0 ? newline_type : consumer->get_newline_type()));
+			stream.push(file);
+
+			auto newline = make_wnewline(consumer, newline_type);
+			auto& document = consumer->get_document();
+			int last_para_id = document.size() - 1;
+			for (int i = 0; i < last_para_id; ++i)
+			{
+				stream << document[i];
+				stream << newline;
+			}
+			stream << document[last_para_id];
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	void producer_t::save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset, int newline_type)
+	{
+		try
+		{
+			if (consumer->get_document().size() == 0)
 				throw std::runtime_error("txt document is empty");
 
-			std::string charset = dest_charset.empty() ? consumer->get_charset() : dest_charset;
-			const std::string newline = boost::locale::conv::from_utf<char>( 
-				newline_type > 0 ? make_newline(newline_type) : make_newline(consumer->get_newline_type()),
-				charset );
-
 			std::ofstream file(to_fstream_path(path), std::ios::binary | std::ios::out);
+			auto newline = make_newline(consumer, newline_type);
 			auto& document = consumer->get_document();
 			int last_para_id = document.size() - 1;
 			for (int i = 0; i < last_para_id; ++i)
@@ -163,6 +311,26 @@ namespace txt
 				file << newline;
 			}
 			file << boost::locale::conv::from_utf<char_t>(document[last_para_id], charset);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset, int newline)
+	{
+		try
+		{
+			if (consumer->get_document().size() == 0)
+				throw std::runtime_error("txt document is empty");
+			charset = charset.empty() ? consumer->get_charset() : charset;
+			newline = newline > 0 ? newline : consumer->get_newline_type();
+
+			if (charset == "UTF-8" || charset == "UTF-16")
+				save_international(path, consumer, charset, newline);
+			else
+				save_non_international(path, consumer, charset, newline);
 		}
 		catch (const std::exception& e)
 		{

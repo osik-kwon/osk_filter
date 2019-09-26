@@ -163,6 +163,9 @@
     <ClCompile Include="txt\txt_document.cpp">
       <Filter>txt</Filter>
     </ClCompile>
+    <ClCompile Include="io\newline_filter.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -327,6 +330,9 @@
     </ClInclude>
     <ClInclude Include="txt\txt_document.h">
       <Filter>txt</Filter>
+    </ClInclude>
+    <ClInclude Include="io\newline_filter.h">
+      <Filter>io</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

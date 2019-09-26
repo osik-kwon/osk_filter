@@ -192,6 +192,7 @@
     <ClCompile Include="io\binary_iostream.cpp" />
     <ClCompile Include="io\compound_file_binary.cpp" />
     <ClCompile Include="io\file_stream.cpp" />
+    <ClCompile Include="io\newline_filter.cpp" />
     <ClCompile Include="io\open_package_conventions.cpp" />
     <ClCompile Include="io\zlib.cpp" />
     <ClCompile Include="locale\charset_detecter.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="io\compound_file_binary.h" />
     <ClInclude Include="io\endianness.h" />
     <ClInclude Include="io\file_stream.h" />
+    <ClInclude Include="io\newline_filter.h" />
     <ClInclude Include="io\open_package_conventions.h" />
     <ClInclude Include="io\zlib.h" />
     <ClInclude Include="locale\charset_detecter.h" />

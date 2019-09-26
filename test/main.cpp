@@ -261,6 +261,17 @@ void test_txt()
 {
 	std::cout << "===== txt test =====" << std::endl;
 	typedef filter::txt::filter_t filter_t;
+	/*{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_CR.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/utf8_CR.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/utf8_CR.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_CR.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/utf8_CR.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
@@ -270,17 +281,6 @@ void test_txt()
 		filter.save(to_utf8(u"d:/filter/utf8_LF.export.txt"), src);
 		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_LF.export.txt")) << std::endl;
 		auto dest = filter.open(to_utf8(u"d:/filter/utf8_LF.export.txt"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== txt open/save test =====" << std::endl;
-		filter_t filter;
-		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_CR.txt")) << std::endl;
-		auto src = filter.open(to_utf8(u"d:/filter/utf8_CR.txt"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/utf8_CR.export.txt"), src);
-		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf8_CR.export.txt")) << std::endl;
-		auto dest = filter.open(to_utf8(u"d:/filter/utf8_CR.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
 	{
@@ -305,6 +305,7 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/euckr.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
+	*/
 	{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
