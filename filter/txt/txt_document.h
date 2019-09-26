@@ -13,6 +13,10 @@ namespace txt
 		typedef std::wstring::value_type char_t;
 		typedef std::wstring para_t;
 		typedef std::vector< para_t > document_t;
+		enum byte_order_t : int
+		{
+			unknown = 0, utf8_bom, little_endian, big_endian
+		};
 		consumer_t();
 		void open(const std::string& path);
 		static std::string detect_charset(const std::string& path);
@@ -25,18 +29,23 @@ namespace txt
 		int get_newline_type() const {
 			return newline_type;
 		}
+		byte_order_t get_byte_order() const {
+			return byte_order;
+		}
 	private:
 		void open_non_international(const std::string& path);
 		void open_international(const std::string& path);
 		document_t document;
 		std::string charset;
 		int newline_type;
+		byte_order_t byte_order;
 	};
 
 	class producer_t
 	{
 	public:
 		typedef consumer_t::char_t char_t;
+		typedef consumer_t::byte_order_t byte_order_t;
 		producer_t();
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, std::string charset = "", int newline = original_newline);
 	private:
