@@ -96,7 +96,7 @@ namespace txt
 		{
 			auto buffer = read_buffer(path);
 			auto charset = ::filter::charset_detecter::detect(buffer);
-			if (charset == "ASCII")
+			if (charset.empty() || charset == "ASCII")
 				charset = "UTF-8"; // IMPORTANT!
 			return charset;
 		}

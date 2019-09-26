@@ -57,7 +57,7 @@ namespace txt
 		typedef consumer_t::char_t char_t;
 		typedef consumer_t::byte_order_t byte_order_t;
 		producer_t();
-		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params = custom_params_t() );
+		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
 	private:
 		static const int original_newline = -1;
 		void save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
