@@ -14,6 +14,8 @@
 #include "traits/binary_traits.h"
 #include "io/file_stream.h"
 #include "io/newline_filter.h"
+#include "io/binary_iostream.h"
+#include "io/endianness.h"
 #include "locale/charset_detecter.h"
 #include "locale/charset_encoder.h"
 
@@ -432,49 +434,12 @@ namespace txt
 		return wnewline;
 	}
 
-	void producer_t::save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
+	std::u32string producer_t::make_u32newline(std::unique_ptr<consumer_t>& consumer, int custom_type) const
 	{
-		try
-		{
-			if (consumer->get_document().size() == 0)
-				throw std::runtime_error("txt document is empty");			
-			std::wofstream file(to_fstream_path(path), std::ios::binary | std::ios::out);
-			if (file.fail())
-				throw std::runtime_error("file I/O error");
-
-			if (*params.byte_order == byte_order_t::utf8_bom)
-			{
-				const auto option = (std::codecvt_mode)(std::generate_header);
-				locale_t::imbue<std::wofstream, option >(*params.charset, file);
-			}
-			else if (*params.byte_order == byte_order_t::little_endian)
-			{
-				const auto option = (std::codecvt_mode)(std::generate_header | std::little_endian);
-				locale_t::imbue<std::wofstream, option >(*params.charset, file);
-			}
-			else if(*params.byte_order == byte_order_t::big_endian)
-				locale_t::imbue<std::wofstream, std::generate_header>(*params.charset, file);
-			else
-				locale_t::imbue<std::wofstream, (std::codecvt_mode)(0)>(*params.charset, file);
-
-			boost::iostreams::filtering_wostream stream;
-			stream.push(boost::iostreams::wnewline_filter(*params.newline_type ));
-			stream.push(file);
-
-			auto newline = make_wnewline(consumer, *params.newline_type);
-			auto& document = consumer->get_document();
-			int last_para_id = document.size() - 1;
-			for (int i = 0; i < last_para_id; ++i)
-			{
-				stream << document[i];
-				stream << newline;
-			}
-			stream << document[last_para_id];
-		}
-		catch (const std::exception& e)
-		{
-			std::cout << e.what() << std::endl;
-		}
+		auto newline = make_newline(consumer, custom_type);
+		std::u32string u32newline;
+		std::copy(newline.begin(), newline.end(), std::back_inserter(u32newline));
+		return u32newline;
 	}
 
 	void producer_t::save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
@@ -501,6 +466,102 @@ namespace txt
 		}
 	}
 
+	void producer_t::save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
+	{
+		try
+		{
+			if (consumer->get_document().size() == 0)
+				throw std::runtime_error("txt document is empty");
+			std::wofstream file(to_fstream_path(path), std::ios::binary | std::ios::out);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
+			if (*params.byte_order == byte_order_t::utf8_bom)
+			{
+				const auto option = (std::codecvt_mode)(std::generate_header);
+				locale_t::imbue<std::wofstream, option >(*params.charset, file);
+			}
+			else if (*params.byte_order == byte_order_t::little_endian)
+			{
+				const auto option = (std::codecvt_mode)(std::generate_header | std::little_endian);
+				locale_t::imbue<std::wofstream, option >(*params.charset, file);
+			}
+			else if (*params.byte_order == byte_order_t::big_endian)
+				locale_t::imbue<std::wofstream, std::generate_header>(*params.charset, file);
+			else
+				locale_t::imbue<std::wofstream, (std::codecvt_mode)(0)>(*params.charset, file);
+
+			boost::iostreams::filtering_wostream stream;
+			stream.push(boost::iostreams::wnewline_filter(*params.newline_type));
+			stream.push(file);
+
+			auto newline = make_wnewline(consumer, *params.newline_type);
+			auto& document = consumer->get_document();
+			int last_para_id = document.size() - 1;
+			for (int i = 0; i < last_para_id; ++i)
+			{
+				stream << document[i];
+				stream << newline;
+			}
+			stream << document[last_para_id];
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
+	void producer_t::save_utf32(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
+	{
+		try
+		{
+			if (consumer->get_document().size() == 0)
+				throw std::runtime_error("txt document is empty");
+			std::fstream file(to_fstream_path(path), std::ios::binary | std::ios::out);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
+			auto byte_order = *params.byte_order;
+			std::vector<uint8_t> header = { 0xFF, 0xFE, 0x00, 0x00 };
+			if (byte_order == byte_order_t::big_endian)
+				std::reverse(header.begin(), header.end());
+			for (auto code : header)
+				file << code;
+
+			auto newline = make_u32newline(consumer, *params.newline_type);
+			auto& document = consumer->get_document();
+			int last_para_id = document.size() - 1;
+			for (int i = 0; i < last_para_id; ++i)
+			{
+				auto u32buffer = to_utf32(document[i]);
+				for (auto u32 : u32buffer)
+				{
+					if (byte_order == byte_order_t::big_endian)
+						endian_swap(&u32);
+					binary_io::write_uint32(file, u32);
+				}
+				for (auto u32 : newline)
+				{
+					if (byte_order == byte_order_t::big_endian)
+						endian_swap(&u32);
+					binary_io::write_uint32(file, u32);
+				}
+			}
+
+			auto u32buffer = to_utf32(document[last_para_id]);
+			for (auto u32 : u32buffer)
+			{
+				if (byte_order == byte_order_t::big_endian)
+					endian_swap(&u32);
+				binary_io::write_uint32(file, u32);
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
 	void producer_t::save(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params)
 	{
 		try
@@ -515,7 +576,12 @@ namespace txt
 				params.byte_order : consumer->get_byte_order();
 
 			if (locale_t::is_international(*params.charset))
-				save_international(path, consumer, params);
+			{
+				if (locale_t::is_utf32(*params.charset))
+					save_utf32(path, consumer, params);
+				else
+					save_international(path, consumer, params);
+			}
 			else
 				save_non_international(path, consumer, params);
 		}

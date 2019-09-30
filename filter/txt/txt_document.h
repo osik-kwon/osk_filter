@@ -63,11 +63,13 @@ namespace txt
 		void save(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
 	private:
 		static const int original_newline = -1;
-		void save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
 		void save_non_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
-		
+		void save_international(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
+		void save_utf32(const std::string& path, std::unique_ptr<consumer_t>& consumer, custom_params_t params);
+
 		std::string make_newline(std::unique_ptr<consumer_t>& consumer, int custom_type = original_newline) const;
 		std::wstring make_wnewline(std::unique_ptr<consumer_t>& consumer, int custom_type = original_newline) const;
+		std::u32string make_u32newline(std::unique_ptr<consumer_t>& consumer, int custom_type = original_newline) const;
 	};
 }
 }

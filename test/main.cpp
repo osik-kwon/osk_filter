@@ -272,6 +272,17 @@ void test_txt()
 		auto dest = filter.open(to_utf8(u"d:/filter/utf32_be.export.txt"));
 		print(filter.extract_all_texts(dest));
 	}
+	{
+		std::cout << "===== txt open/save test =====" << std::endl;
+		filter_t filter;
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf32_le.txt")) << std::endl;
+		auto src = filter.open(to_utf8(u"d:/filter/utf32_le.txt"));
+		print(filter.extract_all_texts(src));
+		filter.save(to_utf8(u"d:/filter/utf32_le.export.txt"), src);
+		std::cout << filter.detect_charset(to_utf8(u"d:/filter/utf32_le.export.txt")) << std::endl;
+		auto dest = filter.open(to_utf8(u"d:/filter/utf32_le.export.txt"));
+		print(filter.extract_all_texts(dest));
+	}
 	/*{
 		std::cout << "===== txt open/save test =====" << std::endl;
 		filter_t filter;
