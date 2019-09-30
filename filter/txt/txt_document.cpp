@@ -43,8 +43,10 @@ namespace txt
 				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf8<wchar_t, 0x10ffff, option>));
 			else if (charset == "UTF-16")
 				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, option>));
-			else if (charset == "UTF-32")
-				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<char32_t, 0x10ffff, option>));
+			//else if (charset == "UTF-32")
+			//	stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<char32_t, 0x10ffff, option>));
+			else
+				throw std::logic_error("std::codecvt_utf16 is not support utf32");
 		}
 
 		static std::wstring non_international_to_wstring(std::string& src, const std::string& charset);
@@ -307,18 +309,17 @@ namespace txt
 		}
 	}
 
-	void consumer_t::open_utf32(const std::string& path)
+	std::u32string consumer_t::open_utf32_stream(const std::string& path)
 	{
 		try
 		{
-			byte_order = detecter_t::detect_byte_order(path, charset);
 			std::ifstream file(to_fstream_path(path), std::ios::binary);
 			if (file.fail())
 				throw std::runtime_error("file I/O error");
 
 			std::string buffer{ std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
 			if (buffer.length() % 4 != 0)
-				throw std::logic_error("size in bytes must be a multiple of 4");
+				throw std::logic_error("size in bytes should be a multiple of 4");
 
 			buffer = buffer.substr(4);
 			const size_t count = buffer.length() / 4;
@@ -334,7 +335,7 @@ namespace txt
 					u32buffer[i] = static_cast<char32_t>(first | second | third | fourth);
 				}
 			}
-			else if(byte_order == byte_order_t::little_endian)
+			else if (byte_order == byte_order_t::little_endian)
 			{
 				for (size_t i = 0; i < count; ++i)
 				{
@@ -345,9 +346,35 @@ namespace txt
 					u32buffer[i] = static_cast<char32_t>(first | second | third | fourth);
 				}
 			}
-			auto u8buffer = to_utf8(u32buffer);
+			return u32buffer;
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return std::u32string();
+	}
+
+	void consumer_t::open_utf32(const std::string& path)
+	{
+		try
+		{
+			byte_order = detecter_t::detect_byte_order(path, charset);
+			auto u8buffer = to_utf8( open_utf32_stream(path) );
 			newline_type = detecter_t::detect_newline_type_from_string(u8buffer);
-			// TODO:
+
+			boost::iostreams::array_source src(reinterpret_cast<const char*>(u8buffer.data()), u8buffer.size());
+			boost::iostreams::filtering_istream stream;
+			stream.push(boost::iostreams::newline_filter(boost::iostreams::newline::posix));
+			stream.push(src);
+
+			std::string line;
+			while (!stream.eof())
+			{		
+				std::getline(stream, line);
+				auto para = to_wchar(line);
+				document.emplace_back(std::move(para));
+			}
 		}
 		catch (const std::exception& e)
 		{

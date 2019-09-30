@@ -37,6 +37,8 @@ namespace txt
 		void open_non_international(const std::string& path);
 		void open_international(const std::string& path);
 		void open_utf32(const std::string& path);
+		std::u32string open_utf32_stream(const std::string& path);
+
 		document_t document;
 		std::string charset;
 		int newline_type;
