@@ -1,6 +1,5 @@
 #include "filter_pch.h"
 #include "txt/txt_document.h"
-
 #include <locale>
 #include <codecvt>
 
@@ -12,6 +11,7 @@
 #include <boost/iostreams/code_converter.hpp>
 #include <boost/locale.hpp>
 
+#include "traits/binary_traits.h"
 #include "io/file_stream.h"
 #include "io/newline_filter.h"
 #include "locale/charset_detecter.h"
@@ -31,6 +31,11 @@ namespace txt
 			return charset == "UTF-8" || charset == "UTF-16" || charset == "UTF-32";
 		}
 
+		static bool is_utf32(const std::string& charset)
+		{
+			return charset == "UTF-32";
+		}
+
 		template <class stream_t, std::codecvt_mode option>
 		static void imbue(const std::string& charset, stream_t& stream)
 		{
@@ -38,9 +43,8 @@ namespace txt
 				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf8<wchar_t, 0x10ffff, option>));
 			else if (charset == "UTF-16")
 				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, option>));
-			// TODO: verify
-			//else if (charset == "UTF-32")
-			//	stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<wchar_t, 0x10ffff, std::consume_header>));
+			else if (charset == "UTF-32")
+				stream.imbue(std::locale(stream.getloc(), new std::codecvt_utf16<char32_t, 0x10ffff, option>));
 		}
 
 		static std::wstring non_international_to_wstring(std::string& src, const std::string& charset);
@@ -60,6 +64,7 @@ namespace txt
 		detecter_t() = default;
 		static std::string detect_charset(const std::string& path);
 		static int detect_newline_type(const std::string& path);
+		static int detect_newline_type_from_string(const std::string& u8string);
 		static int detect_wnewline_type(const std::string& path, const std::string& charset);
 		static byte_order_t detect_byte_order(const std::string& path, const std::string& charset);
 	private:
@@ -172,6 +177,37 @@ namespace txt
 		return boost::iostreams::newline::posix;
 	}
 
+	int detecter_t::detect_newline_type_from_string(const std::string& u8string)
+	{
+		try
+		{
+			boost::iostreams::array_source src(reinterpret_cast<const char*>(u8string.data()), u8string.size());
+			boost::iostreams::filtering_istream stream;
+			stream.push(boost::iostreams::newline_checker());
+			stream.push(src);
+
+			std::string para;
+			std::getline(stream, para);
+			auto filter = stream.filters().component<boost::iostreams::newline_checker>(0);
+			if (!filter)
+				throw std::runtime_error("boost::iostreams::newline_checker is null");
+
+			int newline_type = boost::iostreams::newline::posix;
+			if (filter->is_dos())
+				newline_type = boost::iostreams::newline::dos;
+			else if (filter->is_mac())
+				newline_type = boost::iostreams::newline::mac;
+			else if (filter->is_posix())
+				newline_type = boost::iostreams::newline::posix;
+			return newline_type;
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return boost::iostreams::newline::posix;
+	}
+
 	int detecter_t::detect_wnewline_type(const std::string& path, const std::string& charset)
 	{
 		try
@@ -218,6 +254,8 @@ namespace txt
 	{
 		try
 		{
+			newline_type = detecter_t::detect_newline_type(path);
+
 			std::ifstream file(to_fstream_path(path), std::ios::binary);
 			if (file.fail())
 				throw std::runtime_error("file I/O error");
@@ -244,6 +282,9 @@ namespace txt
 	{
 		try
 		{
+			newline_type = detecter_t::detect_wnewline_type(path, charset);
+			byte_order = detecter_t::detect_byte_order(path, charset);
+
 			std::wifstream file(to_fstream_path(path), std::ios::binary);
 			if (file.fail())
 				throw std::runtime_error("file I/O error");
@@ -266,6 +307,54 @@ namespace txt
 		}
 	}
 
+	void consumer_t::open_utf32(const std::string& path)
+	{
+		try
+		{
+			byte_order = detecter_t::detect_byte_order(path, charset);
+			std::ifstream file(to_fstream_path(path), std::ios::binary);
+			if (file.fail())
+				throw std::runtime_error("file I/O error");
+
+			std::string buffer{ std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
+			if (buffer.length() % 4 != 0)
+				throw std::logic_error("size in bytes must be a multiple of 4");
+
+			buffer = buffer.substr(4);
+			const size_t count = buffer.length() / 4;
+			auto u32buffer = std::u32string(count, 0);
+			if (byte_order == byte_order_t::big_endian)
+			{
+				for (size_t i = 0; i < count; ++i)
+				{
+					uint32_t first = static_cast<uint8_t>(buffer[i * 4 + 3]);
+					uint32_t second = static_cast<uint8_t>(buffer[i * 4 + 2]) << 8;
+					uint32_t third = static_cast<uint8_t>(buffer[i * 4 + 1]) << 16;
+					uint32_t fourth = static_cast<uint8_t>(buffer[i * 4 + 0]) << 24;
+					u32buffer[i] = static_cast<char32_t>(first | second | third | fourth);
+				}
+			}
+			else if(byte_order == byte_order_t::little_endian)
+			{
+				for (size_t i = 0; i < count; ++i)
+				{
+					uint32_t first = static_cast<uint8_t>(buffer[i * 4 + 0]);
+					uint32_t second = static_cast<uint8_t>(buffer[i * 4 + 1]) << 8;
+					uint32_t third = static_cast<uint8_t>(buffer[i * 4 + 2]) << 16;
+					uint32_t fourth = static_cast<uint8_t>(buffer[i * 4 + 3]) << 24;
+					u32buffer[i] = static_cast<char32_t>(first | second | third | fourth);
+				}
+			}
+			auto u8buffer = to_utf8(u32buffer);
+			newline_type = detecter_t::detect_newline_type_from_string(u8buffer);
+			// TODO:
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+	}
+
 	void consumer_t::open(const std::string& path)
 	{
 		try
@@ -273,13 +362,13 @@ namespace txt
 			charset = detecter_t::detect_charset(path);	
 			if (locale_t::is_international(charset))
 			{
-				newline_type = detecter_t::detect_wnewline_type(path, charset);
-				byte_order = detecter_t::detect_byte_order(path, charset);
-				open_international(path);
+				if (locale_t::is_utf32(charset))
+					open_utf32(path);
+				else
+					open_international(path);
 			}
 			else
 			{
-				newline_type = detecter_t::detect_newline_type(path);
 				open_non_international(path);
 			}
 		}
