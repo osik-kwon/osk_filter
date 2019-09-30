@@ -72,10 +72,10 @@ namespace txt
 		static int detect_wnewline_type(const std::string& path, const std::string& charset);
 		static byte_order_t detect_byte_order(const std::string& path, const std::string& charset);
 	private:
-		static std::string read_buffer(const std::string& path);
+		static std::string read_buffer(const std::string& path, size_t minimal_length);
 	};
 
-	std::string detecter_t::read_buffer(const std::string& path)
+	std::string detecter_t::read_buffer(const std::string& path, size_t minimal_length)
 	{
 		std::ifstream file(to_fstream_path(path), std::ios::binary);
 		if (file.fail())
@@ -85,7 +85,6 @@ namespace txt
 		std::streampos size = file.tellg();
 		file.seekg(0, std::ios::beg);
 
-		const size_t minimal_length = 255;
 		size_t file_size = (size_t)size;
 		size_t buffer_size = 0;
 		if (file_size > minimal_length)
@@ -96,6 +95,16 @@ namespace txt
 		std::string buffer(buffer_size, ' ');
 		file.read(&buffer[0], buffer_size);
 		file.close();
+
+		if ( buffer.size() != 0 && buffer.size() < minimal_length)
+		{
+			size_t mod = minimal_length / buffer.size();
+			std::string filled_buffer = buffer;
+			for (size_t i = 0; i < mod; ++i)
+				filled_buffer += buffer;
+			return filled_buffer;
+		}
+
 		return buffer;
 	}
 
@@ -103,7 +112,7 @@ namespace txt
 	{
 		try
 		{
-			auto buffer = read_buffer(path);
+			auto buffer = read_buffer(path, 4096);
 			auto charset = ::filter::charset_detecter::detect(buffer);
 			if (charset.empty() || charset == "ASCII")
 				charset = "UTF-8"; // IMPORTANT!
@@ -121,7 +130,7 @@ namespace txt
 		if (!locale_t::is_international(charset))
 			return byte_order_t::unknown;
 
-		auto buffer = read_buffer(path);
+		auto buffer = read_buffer(path, 4);
 		auto length = buffer.size();
 		if (length < 3)
 			return byte_order_t::unknown;
