@@ -93,17 +93,17 @@ public:
 		std::wcout << "open path is " << to_wchar(open_path) << std::endl;
 		std::wcout << "save path is " << to_wchar(save_path) << std::endl;
 		filter_t filter;
-		std::cout << "[0] open charset is " << filter.detect_charset(open_path) << std::endl;
+		//std::cout << "[0] open charset is " << filter.detect_charset(open_path) << std::endl;
 		std::cout << "[1] open new document"<< std::endl;
 		auto src = filter.open(open_path);
 		std::cout << "[2] extract all texts from new document" << std::endl;
 		std::wcout << filter.extract_all_texts(src);
 		std::cout << "[3] save" << std::endl;
 		filter.save(save_path, src);
-		std::cout << "[4] save charset is" << filter.detect_charset(save_path) << std::endl;
-		std::cout << "[5] open saved document" << std::endl;
+		//std::cout << "[4] save charset is" << filter.detect_charset(save_path) << std::endl;
+		std::cout << "[4] open saved document" << std::endl;
 		auto dest = filter.open(save_path);
-		std::cout << "[6] extract all texts from saved document" << std::endl;
+		std::cout << "[5] extract all texts from saved document" << std::endl;
 		std::wcout << filter.extract_all_texts(dest);
 	}
 
@@ -195,230 +195,6 @@ public:
 private:
 };
 
-
-/*
-void test_hwp30()
-{
-	std::cout << "===== hwp30 test =====" << std::endl;
-	typedef filter::hwp30::filter_t filter_t;
-	{
-		std::cout << "===== hwp30 non ascii path test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30_한글경로.hwp"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwp30_한글경로.export.hwp"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp30_한글경로.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwp30 open/save test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30_shape.hwp"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwp30_shape.export.hwp"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp30_shape.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwp30 search privacy test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30_privacy.hwp"));
-		print(filter.extract_all_texts(src));
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		print(filter.search_privacy({ resident_registration_number }, src));
-	}
-	{
-		std::cout << "===== hwp30 replace privacy test =====" << std::endl;
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		filter_t filter;
-
-		auto src = filter.open(to_utf8(u"d:/filter/hwp30_privacy.hwp"));
-		print(filter.extract_all_texts(src));
-
-		filter.replace_privacy({ resident_registration_number }, u'@', src);
-		filter.save(to_utf8(u"d:/filter/hwp30_privacy.export.hwp"), src);
-
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp30_privacy.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-}
-
-void test_hwp50()
-{
-	std::cout << "===== hwp50 test =====" << std::endl;
-	typedef filter::hwp50::filter_t filter_t;
-	{
-		std::cout << "===== hwp50 non ascii path test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp50_한글경로.hwp"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwp50_한글경로.export.hwp"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_한글경로.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwp50 open/save test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp50.hwp"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwp50.export.hwp"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp50.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwp50 search privacy test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/privacy2.hwp"));
-		print(filter.extract_all_texts(src));
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		print(filter.search_privacy({ resident_registration_number }, src));
-	}
-	{
-		std::cout << "===== hwp50 replace privacy test =====" << std::endl;
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		filter_t filter;
-
-		auto src = filter.open(to_utf8(u"d:/filter/privacy2.hwp"));
-		print(filter.extract_all_texts(src));
-
-		filter.replace_privacy({ resident_registration_number }, u'@', src);
-		filter.save(to_utf8(u"d:/filter/privacy2.export.hwp"), src);
-
-		auto dest = filter.open(to_utf8(u"d:/filter/privacy2.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-}
-
-void test_hwp50_distribution()
-{
-	std::cout << "===== hwp50 distribution test =====" << std::endl;
-	typedef filter::hwp50::filter_t filter_t;
-	{
-		std::cout << "===== hwp50 open/save test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp50_dist.hwp"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwp50_dist.export.hwp"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_dist.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwp50 search privacy test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwp50_privacy_dist.hwp"));
-		print(filter.extract_all_texts(src));
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		print(filter.search_privacy({ resident_registration_number }, src));
-	}
-	{
-		std::cout << "===== hwp50 replace privacy test =====" << std::endl;
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		filter_t filter;
-
-		auto src = filter.open(to_utf8(u"d:/filter/hwp50_privacy_dist.hwp"));
-		print(filter.extract_all_texts(src));
-
-		filter.replace_privacy({ resident_registration_number }, u'@', src);
-		filter.save(to_utf8(u"d:/filter/hwp50_privacy_dist.export.hwp"), src);
-
-		auto dest = filter.open(to_utf8(u"d:/filter/hwp50_privacy_dist.export.hwp"));
-		print(filter.extract_all_texts(dest));
-	}
-}
-
-void test_hwpml()
-{
-	std::cout << "===== hwpml test =====" << std::endl;
-	typedef filter::hml::filter_t filter_t;
-	{
-		std::cout << "===== hwpml non ascii path test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hml_한글경로.hml"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hml_한글경로.export.hml"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hml_한글경로.export.hml"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwpml open/save test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hml.hml"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hml.export.hml"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hml.export.hml"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwpml search privacy test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/privacy.hml"));
-		print(filter.extract_all_texts(src));
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		print(filter.search_privacy({ resident_registration_number }, src));
-	}
-	{
-		std::cout << "===== hwpml replace privacy test =====" << std::endl;
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		filter_t filter;
-
-		auto src = filter.open(to_utf8(u"d:/filter/privacy.hml"));
-		print(filter.extract_all_texts(src));
-
-		filter.replace_privacy({ resident_registration_number }, u'@', src);
-		filter.save(to_utf8(u"d:/filter/privacy.export.hml"), src);
-
-		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.hml"));
-		print(filter.extract_all_texts(dest));
-	}
-}
-
-void test_hwpx()
-{
-	std::cout << "===== hwpx test =====" << std::endl;
-	typedef filter::hwpx::filter_t filter_t;
-	{
-		std::cout << "===== hwpx non ascii path test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwpx_한글경로.hwpx"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwpx_한글경로.export.hwpx"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwpx_한글경로.export.hwpx"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwpx open/save test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/hwpx.hwpx"));
-		print(filter.extract_all_texts(src));
-		filter.save(to_utf8(u"d:/filter/hwpx.export.hwpx"), src);
-		auto dest = filter.open(to_utf8(u"d:/filter/hwpx.export.hwpx"));
-		print(filter.extract_all_texts(dest));
-	}
-	{
-		std::cout << "===== hwpx search privacy test =====" << std::endl;
-		filter_t filter;
-		auto src = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
-		print(filter.extract_all_texts(src));
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		print(filter.search_privacy({ resident_registration_number }, src));
-	}
-	{
-		std::cout << "===== hwpx replace privacy test =====" << std::endl;
-		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
-		filter_t filter;
-
-		auto src = filter.open(to_utf8(u"d:/filter/privacy.hwpx"));
-		print(filter.extract_all_texts(src));
-
-		filter.replace_privacy({ resident_registration_number }, u'@', src);
-		filter.save(to_utf8(u"d:/filter/privacy.export.hwpx"), src);
-
-		auto dest = filter.open(to_utf8(u"d:/filter/privacy.export.hwpx"));
-		print(filter.extract_all_texts(dest));
-	}
-}
-
-*/
 void test_txt()
 {
 	format_tester_t<filter::txt::filter_t> tester("txt", "export");
@@ -447,17 +223,83 @@ void test_txt()
 		});
 }
 
+void test_hwpml()
+{
+	format_tester_t<filter::hml::filter_t> tester("hml", "export");
+	tester.build_open_root(L"./sample/hml/")
+		.build_save_root(L"./sample/hml/save/");
+
+	console_tester_t::open_and_save(tester, {
+		L"hml.hml",
+		L"hml_한글경로.hml"
+		});
+
+	console_tester_t::search_and_replace_privacy(tester, {
+		L"privacy.hml"
+		});
+}
+
+void test_hwpx()
+{
+	format_tester_t<filter::hwpx::filter_t> tester("hwpx", "export");
+	tester.build_open_root(L"./sample/hwpx/")
+		.build_save_root(L"./sample/hwpx/save/");
+
+	console_tester_t::open_and_save(tester, {
+		L"hwpx.hwpx",
+		L"hwpx_한글경로.hwpx"
+		});
+
+	console_tester_t::search_and_replace_privacy(tester, {
+		L"privacy.hwpx"
+		});
+}
+
+void test_hwp30()
+{
+	format_tester_t<filter::hwp30::filter_t> tester("hwp", "export");
+	tester.build_open_root(L"./sample/hwp30/")
+		.build_save_root(L"./sample/hwp30/save/");
+
+	console_tester_t::open_and_save(tester, {
+		L"hwp30.hwp",
+		L"hwp30_한글경로.hwp",
+		L"hwp30_shape.hwp"
+		});
+
+	console_tester_t::search_and_replace_privacy(tester, {
+		L"hwp30_privacy.hwp"
+		});
+}
+
+void test_hwp50()
+{
+	format_tester_t<filter::hwp50::filter_t> tester("hwp", "export");
+	tester.build_open_root(L"./sample/hwp50/")
+		.build_save_root(L"./sample/hwp50/save/");
+
+	console_tester_t::open_and_save(tester, {
+		L"hwp50.hwp",
+		L"hwp50_한글경로.hwp",
+		L"hwp50_nocomp.hwp",
+		L"hwp50_dist.hwp"
+		});
+
+	console_tester_t::search_and_replace_privacy(tester, {
+		L"hwp50_privacy.hwp",
+		L"hwp50_privacy_dist.hwp"
+		});
+}
+
 int main()
 {
 	try
 	{
 		test_txt();
-		//test_hwpml();
-		//test_hwpx();
-		//test_hwp30();
-		//test_hwp50();
-		//test_hwp50_distribution();
-		
+		test_hwpml();
+		test_hwpx();
+		test_hwp30();
+		test_hwp50();		
 	}
 	catch (const std::exception& e)
 	{
