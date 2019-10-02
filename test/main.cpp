@@ -291,15 +291,198 @@ void test_hwp50()
 		});
 }
 
+#include <fstream>
+#include <algorithm>
+#include <io/binary_iostream.h>
+#include <io/file_stream.h>
+
+#include <traits/xml_traits.h>
+#include <xml/parser>
+#include <xml/serializer>
+
+namespace filter
+{
+	class linear_match_t
+	{
+	public:
+		linear_match_t(const std::string rule, std::size_t begin, std::size_t end);
+		bool match(const std::string& data) const;
+	private:
+		const std::regex matcher;
+		const std::size_t begin;
+		const std::size_t end;
+	};
+
+	linear_match_t::linear_match_t(const std::string rule, std::size_t begin, std::size_t end) :
+		matcher(rule), begin(begin), end(end)
+	{}
+
+	bool linear_match_t::match(const std::string& data) const
+	{
+		if (data.size() < (begin + end))
+			throw std::runtime_error("buffer overrun error");
+		return std::regex_match(data.begin(), data.begin() + end, matcher);
+	}
+
+	class xml_match_t
+	{
+	public:
+		xml_match_t(){}
+	private:
+	};
+
+	class signature_t
+	{
+	public:
+		signature_t(){}
+	private:
+		std::string read(const std::string& path, size_t minimal_length);
+	};
+
+	std::string signature_t::read(const std::string& path, size_t minimal_length)
+	{
+		std::ifstream file(to_fstream_path(path), std::ios::binary);
+		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+
+		file.unsetf(std::ios::skipws);
+		file.seekg(0, std::ios::end);
+		std::streampos size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		size_t file_size = (size_t)size;
+		size_t buffer_size = 0;
+		if (file_size > minimal_length)
+			buffer_size = minimal_length;
+		else
+			buffer_size = file_size;
+
+		std::string buffer;
+		std::copy_n(std::istream_iterator<char>(file), buffer_size, std::back_inserter(buffer));
+		return buffer;
+	}
+
+	void test_binary(const std::string& path)
+	{
+		std::ifstream file(to_fstream_path(path), std::ios::binary);
+		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+
+		file.unsetf(std::ios::skipws);
+		file.seekg(0, std::ios::end);
+		std::streampos size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		// input params
+		const size_t minimal_length = 64;
+		size_t file_size = (size_t)size;
+		size_t buffer_size = 0;
+		if (file_size > minimal_length)
+			buffer_size = minimal_length;
+		else
+			buffer_size = file_size;
+
+		std::string buffer;
+		std::copy_n(std::istream_iterator<char>(file), buffer_size, std::back_inserter(buffer));
+		file.close();
+
+		// input params
+		const size_t begin = 0;
+		const size_t end = 30;
+		const std::string rule = "HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5";
+
+		std::string header(buffer.begin() + begin, buffer.begin() + end);
+		std::regex matcher(rule);
+		std::cout << std::regex_match(header, matcher);
+	}
+
+	void test_xml(const std::string& path)
+	{
+		using namespace ::xml;
+		std::ifstream file(to_fstream_path(path), std::ios::binary);
+		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+		try
+		{
+			//::xml::parser parser(file, path);
+			//parser.next_expect(::xml::parser::start_element, "HWPML", ::xml::content::complex);
+
+			parser p(file,
+				path,
+				parser::receive_default |
+				parser::receive_attributes_event |
+				parser::receive_namespace_decls);
+
+			serializer s(std::cout, "out", 0);
+
+			for (parser::event_type e(p.next()); e != parser::eof; e = p.next())
+			{
+				switch (e)
+				{
+				case parser::start_element:
+				{
+					s.start_element(p.qname());
+					break;
+				}
+				case parser::end_element:
+				{
+					s.end_element();
+					break;
+				}
+				case parser::start_namespace_decl:
+				{
+					s.namespace_decl(p.namespace_(), p.prefix());
+					break;
+				}
+				case parser::end_namespace_decl:
+				{
+					// There is nothing in XML that indicates the end of namespace
+					// declaration since it is scope-based.
+					//
+					break;
+				}
+				case parser::start_attribute:
+				{
+					s.start_attribute(p.qname());
+					break;
+				}
+				case parser::end_attribute:
+				{
+					s.end_attribute();
+					break;
+				}
+				case parser::characters:
+				{
+					s.characters(p.value());
+					break;
+				}
+				case parser::eof:
+				{
+					// Handled in the for loop.
+					//
+					break;
+				}
+				}
+			}
+		}
+		catch (const std::exception&)
+		{
+			std::cout << "mismatched" << std::endl;
+			return;
+		}
+		std::cout << "matched" << std::endl;
+	}
+}
+
+
 int main()
 {
 	try
 	{
-		test_txt();
-		test_hwpml();
-		test_hwpx();
-		test_hwp30();
-		test_hwp50();		
+		filter::test_xml("d:/signature/hml.hml");
+		//filter::test_binary("d:/signature/hwp30/hwp21.hwp");
+		//test_txt();
+		//test_hwpml();
+		//test_hwpx();
+		//test_hwp30();
+		//test_hwp50();		
 	}
 	catch (const std::exception& e)
 	{
