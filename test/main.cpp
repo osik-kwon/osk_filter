@@ -396,69 +396,20 @@ namespace filter
 
 	void test_xml(const std::string& path)
 	{
-		using namespace ::xml;
 		std::ifstream file(to_fstream_path(path), std::ios::binary);
 		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
 		try
 		{
-			//::xml::parser parser(file, path);
-			//parser.next_expect(::xml::parser::start_element, "HWPML", ::xml::content::complex);
-
-			parser p(file,
-				path,
-				parser::receive_default |
-				parser::receive_attributes_event |
-				parser::receive_namespace_decls);
-
-			serializer s(std::cout, "out", 0);
-
-			for (parser::event_type e(p.next()); e != parser::eof; e = p.next())
+			xml::parser parser(file, path);
+			//p.next_expect(::xml::parser::start_element, "HWPML", ::xml::content::complex);
+			
+			for (auto event(parser.next()); event != xml::parser::eof; event = parser.next())
 			{
-				switch (e)
+				if (event == xml::parser::start_element)
 				{
-				case parser::start_element:
-				{
-					s.start_element(p.qname());
-					break;
-				}
-				case parser::end_element:
-				{
-					s.end_element();
-					break;
-				}
-				case parser::start_namespace_decl:
-				{
-					s.namespace_decl(p.namespace_(), p.prefix());
-					break;
-				}
-				case parser::end_namespace_decl:
-				{
-					// There is nothing in XML that indicates the end of namespace
-					// declaration since it is scope-based.
-					//
-					break;
-				}
-				case parser::start_attribute:
-				{
-					s.start_attribute(p.qname());
-					break;
-				}
-				case parser::end_attribute:
-				{
-					s.end_attribute();
-					break;
-				}
-				case parser::characters:
-				{
-					s.characters(p.value());
-					break;
-				}
-				case parser::eof:
-				{
-					// Handled in the for loop.
-					//
-					break;
-				}
+					std::cout << parser.qname() << std::endl;
+					for (auto& attr : parser.attribute_map())
+						std::cout << attr.first << " : " << attr.second.value << std::endl;
 				}
 			}
 		}
