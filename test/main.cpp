@@ -300,46 +300,72 @@ void test_hwp50()
 #include <xml/parser>
 #include <xml/serializer>
 
+#include <functional>
+#include <map>
+#include <set>
+#include <algorithm>
+
+#include <trie/trie.h>
+
 namespace filter
 {
-	class linear_match_t
+namespace signature
+{
+	class range_t
 	{
 	public:
-		linear_match_t(const std::string rule, std::size_t begin, std::size_t end);
-		bool match(const std::string& data) const;
+		range_t(const std::string& buffer, std::size_t begin, std::size_t end);
+		bool match(const std::string& rule) const;
+		bool equal(const std::string& dest) const;
 	private:
-		const std::regex matcher;
 		const std::size_t begin;
 		const std::size_t end;
+		const std::string data;
 	};
 
-	linear_match_t::linear_match_t(const std::string rule, std::size_t begin, std::size_t end) :
-		matcher(rule), begin(begin), end(end)
+	range_t::range_t(const std::string& buffer, std::size_t begin, std::size_t end) :
+		begin(begin), end(end), data(buffer.begin() + begin, buffer.begin() + end)
 	{}
 
-	bool linear_match_t::match(const std::string& data) const
+	bool range_t::match(const std::string& rule) const
 	{
 		if (data.size() < (begin + end))
 			throw std::runtime_error("buffer overrun error");
+		std::regex matcher(rule);
 		return std::regex_match(data.begin(), data.begin() + end, matcher);
 	}
 
-	class xml_match_t
+	bool range_t::equal(const std::string& dest) const
+	{
+		return data == dest;
+	}
+
+	class storage_t
 	{
 	public:
-		xml_match_t(){}
+		storage_t(const std::string& path);
+		std::string read_header(size_t minimal_length);
+		range_t range(size_t begin, size_t end);
+		const std::string& get_header() const {
+			return header;
+		}
 	private:
+		std::string path;
+		std::string header;
 	};
 
-	class signature_t
+	range_t storage_t::range(size_t begin, size_t end)
 	{
-	public:
-		signature_t(){}
-	private:
-		std::string read(const std::string& path, size_t minimal_length);
-	};
+		range_t range(header, begin, end);
+		return range;
+	}
 
-	std::string signature_t::read(const std::string& path, size_t minimal_length)
+	storage_t::storage_t(const std::string& path) : path(path)
+	{
+		header = read_header(64);
+	}
+
+	std::string storage_t::read_header(size_t minimal_length)
 	{
 		std::ifstream file(to_fstream_path(path), std::ios::binary);
 		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
@@ -360,6 +386,178 @@ namespace filter
 		std::copy_n(std::istream_iterator<char>(file), buffer_size, std::back_inserter(buffer));
 		return buffer;
 	}
+
+	class deterministic_classifier_t
+	{
+	public:
+		typedef std::string name_t;
+		typedef int trie_key_t;
+		typedef trie_impl trie_t;
+		typedef trie_impl::result_t trie_result_t;
+		typedef std::function<bool(storage_t&)> algorithm_t;
+		typedef std::map<trie_key_t, algorithm_t> algorithms_t;
+		deterministic_classifier_t() : unique_key(0)
+		{}
+
+		// type interfaces
+		void insert_type(trie_key_t trie_key, const name_t& name)
+		{
+			if (deterministic_types.find(trie_key) != deterministic_types.end())
+				throw std::logic_error("has already registered format");
+			deterministic_types.insert({ trie_key, name });
+		}
+
+		bool exist_type(trie_key_t trie_key) const
+		{
+			return deterministic_types.find(trie_key) != deterministic_types.end();
+		}
+
+		name_t find_type(trie_key_t trie_key) const
+		{
+			if (deterministic_types.find(trie_key) == deterministic_types.end())
+				throw std::logic_error("trie id is not exist");
+			return deterministic_types.find(trie_key)->second;
+		}
+
+		// trie interfaces
+		trie_key_t get_unique_key() const {
+			return unique_key;
+		}
+
+		bool exact_match(const std::string& key) const {
+			return binary_classifiers.lookup(key) != -1;
+		}
+
+		trie_result_t longest_prefix(const std::string& key) const
+		{
+			return binary_classifiers.longest_prefix(key);
+		}
+
+		trie_key_t insert_key_at_trie(const std::string& key) {
+			++unique_key;
+			if(binary_classifiers.insert(key, unique_key) == -1)
+				throw std::logic_error("trie insert fail");
+			return unique_key;
+		}
+
+		// algorithm interfaces
+		bool has_algorithms(const std::string& key) const {
+			return deterministic_classifiers.find(key) != deterministic_classifiers.end();
+		}
+
+		const algorithms_t& get_algorithms(const std::string& key) const {
+			if (deterministic_classifiers.find(key) == deterministic_classifiers.end())
+				throw std::logic_error("algorithm is not exist");
+			return deterministic_classifiers.find(key)->second;
+		}
+
+		void insert_algorithm(trie_key_t id, const std::string& key, algorithm_t algorithm) {
+			if (deterministic_classifiers.find(key) == deterministic_classifiers.end())
+			{
+				deterministic_classifiers.insert({ key, algorithms_t{} });
+			}
+			deterministic_classifiers[key].insert({ id, algorithm } );
+		}
+	private:
+		trie_key_t unique_key;
+		trie_t binary_classifiers;
+		std::map<trie_key_t, name_t> deterministic_types;
+		std::map<std::string, algorithms_t > deterministic_classifiers;
+	};
+
+	class nondeterministic_classifier_t
+	{
+	public:
+		typedef std::function<bool(storage_t&)> algorithm_t;
+		nondeterministic_classifier_t();
+	private:
+	};
+
+	nondeterministic_classifier_t::nondeterministic_classifier_t()
+	{}
+
+	class analyzer_t
+	{
+	public:
+		typedef deterministic_classifier_t::name_t name_t;
+		typedef deterministic_classifier_t::algorithm_t algorithm_t;
+		typedef deterministic_classifier_t::algorithms_t algorithms_t;
+		typedef deterministic_classifier_t::trie_key_t trie_key_t;
+		analyzer_t();
+		void make_rules();
+		name_t match(const std::string& path);
+	private:
+		analyzer_t& deterministic(const name_t& name, const std::string& key)
+		{
+			if (deterministic_classifiers.exact_match(key))
+				throw std::logic_error("has already registered key in trie");
+			auto trie_key = deterministic_classifiers.insert_key_at_trie(key);
+			deterministic_classifiers.insert_type(trie_key, name);
+			return *this;
+		}
+
+		analyzer_t& deterministic(const name_t& name, const std::string& key, algorithm_t algorithm)
+		{			
+			deterministic(name, key);
+			deterministic_classifiers.insert_algorithm(
+				deterministic_classifiers.get_unique_key(), key, algorithm);
+			return *this;
+		}
+
+		deterministic_classifier_t deterministic_classifiers;
+		nondeterministic_classifier_t nondeterministic_classifiers;
+	};
+
+	analyzer_t::analyzer_t()
+	{}
+
+	void analyzer_t::make_rules()
+	{
+		deterministic("pdf", "\x25\x50\x44\x46");
+		deterministic("PKZIP archive_1", "\x50\x4B\x03\x04");
+		deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
+			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
+			});
+	}
+
+	analyzer_t::name_t analyzer_t::match(const std::string& path)
+	{
+		try
+		{
+			storage_t storage(path);
+			auto result = deterministic_classifiers.longest_prefix(storage.get_header());
+			auto id = result.value();
+			auto key = result.key();
+			if (deterministic_classifiers.has_algorithms(key))
+			{
+				const auto& algorithms = deterministic_classifiers.get_algorithms(key);
+				for (auto& algorithm : algorithms)
+				{
+					if (algorithm.second(storage))
+						return deterministic_classifiers.find_type(algorithm.first);
+				}
+			}
+
+			if (deterministic_classifiers.exist_type(id))
+				return deterministic_classifiers.find_type(id);
+			// TODO: nondeterministic_classifiers
+			return name_t();
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return name_t();
+	}
+
+	void test_trie()
+	{
+		filter::signature::analyzer_t analyzer;
+		analyzer.make_rules();
+		std::cout << analyzer.match("d:/signature/docx.docx") << std::endl;
+		std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;
+	}
+}
 
 	void test_binary(const std::string& path)
 	{
@@ -427,7 +625,8 @@ int main()
 {
 	try
 	{
-		filter::test_xml("d:/signature/hml.hml");
+		filter::signature::test_trie();
+		//filter::test_xml("d:/signature/hml.hml");
 		//filter::test_binary("d:/signature/hwp30/hwp21.hwp");
 		//test_txt();
 		//test_hwpml();

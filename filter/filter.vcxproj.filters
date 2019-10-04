@@ -40,6 +40,9 @@
     <Filter Include="editor\txt">
       <UniqueIdentifier>{c1d0531c-450d-4413-a9bd-5eca45b631ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="trie">
+      <UniqueIdentifier>{4ee0f339-8079-4b10-b159-f0846efd9683}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -165,6 +168,9 @@
     </ClCompile>
     <ClCompile Include="io\newline_filter.cpp">
       <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="trie\trie.cpp">
+      <Filter>trie</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +339,12 @@
     </ClInclude>
     <ClInclude Include="io\newline_filter.h">
       <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="trie\cedar.h">
+      <Filter>trie</Filter>
+    </ClInclude>
+    <ClInclude Include="trie\trie.h">
+      <Filter>trie</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

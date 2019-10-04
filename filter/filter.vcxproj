@@ -91,6 +91,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>filter_pch.h</PrecompiledHeaderFile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,6 +109,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>filter_pch.h</PrecompiledHeaderFile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,6 +128,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter;$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;$(SolutionDir)/uchardet/src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>filter_pch.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +149,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)/filter;$(SolutionDir)/xlnt;$(SolutionDir)/xlnt/xlnt;$(SolutionDir)/uchardet/src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>filter_pch.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -200,6 +204,7 @@
     <ClCompile Include="locale\hchar_converter.cpp" />
     <ClCompile Include="locale\kssm_ks_converter.cpp" />
     <ClCompile Include="pole\pole.cpp" />
+    <ClCompile Include="trie\trie.cpp" />
     <ClCompile Include="txt\txt_document.cpp" />
     <ClCompile Include="txt\txt_filter.cpp" />
     <ClCompile Include="xml\pugixml.cpp" />
@@ -257,6 +262,8 @@
     <ClInclude Include="traits\compound_file_binary_traits.h" />
     <ClInclude Include="traits\editor_traits.h" />
     <ClInclude Include="traits\xml_traits.h" />
+    <ClInclude Include="trie\cedar.h" />
+    <ClInclude Include="trie\trie.h" />
     <ClInclude Include="txt\txt_document.h" />
     <ClInclude Include="txt\txt_filter.h" />
     <ClInclude Include="xml\pugiconfig.hpp" />
