@@ -314,14 +314,18 @@ namespace signature
 	class range_t
 	{
 	public:
+		range_t();
 		range_t(const std::string& buffer, std::size_t begin, std::size_t end);
 		bool match(const std::string& rule) const;
 		bool equal(const std::string& dest) const;
 	private:
-		const std::size_t begin;
-		const std::size_t end;
-		const std::string data;
+		std::size_t begin;
+		std::size_t end;
+		std::string data;
 	};
+
+	range_t::range_t() : begin(0), end(0)
+	{}
 
 	range_t::range_t(const std::string& buffer, std::size_t begin, std::size_t end) :
 		begin(begin), end(end), data(buffer.begin() + begin, buffer.begin() + end)
@@ -340,24 +344,125 @@ namespace signature
 		return data == dest;
 	}
 
+
+	struct element_t
+	{
+		element_t(std::unique_ptr<xml::parser>& parser) : parser(parser)
+		{}
+		bool equal(const std::string& dest) const
+		{
+			return parser->qname() == dest;
+		}
+		bool exist() const
+		{
+			return !parser->qname().empty();
+		}
+		std::unique_ptr<xml::parser>& parser;
+	};
+
+	struct attribute_t
+	{
+		attribute_t(std::unique_ptr<xml::parser>& parser, const std::string& name) : parser(parser), name(name)
+		{}
+		bool equal(const std::string& dest) const
+		{
+			auto& attribute_map = parser->attribute_map();
+			if (attribute_map.find(name) == attribute_map.end())
+				throw std::logic_error("attribute is not exist"); // TODO: custom exception
+			return attribute_map.find(name)->second.value == dest;
+		}
+		bool exist() const
+		{
+			auto& attribute_map = parser->attribute_map();
+			return attribute_map.find(name) != attribute_map.end();
+		}
+		std::unique_ptr<xml::parser>& parser;
+		const std::string& name;
+	};
+
+	class sequence_t
+	{
+	public:
+		sequence_t();
+		sequence_t(const std::string& path, size_t nth_element);
+		element_t element(const std::string& name);
+		attribute_t attribute(const std::string& name);
+	private:
+		void load(const std::string& path);
+		void visit(size_t nth_element);
+
+		std::ifstream file;
+		std::unique_ptr<xml::parser> parser;
+	};
+
+	sequence_t::sequence_t()
+	{}
+
+	sequence_t::sequence_t(const std::string& path, size_t nth_element)
+	{
+		load(path);
+		visit(nth_element);
+	}
+
+	void sequence_t::load(const std::string& path)
+	{
+		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+		file.open(to_fstream_path(path), std::ios::binary);	
+		parser = std::make_unique<xml::parser>(file, path);
+	}
+
+	void sequence_t::visit(size_t nth_element)
+	{
+		size_t id = 0;
+		for (auto event(parser->next()); event != xml::parser::eof; event = parser->next())
+		{
+			if (event == xml::parser::start_element)
+			{
+				++id;
+				if (id == nth_element)
+					return;
+			}
+		}
+	}
+
+	element_t sequence_t::element(const std::string& name)
+	{
+		return element_t(parser);
+	}
+
+	attribute_t sequence_t::attribute(const std::string& name)
+	{
+		return attribute_t(parser, name);
+	}
+
 	class storage_t
 	{
 	public:
 		storage_t(const std::string& path);
 		std::string read_header(size_t minimal_length);
-		range_t range(size_t begin, size_t end);
+		range_t& range(size_t begin, size_t end);
+		sequence_t& sequence(size_t nth_element);
 		const std::string& get_header() const {
 			return header;
 		}
 	private:
 		std::string path;
 		std::string header;
+
+		range_t range_buffer;
+		sequence_t sequence_buffer;
 	};
 
-	range_t storage_t::range(size_t begin, size_t end)
+	range_t& storage_t::range(size_t begin, size_t end)
 	{
-		range_t range(header, begin, end);
-		return range;
+		range_buffer = range_t(header, begin, end);
+		return range_buffer;
+	}
+
+	sequence_t& storage_t::sequence(size_t nth_element)
+	{
+		sequence_buffer = sequence_t(path, nth_element);
+		return sequence_buffer;
 	}
 
 	storage_t::storage_t(const std::string& path) : path(path)
@@ -402,21 +507,21 @@ namespace signature
 		// type interfaces
 		void insert_type(trie_key_t trie_key, const name_t& name)
 		{
-			if (deterministic_types.find(trie_key) != deterministic_types.end())
+			if (types.find(trie_key) != types.end())
 				throw std::logic_error("has already registered format");
-			deterministic_types.insert({ trie_key, name });
+			types.insert({ trie_key, name });
 		}
 
 		bool exist_type(trie_key_t trie_key) const
 		{
-			return deterministic_types.find(trie_key) != deterministic_types.end();
+			return types.find(trie_key) != types.end();
 		}
 
 		name_t find_type(trie_key_t trie_key) const
 		{
-			if (deterministic_types.find(trie_key) == deterministic_types.end())
+			if (types.find(trie_key) == types.end())
 				throw std::logic_error("trie id is not exist");
-			return deterministic_types.find(trie_key)->second;
+			return types.find(trie_key)->second;
 		}
 
 		// trie interfaces
@@ -442,47 +547,78 @@ namespace signature
 
 		// algorithm interfaces
 		bool has_algorithms(const std::string& key) const {
-			return deterministic_classifiers.find(key) != deterministic_classifiers.end();
+			return classifiers.find(key) != classifiers.end();
 		}
 
 		const algorithms_t& get_algorithms(const std::string& key) const {
-			if (deterministic_classifiers.find(key) == deterministic_classifiers.end())
+			if (classifiers.find(key) == classifiers.end())
 				throw std::logic_error("algorithm is not exist");
-			return deterministic_classifiers.find(key)->second;
+			return classifiers.find(key)->second;
 		}
 
 		void insert_algorithm(trie_key_t id, const std::string& key, algorithm_t algorithm) {
-			if (deterministic_classifiers.find(key) == deterministic_classifiers.end())
+			if (classifiers.find(key) == classifiers.end())
 			{
-				deterministic_classifiers.insert({ key, algorithms_t{} });
+				classifiers.insert({ key, algorithms_t{} });
 			}
-			deterministic_classifiers[key].insert({ id, algorithm } );
+			classifiers[key].insert({ id, algorithm } );
 		}
 	private:
 		trie_key_t unique_key;
 		trie_t binary_classifiers;
-		std::map<trie_key_t, name_t> deterministic_types;
-		std::map<std::string, algorithms_t > deterministic_classifiers;
+		std::map<trie_key_t, name_t> types;
+		std::map<std::string, algorithms_t > classifiers;
 	};
 
 	class nondeterministic_classifier_t
 	{
 	public:
+		typedef std::string name_t;
 		typedef std::function<bool(storage_t&)> algorithm_t;
-		nondeterministic_classifier_t();
-	private:
-	};
+		nondeterministic_classifier_t()
+		{}
 
-	nondeterministic_classifier_t::nondeterministic_classifier_t()
-	{}
+		// algorithm interfaces
+		bool has_algorithm(const name_t& name) const {
+			return classifiers.find(name) != classifiers.end();
+		}
+
+		algorithm_t get_algorithm(const name_t& name) const {
+			if (classifiers.find(name) == classifiers.end())
+				throw std::logic_error("algorithm is not exist");
+			return classifiers.find(name)->second;
+		}
+
+		name_t classify_all(storage_t& storage)
+		{
+			for (auto& algorithm : classifiers)
+			{
+				try
+				{
+					if (algorithm.second(storage))
+						return algorithm.first;
+				}
+				catch (const std::exception&)
+				{}
+			}
+			return name_t();
+		}
+
+		void insert_algorithm(const name_t& name, algorithm_t algorithm) {
+			if (classifiers.find(name) != classifiers.end())
+				throw std::logic_error("has already inserted algorithm");
+			classifiers.insert({ name, algorithm });
+		}
+	private:
+		std::map< name_t, algorithm_t > classifiers;
+	};
 
 	class analyzer_t
 	{
 	public:
 		typedef deterministic_classifier_t::name_t name_t;
-		typedef deterministic_classifier_t::algorithm_t algorithm_t;
-		typedef deterministic_classifier_t::algorithms_t algorithms_t;
-		typedef deterministic_classifier_t::trie_key_t trie_key_t;
+		typedef deterministic_classifier_t::algorithm_t deterministic_algorithm_t;
+		typedef nondeterministic_classifier_t::algorithm_t nondeterministic_algorithm_t;
 		analyzer_t();
 		void make_rules();
 		name_t match(const std::string& path);
@@ -496,11 +632,17 @@ namespace signature
 			return *this;
 		}
 
-		analyzer_t& deterministic(const name_t& name, const std::string& key, algorithm_t algorithm)
+		analyzer_t& deterministic(const name_t& name, const std::string& key, deterministic_algorithm_t algorithm)
 		{			
 			deterministic(name, key);
 			deterministic_classifiers.insert_algorithm(
 				deterministic_classifiers.get_unique_key(), key, algorithm);
+			return *this;
+		}
+
+		analyzer_t& nondeterministic(const name_t& name, nondeterministic_algorithm_t algorithm)
+		{
+			nondeterministic_classifiers.insert_algorithm(name, algorithm);
 			return *this;
 		}
 
@@ -518,12 +660,16 @@ namespace signature
 		deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
 			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
 			});
+		nondeterministic("hwpml", [](storage_t& storage) {
+			return storage.sequence(1).element("HWPML").exist();
+			});
 	}
 
 	analyzer_t::name_t analyzer_t::match(const std::string& path)
 	{
 		try
 		{
+			// TODO: zero byte
 			storage_t storage(path);
 			auto result = deterministic_classifiers.longest_prefix(storage.get_header());
 			auto id = result.value();
@@ -540,7 +686,13 @@ namespace signature
 
 			if (deterministic_classifiers.exist_type(id))
 				return deterministic_classifiers.find_type(id);
-			// TODO: nondeterministic_classifiers
+
+			auto name = nondeterministic_classifiers.classify_all(storage);
+			if (!name.empty())
+				return name;
+
+			// TODO: text
+
 			return name_t();
 		}
 		catch (const std::exception& e)
@@ -554,6 +706,7 @@ namespace signature
 	{
 		filter::signature::analyzer_t analyzer;
 		analyzer.make_rules();
+		std::cout << analyzer.match("d:/signature/hml.hml") << std::endl;
 		std::cout << analyzer.match("d:/signature/docx.docx") << std::endl;
 		std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;
 	}
