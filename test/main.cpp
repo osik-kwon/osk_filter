@@ -295,6 +295,7 @@ void test_hwp50()
 #include <algorithm>
 #include <io/binary_iostream.h>
 #include <io/file_stream.h>
+#include "io/compound_file_binary.h"
 
 #include <traits/xml_traits.h>
 #include <xml/parser>
@@ -511,6 +512,46 @@ namespace signature
 		return sequence_buffer;
 	}
 
+	class compound_t
+	{
+	public:
+		typedef cfb_traits::storage_t storage_t;
+		compound_t();
+		compound_t(const std::string& path, const std::string& stream_name);
+		range_t& range(size_t begin, size_t end);
+	private:
+		void open_storage();
+		std::string path;
+		std::string stream_name;
+		std::unique_ptr<range_t> range_buffer;
+		std::unique_ptr<storage_t> storage;
+	};
+
+	compound_t::compound_t()
+	{}
+
+	compound_t::compound_t(const std::string& path, const std::string& stream_name) : 
+		path(path), stream_name(stream_name)
+	{
+		open_storage();
+	}
+
+	range_t& compound_t::range(size_t begin, size_t end)
+	{
+		range_buffer = std::make_unique<range_t>(
+			cfb_t::extract_stream_by_string(storage, stream_name), begin, end
+			);
+		return *range_buffer;
+	}
+
+	void compound_t::open_storage()
+	{
+		storage = cfb_t::make_read_only_storage(path);
+		if (!storage->exists(stream_name))
+			throw std::logic_error("stream is not exist");
+	}
+
+
 	class storage_t
 	{
 	public:
@@ -519,6 +560,7 @@ namespace signature
 		range_t& range(size_t begin, size_t end);
 		sequence_t& sequence(size_t nth_element);
 		package_t& package(const std::string& part_name);
+		compound_t& compound(const std::string& stream_name);
 		const std::string& get_header() const {
 			return header;
 		}
@@ -529,6 +571,7 @@ namespace signature
 		std::unique_ptr<range_t> range_buffer;
 		std::unique_ptr<sequence_t> sequence_buffer;
 		std::unique_ptr<package_t> package_buffer;
+		std::unique_ptr<compound_t> compound_buffer;
 	};
 
 	range_t& storage_t::range(size_t begin, size_t end)
@@ -547,6 +590,12 @@ namespace signature
 	{
 		package_buffer = std::make_unique<package_t>(path, part_name);
 		return *package_buffer;
+	}
+
+	compound_t& storage_t::compound(const std::string& stream_name)
+	{
+		compound_buffer = std::make_unique<compound_t>(path, stream_name);
+		return *compound_buffer;
 	}
 
 	storage_t::storage_t(const std::string& path) : path(path)
@@ -758,7 +807,10 @@ namespace signature
 		deterministic("PKZIP archive_1", "\x50\x4B\x03\x04");
 		deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
 			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
-			});		
+			});
+		deterministic("hwp50", "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1", [](storage_t& storage) {
+			return storage.compound("/FileHeader").range(0, 32).match("HWP Document File.*");
+			});
 		deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
 			return storage.package("META-INF/container.xml").
 				sequence(3).element("rootfile").attribute("media-type").equal("application/hwpml-package+xml");
@@ -815,6 +867,9 @@ namespace signature
 	{
 		filter::signature::analyzer_t analyzer;
 		analyzer.make_rules();
+		std::cout << analyzer.match("d:/signature/txt.txt") << std::endl;
+		std::cout << analyzer.match("d:/signature/pdf.pdf") << std::endl;
+		std::cout << analyzer.match("d:/signature/hwp50.hwp") << std::endl;
 		std::cout << analyzer.match("d:/signature/hwpx.hwpx") << std::endl;
 		std::cout << analyzer.match("d:/signature/hml.hml") << std::endl;
 		std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;

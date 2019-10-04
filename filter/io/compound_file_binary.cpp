@@ -15,6 +15,18 @@ namespace filter
 		return buffer;
 	}
 
+	std::string cfb_t::extract_stream_by_string(std::unique_ptr<storage_t>& storage, const std::string& name)
+	{
+		std::unique_ptr<stream_t> cfb_stream = std::make_unique<stream_t>(storage.get(), name);
+		if (cfb_stream->fail())
+			throw std::runtime_error("stream create error");
+		std::string buffer;
+		buffer.resize(static_cast<size_t>(cfb_stream->size()));
+		if (cfb_stream->read(reinterpret_cast<byte_t*>(&buffer[0]), cfb_stream->size()) != cfb_stream->size())
+			throw std::runtime_error("stream read error");
+		return buffer;
+	}
+
 	void cfb_t::make_stream(std::unique_ptr<storage_t>& storage, const std::string& name, const buffer_t& buffer)
 	{
 		auto stream = std::make_unique<stream_t>(storage.get(), name, true, buffer.size());

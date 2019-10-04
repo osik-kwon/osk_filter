@@ -14,6 +14,7 @@ namespace filter
 		typedef binary_traits::buffer_t buffer_t;
 		cfb_t() = default;
 		static buffer_t extract_stream(std::unique_ptr<storage_t>& storage, const std::string& name);
+		static std::string extract_stream_by_string(std::unique_ptr<storage_t>& storage, const std::string& name);
 		static void make_stream(std::unique_ptr<storage_t>& storage, const std::string& name, const buffer_t& buffer);
 		static void copy_streams(std::unique_ptr<storage_t>& import_storage, std::unique_ptr<storage_t>& export_storage, const std::vector<std::string>& all_streams_except_sections);
 
