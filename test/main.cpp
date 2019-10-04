@@ -307,6 +307,9 @@ void test_hwp50()
 
 #include <trie/trie.h>
 
+#include <xlnt/detail/serialization/open_stream.hpp>
+#include <xlnt/detail/serialization/vector_streambuf.hpp>
+
 namespace filter
 {
 namespace signature
@@ -345,8 +348,9 @@ namespace signature
 	}
 
 
-	struct element_t
+	class element_t
 	{
+	public:
 		element_t(std::unique_ptr<xml::parser>& parser) : parser(parser)
 		{}
 		bool equal(const std::string& dest) const
@@ -357,11 +361,13 @@ namespace signature
 		{
 			return !parser->qname().empty();
 		}
+	private:
 		std::unique_ptr<xml::parser>& parser;
 	};
 
-	struct attribute_t
+	class attribute_t
 	{
+	public:
 		attribute_t(std::unique_ptr<xml::parser>& parser, const std::string& name) : parser(parser), name(name)
 		{}
 		bool equal(const std::string& dest) const
@@ -376,6 +382,7 @@ namespace signature
 			auto& attribute_map = parser->attribute_map();
 			return attribute_map.find(name) != attribute_map.end();
 		}
+	private:
 		std::unique_ptr<xml::parser>& parser;
 		const std::string& name;
 	};
@@ -384,6 +391,7 @@ namespace signature
 	{
 	public:
 		sequence_t();
+		sequence_t(std::unique_ptr<std::streambuf>&& stream, const std::string& path, size_t nth_element);
 		sequence_t(const std::string& path, size_t nth_element);
 		element_t element(const std::string& name);
 		attribute_t attribute(const std::string& name);
@@ -392,11 +400,20 @@ namespace signature
 		void visit(size_t nth_element);
 
 		std::ifstream file;
+		std::unique_ptr<std::streambuf> stream_buf;
 		std::unique_ptr<xml::parser> parser;
 	};
 
 	sequence_t::sequence_t()
 	{}
+
+	sequence_t::sequence_t(std::unique_ptr<std::streambuf>&& stream_buf, const std::string& path, size_t nth_element)
+	{
+		stream_buf = std::move(stream_buf);
+		std::istream stream(stream_buf.get());
+		parser = std::make_unique<xml::parser>(stream, path);
+		visit(nth_element);
+	}
 
 	sequence_t::sequence_t(const std::string& path, size_t nth_element)
 	{
@@ -434,6 +451,43 @@ namespace signature
 	{
 		return attribute_t(parser, name);
 	}
+
+	class package_t
+	{
+	public:
+		typedef pugi::xml_document xml_document_t;
+		typedef xlnt::path path_t;
+		typedef xlnt::detail::izstream izstream_t;
+		typedef xlnt::detail::ozstream ozstream_t;
+		package_t();
+	private:
+		std::unique_ptr<izstream_t> open_package(const path_t& path)
+		{
+			xlnt::detail::open_stream(source, path.string());
+			if (!source.good())
+				throw std::runtime_error("file not found : " + path.string());
+			return std::make_unique<izstream_t>(source);
+		}
+
+		void load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream)
+		{
+			auto stream_buf = izstream->open(path);
+			std::istream stream(stream_buf.get());
+
+			//xml::parser parser(stream, path.string());
+
+			auto document = std::make_unique<xml_document_t>();
+			pugi::xml_parse_result result = document->load(stream, pugi::parse_default, pugi::xml_encoding::encoding_auto);
+			if (!result)
+				throw std::runtime_error("invalid parts");
+					
+		}
+
+		std::ifstream source;
+	};
+
+	package_t::package_t()
+	{}
 
 	class storage_t
 	{
