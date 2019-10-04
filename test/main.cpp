@@ -350,44 +350,51 @@ namespace signature
 	class attribute_t
 	{
 	public:
-		attribute_t(std::unique_ptr<xml::parser>& parser, const std::string& name) : parser(parser), name(name)
+		attribute_t(const std::unique_ptr<xml::parser>& parser, const std::string& name) : parser(parser), name(name)
 		{}
-		bool equal(const std::string& dest) const
-		{
-			auto& attribute_map = parser->attribute_map();
-			if (attribute_map.find(name) == attribute_map.end())
-				throw std::logic_error("attribute is not exist"); // TODO: custom exception
-			return attribute_map.find(name)->second.value == dest;
-		}
-		bool exist() const
-		{
-			auto& attribute_map = parser->attribute_map();
-			return attribute_map.find(name) != attribute_map.end();
-		}
+		bool equal(const std::string& dest) const;
+		bool exist() const;
 	private:
-		std::unique_ptr<xml::parser>& parser;
+		const std::unique_ptr<xml::parser>& parser;
 		const std::string& name;
 	};
+
+	bool attribute_t::equal(const std::string& dest) const
+	{
+		auto& attribute_map = parser->attribute_map();
+		if (attribute_map.find(name) == attribute_map.end())
+			throw std::logic_error("attribute is not exist"); // TODO: custom exception
+		return attribute_map.find(name)->second.value == dest;
+	}
+	bool attribute_t::exist() const
+	{
+		auto& attribute_map = parser->attribute_map();
+		return attribute_map.find(name) != attribute_map.end();
+	}
+
 
 	class element_t
 	{
 	public:
-		element_t(std::unique_ptr<xml::parser>& parser) : parser(parser)
+		element_t(const std::unique_ptr<xml::parser>& parser) : parser(parser)
 		{}
-		bool equal(const std::string& dest) const
-		{
-			return parser->qname() == dest;
-		}
-		bool exist() const
-		{
-			return !parser->qname().empty();
-		}
-		attribute_t attribute(const std::string& name);
+		bool equal(const std::string& dest) const;
+		bool exist() const;
+		attribute_t attribute(const std::string& name) const;
 	private:
-		std::unique_ptr<xml::parser>& parser;
+		const std::unique_ptr<xml::parser>& parser;
 	};
 
-	attribute_t element_t::attribute(const std::string& name)
+	bool element_t::equal(const std::string& dest) const
+	{
+		return parser->qname() == dest;
+	}
+	bool element_t::exist() const
+	{
+		return !parser->qname().empty();
+	}
+
+	attribute_t element_t::attribute(const std::string& name) const
 	{
 		return attribute_t(parser, name);
 	}
@@ -396,27 +403,26 @@ namespace signature
 	{
 	public:
 		sequence_t();
-		sequence_t(std::unique_ptr<std::streambuf>&& stream, const std::string& path, size_t nth_element);
+		sequence_t(std::unique_ptr<std::streambuf>& stream, const std::string& path, size_t nth_element);
 		sequence_t(const std::string& path, size_t nth_element);
-		element_t element(const std::string& name);
-		attribute_t attribute(const std::string& name);
+		element_t element(const std::string& name) const;
+		attribute_t attribute(const std::string& name) const;
 	private:
 		void load(const std::string& path);
+		void load(std::unique_ptr<std::streambuf>& buf, const std::string& path);
 		void visit(size_t nth_element);
 
-		std::ifstream file;
-		std::unique_ptr<std::streambuf> stream_buf;
+		std::unique_ptr<std::ifstream> file;
 		std::unique_ptr<xml::parser> parser;
+		std::unique_ptr<std::istream> stream;
 	};
 
 	sequence_t::sequence_t()
 	{}
 
-	sequence_t::sequence_t(std::unique_ptr<std::streambuf>&& stream_buf, const std::string& path, size_t nth_element)
+	sequence_t::sequence_t(std::unique_ptr<std::streambuf>& buf, const std::string& path, size_t nth_element)
 	{
-		stream_buf = std::move(stream_buf);
-		std::istream stream(stream_buf.get());
-		parser = std::make_unique<xml::parser>(stream, path);
+		load(buf, path);
 		visit(nth_element);
 	}
 
@@ -428,9 +434,15 @@ namespace signature
 
 	void sequence_t::load(const std::string& path)
 	{
-		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-		file.open(to_fstream_path(path), std::ios::binary);	
-		parser = std::make_unique<xml::parser>(file, path);
+		file = std::make_unique<std::ifstream>(to_fstream_path(path), std::ios::binary);
+		file->exceptions(std::ifstream::badbit | std::ifstream::failbit);
+		parser = std::make_unique<xml::parser>(*file, path);
+	}
+
+	void sequence_t::load(std::unique_ptr<std::streambuf>& buf, const std::string& path)
+	{
+		stream = std::make_unique<std::istream>(buf.get());
+		parser = std::make_unique<xml::parser>(*stream, path);
 	}
 
 	void sequence_t::visit(size_t nth_element)
@@ -447,12 +459,12 @@ namespace signature
 		}
 	}
 
-	element_t sequence_t::element(const std::string& name)
+	element_t sequence_t::element(const std::string& name) const
 	{
 		return element_t(parser);
 	}
 
-	attribute_t sequence_t::attribute(const std::string& name)
+	attribute_t sequence_t::attribute(const std::string& name) const
 	{
 		return attribute_t(parser, name);
 	}
@@ -468,26 +480,34 @@ namespace signature
 		package_t(const std::string& path, const std::string& part_name);
 		sequence_t& sequence(size_t nth_element);
 	private:
+		void open_package()
+		{
+			source = std::make_unique<std::ifstream>(to_fstream_path(path), std::ios::binary);
+			source->exceptions(std::ifstream::badbit | std::ifstream::failbit);
+			archive = std::make_unique<izstream_t>(*source);
+			if (!archive->has_file(path_t(part_name)))
+				throw std::logic_error("part is not exist");
+		}
 		std::string path;
 		std::string part_name;
 		sequence_t sequence_buffer;
+
+		std::unique_ptr<std::ifstream> source;
+		std::unique_ptr<izstream_t> archive;
 	};
 
 	package_t::package_t()
 	{}
 
 	package_t::package_t(const std::string& path, const std::string& part_name) : path(path), part_name(part_name)
-	{}
+	{
+		open_package();
+	}
 
 	sequence_t& package_t::sequence(size_t nth_element)
 	{
-		std::ifstream source;
-		source.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-		source.open(to_fstream_path(path), std::ios::binary);		
-		std::unique_ptr<izstream_t> archive = std::make_unique<izstream_t>(source);
-
 		auto stream_buf = archive->open(path_t(part_name));
-		sequence_buffer = sequence_t(std::move(stream_buf), part_name, nth_element);
+		sequence_buffer = sequence_t(stream_buf, part_name, nth_element);
 		return sequence_buffer;
 	}
 
@@ -763,8 +783,13 @@ namespace signature
 				const auto& algorithms = deterministic_classifiers.get_algorithms(key);
 				for (auto& algorithm : algorithms)
 				{
-					if (algorithm.second(storage))
-						return deterministic_classifiers.find_type(algorithm.first);
+					try
+					{
+						if (algorithm.second(storage))
+							return deterministic_classifiers.find_type(algorithm.first);
+					}
+					catch (const std::exception&) // IMPORTANT!
+					{}
 				}
 			}
 
