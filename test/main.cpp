@@ -347,24 +347,6 @@ namespace signature
 		return data == dest;
 	}
 
-
-	class element_t
-	{
-	public:
-		element_t(std::unique_ptr<xml::parser>& parser) : parser(parser)
-		{}
-		bool equal(const std::string& dest) const
-		{
-			return parser->qname() == dest;
-		}
-		bool exist() const
-		{
-			return !parser->qname().empty();
-		}
-	private:
-		std::unique_ptr<xml::parser>& parser;
-	};
-
 	class attribute_t
 	{
 	public:
@@ -386,6 +368,29 @@ namespace signature
 		std::unique_ptr<xml::parser>& parser;
 		const std::string& name;
 	};
+
+	class element_t
+	{
+	public:
+		element_t(std::unique_ptr<xml::parser>& parser) : parser(parser)
+		{}
+		bool equal(const std::string& dest) const
+		{
+			return parser->qname() == dest;
+		}
+		bool exist() const
+		{
+			return !parser->qname().empty();
+		}
+		attribute_t attribute(const std::string& name);
+	private:
+		std::unique_ptr<xml::parser>& parser;
+	};
+
+	attribute_t element_t::attribute(const std::string& name)
+	{
+		return attribute_t(parser, name);
+	}
 
 	class sequence_t
 	{
@@ -460,34 +465,31 @@ namespace signature
 		typedef xlnt::detail::izstream izstream_t;
 		typedef xlnt::detail::ozstream ozstream_t;
 		package_t();
+		package_t(const std::string& path, const std::string& part_name);
+		sequence_t& sequence(size_t nth_element);
 	private:
-		std::unique_ptr<izstream_t> open_package(const path_t& path)
-		{
-			xlnt::detail::open_stream(source, path.string());
-			if (!source.good())
-				throw std::runtime_error("file not found : " + path.string());
-			return std::make_unique<izstream_t>(source);
-		}
-
-		void load_part(const path_t& path, std::unique_ptr<izstream_t>& izstream)
-		{
-			auto stream_buf = izstream->open(path);
-			std::istream stream(stream_buf.get());
-
-			//xml::parser parser(stream, path.string());
-
-			auto document = std::make_unique<xml_document_t>();
-			pugi::xml_parse_result result = document->load(stream, pugi::parse_default, pugi::xml_encoding::encoding_auto);
-			if (!result)
-				throw std::runtime_error("invalid parts");
-					
-		}
-
-		std::ifstream source;
+		std::string path;
+		std::string part_name;
+		sequence_t sequence_buffer;
 	};
 
 	package_t::package_t()
 	{}
+
+	package_t::package_t(const std::string& path, const std::string& part_name) : path(path), part_name(part_name)
+	{}
+
+	sequence_t& package_t::sequence(size_t nth_element)
+	{
+		std::ifstream source;
+		source.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+		source.open(to_fstream_path(path), std::ios::binary);		
+		std::unique_ptr<izstream_t> archive = std::make_unique<izstream_t>(source);
+
+		auto stream_buf = archive->open(path_t(part_name));
+		sequence_buffer = sequence_t(std::move(stream_buf), part_name, nth_element);
+		return sequence_buffer;
+	}
 
 	class storage_t
 	{
@@ -496,6 +498,7 @@ namespace signature
 		std::string read_header(size_t minimal_length);
 		range_t& range(size_t begin, size_t end);
 		sequence_t& sequence(size_t nth_element);
+		package_t& package(const std::string& part_name);
 		const std::string& get_header() const {
 			return header;
 		}
@@ -503,20 +506,27 @@ namespace signature
 		std::string path;
 		std::string header;
 
-		range_t range_buffer;
-		sequence_t sequence_buffer;
+		std::unique_ptr<range_t> range_buffer;
+		std::unique_ptr<sequence_t> sequence_buffer;
+		std::unique_ptr<package_t> package_buffer;
 	};
 
 	range_t& storage_t::range(size_t begin, size_t end)
 	{
-		range_buffer = range_t(header, begin, end);
-		return range_buffer;
+		range_buffer = std::make_unique<range_t>(header, begin, end);
+		return *range_buffer;
 	}
 
 	sequence_t& storage_t::sequence(size_t nth_element)
 	{
-		sequence_buffer = sequence_t(path, nth_element);
-		return sequence_buffer;
+		sequence_buffer = std::make_unique<sequence_t>(path, nth_element);
+		return *sequence_buffer;
+	}
+
+	package_t& storage_t::package(const std::string& part_name)
+	{
+		package_buffer = std::make_unique<package_t>(path, part_name);
+		return *package_buffer;
 	}
 
 	storage_t::storage_t(const std::string& path) : path(path)
@@ -581,6 +591,10 @@ namespace signature
 		// trie interfaces
 		trie_key_t get_unique_key() const {
 			return unique_key;
+		}
+
+		trie_key_t make_unique_key() {
+			return ++unique_key;
 		}
 
 		bool exact_match(const std::string& key) const {
@@ -687,8 +701,19 @@ namespace signature
 		}
 
 		analyzer_t& deterministic(const name_t& name, const std::string& key, deterministic_algorithm_t algorithm)
-		{			
-			deterministic(name, key);
+		{
+			if (!deterministic_classifiers.exact_match(key))
+			{
+				auto trie_key = deterministic_classifiers.insert_key_at_trie(key);
+				deterministic_classifiers.insert_type(trie_key, name);
+			}
+			else
+			{
+				// IMPORTANT!
+				auto trie_key = deterministic_classifiers.make_unique_key();
+				deterministic_classifiers.insert_type(trie_key, name);
+			}
+
 			deterministic_classifiers.insert_algorithm(
 				deterministic_classifiers.get_unique_key(), key, algorithm);
 			return *this;
@@ -713,7 +738,12 @@ namespace signature
 		deterministic("PKZIP archive_1", "\x50\x4B\x03\x04");
 		deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
 			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
+			});		
+		deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
+			return storage.package("META-INF/container.xml").
+				sequence(3).element("rootfile").attribute("media-type").equal("application/hwpml-package+xml");
 			});
+
 		nondeterministic("hwpml", [](storage_t& storage) {
 			return storage.sequence(1).element("HWPML").exist();
 			});
@@ -760,71 +790,11 @@ namespace signature
 	{
 		filter::signature::analyzer_t analyzer;
 		analyzer.make_rules();
+		std::cout << analyzer.match("d:/signature/hwpx.hwpx") << std::endl;
 		std::cout << analyzer.match("d:/signature/hml.hml") << std::endl;
-		std::cout << analyzer.match("d:/signature/docx.docx") << std::endl;
 		std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;
 	}
 }
-
-	void test_binary(const std::string& path)
-	{
-		std::ifstream file(to_fstream_path(path), std::ios::binary);
-		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-
-		file.unsetf(std::ios::skipws);
-		file.seekg(0, std::ios::end);
-		std::streampos size = file.tellg();
-		file.seekg(0, std::ios::beg);
-
-		// input params
-		const size_t minimal_length = 64;
-		size_t file_size = (size_t)size;
-		size_t buffer_size = 0;
-		if (file_size > minimal_length)
-			buffer_size = minimal_length;
-		else
-			buffer_size = file_size;
-
-		std::string buffer;
-		std::copy_n(std::istream_iterator<char>(file), buffer_size, std::back_inserter(buffer));
-		file.close();
-
-		// input params
-		const size_t begin = 0;
-		const size_t end = 30;
-		const std::string rule = "HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5";
-
-		std::string header(buffer.begin() + begin, buffer.begin() + end);
-		std::regex matcher(rule);
-		std::cout << std::regex_match(header, matcher);
-	}
-
-	void test_xml(const std::string& path)
-	{
-		std::ifstream file(to_fstream_path(path), std::ios::binary);
-		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-		try
-		{
-			xml::parser parser(file, path);
-			//p.next_expect(::xml::parser::start_element, "HWPML", ::xml::content::complex);
-			
-			for (auto event(parser.next()); event != xml::parser::eof; event = parser.next())
-			{
-				if (event == xml::parser::start_element)
-				{
-					std::cout << parser.qname() << std::endl;
-					for (auto& attr : parser.attribute_map())
-						std::cout << attr.first << " : " << attr.second.value << std::endl;
-				}
-			}
-		}
-		catch (const std::exception&)
-		{
-			std::cout << "mismatched" << std::endl;
-			return;
-		}
-		std::cout << "matched" << std::endl;
-	}
 }
 
 
