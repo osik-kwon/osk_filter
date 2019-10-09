@@ -862,29 +862,26 @@ namespace signature
 		}
 		return name_t();
 	}
-
-	void test_trie()
-	{
-		filter::signature::analyzer_t analyzer;
-		analyzer.make_rules();
-		std::cout << analyzer.match("d:/signature/txt.txt") << std::endl;
-		std::cout << analyzer.match("d:/signature/pdf.pdf") << std::endl;
-		std::cout << analyzer.match("d:/signature/hwp50.hwp") << std::endl;
-		std::cout << analyzer.match("d:/signature/hwpx.hwpx") << std::endl;
-		std::cout << analyzer.match("d:/signature/hml.hml") << std::endl;
-		std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;
-	}
 }
 }
 
+void test_signature()
+{
+	filter::signature::analyzer_t analyzer;
+	analyzer.make_rules();
+	std::cout << analyzer.match("d:/signature/txt.txt") << std::endl;
+	std::cout << analyzer.match("d:/signature/pdf.pdf") << std::endl;
+	std::cout << analyzer.match("d:/signature/hwp50.hwp") << std::endl;
+	std::cout << analyzer.match("d:/signature/hwpx.hwpx") << std::endl;
+	std::cout << analyzer.match("d:/signature/hml.hml") << std::endl;
+	std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;
+}
 
 int main()
 {
 	try
 	{
-		filter::signature::test_trie();
-		//filter::test_xml("d:/signature/hml.hml");
-		//filter::test_binary("d:/signature/hwp30/hwp21.hwp");
+		test_signature();
 		//test_txt();
 		//test_hwpml();
 		//test_hwpx();
