@@ -2,7 +2,7 @@
 #include "hwp/hwpml_filter.h"
 #include "editor/xml/xml_extract_texts.h"
 #include "editor/xml/xml_editor.h"
-#include <xlnt/detail/serialization/open_stream.hpp>
+#include "io/file_stream.h"
 #include "locale/charset_encoder.h"
 
 namespace filter
@@ -20,10 +20,8 @@ namespace hml
 	{
 		try
 		{
-			std::ifstream source;
-			xlnt::detail::open_stream(source, path);
-			if (!source.good())
-				throw std::runtime_error("file not found : " + path);
+			std::ifstream source(to_fstream_path(path), std::ios::binary);
+			source.exceptions(std::ifstream::badbit | std::ifstream::failbit);
 
 			auto document = std::make_unique<xml_document_t>();
 			pugi::xml_parse_result result = document->load(source, pugi::parse_default, pugi::xml_encoding::encoding_auto);
@@ -42,8 +40,8 @@ namespace hml
 	{
 		try
 		{
-			std::ofstream dest;
-			xlnt::detail::open_stream(dest, path);
+			std::ofstream dest(to_fstream_path(path), std::ios::binary);
+			dest.exceptions(std::ofstream::badbit | std::ofstream::failbit);
 			document->save(dest, PUGIXML_TEXT("\t"), pugi::parse_default, pugi::xml_encoding::encoding_auto);
 		}
 		catch (const std::exception& e)

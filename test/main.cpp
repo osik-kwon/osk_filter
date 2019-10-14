@@ -308,7 +308,6 @@ void test_hwp50()
 
 #include <trie/trie.h>
 
-#include <xlnt/detail/serialization/open_stream.hpp>
 #include <xlnt/detail/serialization/vector_streambuf.hpp>
 
 namespace filter
@@ -946,11 +945,11 @@ int main()
 	try
 	{
 		test_signature();
-		//test_txt();
-		//test_hwpml();
-		//test_hwpx();
-		//test_hwp30();
-		//test_hwp50();		
+		test_txt();
+		test_hwpml();
+		test_hwpx();
+		test_hwp30();
+		test_hwp50();		
 	}
 	catch (const std::exception& e)
 	{

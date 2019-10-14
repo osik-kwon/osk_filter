@@ -1,6 +1,6 @@
 #include "filter_pch.h"
 #include "io/open_package_conventions.h"
-#include <xlnt/detail/serialization/open_stream.hpp>
+#include "io/file_stream.h"
 #include <xlnt/detail/serialization/vector_streambuf.hpp>
 
 namespace filter
@@ -20,9 +20,8 @@ namespace opc
 
 	std::unique_ptr<izstream_t> consumer_t::open_package(const path_t& path)
 	{
-		xlnt::detail::open_stream(source, path.string());
-		if (!source.good())
-			throw std::runtime_error("file not found : " + path.string());
+		source.open(to_fstream_path(path.string()), std::ios::binary);
+		source.exceptions(std::ifstream::badbit | std::ifstream::failbit);
 		return std::make_unique<izstream_t>(source);
 	}
 
@@ -71,7 +70,9 @@ namespace opc
 
 	void producer_t::save(const path_t& path, std::unique_ptr<consumer_t>& consumer)
 	{
-		xlnt::detail::open_stream(dest, path.string());
+		dest.open(to_fstream_path(path.string()), std::ios::binary);
+		dest.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+
 		std::unique_ptr<ozstream_t> archive(new ozstream_t(dest));
 		auto& files = consumer->get_names();
 		for (auto file : files)

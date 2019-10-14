@@ -36,9 +36,6 @@
     <ClCompile Include="xlnt\detail\serialization\miniz.cpp">
       <Filter>detail\serialization</Filter>
     </ClCompile>
-    <ClCompile Include="xlnt\detail\serialization\open_stream.cpp">
-      <Filter>detail\serialization</Filter>
-    </ClCompile>
     <ClCompile Include="xlnt\detail\serialization\vector_streambuf.cpp">
       <Filter>detail\serialization</Filter>
     </ClCompile>
@@ -90,9 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xlnt\detail\serialization\miniz.hpp">
-      <Filter>detail\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="xlnt\detail\serialization\open_stream.hpp">
       <Filter>detail\serialization</Filter>
     </ClInclude>
     <ClInclude Include="xlnt\detail\serialization\vector_streambuf.hpp">

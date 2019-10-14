@@ -78,8 +78,8 @@ namespace txt
 	std::string detecter_t::read_buffer(const std::string& path, size_t minimal_length)
 	{
 		std::ifstream file(to_fstream_path(path), std::ios::binary);
-		if (file.fail())
-			throw std::runtime_error("file I/O error");
+		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+
 		file.unsetf(std::ios::skipws);
 		file.seekg(0, std::ios::end);
 		std::streampos size = file.tellg();

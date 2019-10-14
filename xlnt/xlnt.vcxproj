@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="xlnt\detail\cryptography\aes.cpp" />
     <ClCompile Include="xlnt\detail\serialization\miniz.cpp" />
-    <ClCompile Include="xlnt\detail\serialization\open_stream.cpp" />
     <ClCompile Include="xlnt\detail\serialization\vector_streambuf.cpp" />
     <ClCompile Include="xlnt\detail\serialization\zstream.cpp" />
     <ClCompile Include="xlnt\utils\exceptions.cpp" />
@@ -42,7 +41,6 @@
     <ClInclude Include="xlnt\detail\cryptography\aes.hpp" />
     <ClInclude Include="xlnt\detail\external\include_windows.hpp" />
     <ClInclude Include="xlnt\detail\serialization\miniz.hpp" />
-    <ClInclude Include="xlnt\detail\serialization\open_stream.hpp" />
     <ClInclude Include="xlnt\detail\serialization\vector_streambuf.hpp" />
     <ClInclude Include="xlnt\detail\serialization\zstream.hpp" />
     <ClInclude Include="xlnt\utils\exceptions.hpp" />
