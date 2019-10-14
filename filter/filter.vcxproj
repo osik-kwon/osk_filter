@@ -204,6 +204,9 @@
     <ClCompile Include="locale\hchar_converter.cpp" />
     <ClCompile Include="locale\kssm_ks_converter.cpp" />
     <ClCompile Include="pole\pole.cpp" />
+    <ClCompile Include="signature\signature_analyzer.cpp" />
+    <ClCompile Include="signature\signature_classifier.cpp" />
+    <ClCompile Include="signature\signature_storage.cpp" />
     <ClCompile Include="trie\trie.cpp" />
     <ClCompile Include="txt\txt_document.cpp" />
     <ClCompile Include="txt\txt_filter.cpp" />
@@ -258,6 +261,9 @@
     <ClInclude Include="locale\utf_selector.hpp" />
     <ClInclude Include="locale\utf_sizes.hpp" />
     <ClInclude Include="pole\pole.h" />
+    <ClInclude Include="signature\signature_analyzer.h" />
+    <ClInclude Include="signature\signature_classifier.h" />
+    <ClInclude Include="signature\signature_storage.h" />
     <ClInclude Include="traits\binary_traits.h" />
     <ClInclude Include="traits\compound_file_binary_traits.h" />
     <ClInclude Include="traits\editor_traits.h" />

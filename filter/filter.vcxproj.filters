@@ -43,6 +43,9 @@
     <Filter Include="trie">
       <UniqueIdentifier>{4ee0f339-8079-4b10-b159-f0846efd9683}</UniqueIdentifier>
     </Filter>
+    <Filter Include="signature">
+      <UniqueIdentifier>{e04ac6d7-5283-4a5e-80bb-807bc3a19a70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -171,6 +174,15 @@
     </ClCompile>
     <ClCompile Include="trie\trie.cpp">
       <Filter>trie</Filter>
+    </ClCompile>
+    <ClCompile Include="signature\signature_classifier.cpp">
+      <Filter>signature</Filter>
+    </ClCompile>
+    <ClCompile Include="signature\signature_analyzer.cpp">
+      <Filter>signature</Filter>
+    </ClCompile>
+    <ClCompile Include="signature\signature_storage.cpp">
+      <Filter>signature</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -345,6 +357,15 @@
     </ClInclude>
     <ClInclude Include="trie\trie.h">
       <Filter>trie</Filter>
+    </ClInclude>
+    <ClInclude Include="signature\signature_classifier.h">
+      <Filter>signature</Filter>
+    </ClInclude>
+    <ClInclude Include="signature\signature_analyzer.h">
+      <Filter>signature</Filter>
+    </ClInclude>
+    <ClInclude Include="signature\signature_storage.h">
+      <Filter>signature</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
