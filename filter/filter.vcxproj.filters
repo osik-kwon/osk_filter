@@ -184,6 +184,9 @@
     <ClCompile Include="signature\signature_storage.cpp">
       <Filter>signature</Filter>
     </ClCompile>
+    <ClCompile Include="signature\signature_builder.cpp">
+      <Filter>signature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -365,6 +368,9 @@
       <Filter>signature</Filter>
     </ClInclude>
     <ClInclude Include="signature\signature_storage.h">
+      <Filter>signature</Filter>
+    </ClInclude>
+    <ClInclude Include="signature\signature_builder.h">
       <Filter>signature</Filter>
     </ClInclude>
   </ItemGroup>
