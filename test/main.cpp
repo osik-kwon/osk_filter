@@ -295,7 +295,7 @@ void test_hwp50()
 #include <algorithm>
 #include <io/binary_iostream.h>
 #include <io/file_stream.h>
-#include "io/compound_file_binary.h"
+#include <io/compound_file_binary.h>
 
 #include <traits/xml_traits.h>
 #include <xml/parser>
@@ -307,8 +307,6 @@ void test_hwp50()
 #include <algorithm>
 
 #include <trie/trie.h>
-
-#include <xlnt/detail/serialization/vector_streambuf.hpp>
 
 namespace filter
 {
@@ -945,11 +943,11 @@ int main()
 	try
 	{
 		test_signature();
-		test_txt();
-		test_hwpml();
-		test_hwpx();
-		test_hwp30();
-		test_hwp50();		
+		//test_txt();
+		//test_hwpml();
+		//test_hwpx();
+		//test_hwp30();
+		//test_hwp50();		
 	}
 	catch (const std::exception& e)
 	{
