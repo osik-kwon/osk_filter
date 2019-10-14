@@ -43,6 +43,7 @@ public:
 	{
 		rules_t rules;
 		std::wregex resident_registration_number(L"(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}");
+		// TODO: implement
 		rules.emplace_back(std::move(resident_registration_number));
 		return rules;
 	}
@@ -363,11 +364,11 @@ int main()
 	try
 	{
 		test_signature();
-		//test_txt();
-		//test_hwpml();
-		//test_hwpx();
-		//test_hwp30();
-		//test_hwp50();		
+		test_txt();
+		test_hwpml();
+		test_hwpx();
+		test_hwp30();
+		test_hwp50();		
 	}
 	catch (const std::exception& e)
 	{

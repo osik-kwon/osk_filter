@@ -32,7 +32,7 @@ namespace signature
 		try
 		{
 			storage_t storage(path);
-			if (storage.empty()) // zero byte document
+			if (storage.empty()) // zero byte file
 				return default_name;
 
 			auto result = deterministic_classifiers.longest_prefix(storage.get_header());
