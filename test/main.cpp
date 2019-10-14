@@ -481,14 +481,7 @@ namespace signature
 		package_t(const std::string& path, const std::string& part_name);
 		sequence_t& sequence(size_t nth_element);
 	private:
-		void open_package()
-		{
-			source = std::make_unique<std::ifstream>(to_fstream_path(path), std::ios::binary);
-			source->exceptions(std::ifstream::badbit | std::ifstream::failbit);
-			archive = std::make_unique<izstream_t>(*source);
-			if (!archive->has_file(path_t(part_name)))
-				throw std::logic_error("part is not exist");
-		}
+		void open_package();
 		std::string path;
 		std::string part_name;
 		sequence_t sequence_buffer;
@@ -503,6 +496,15 @@ namespace signature
 	package_t::package_t(const std::string& path, const std::string& part_name) : path(path), part_name(part_name)
 	{
 		open_package();
+	}
+
+	void package_t::open_package()
+	{
+		source = std::make_unique<std::ifstream>(to_fstream_path(path), std::ios::binary);
+		source->exceptions(std::ifstream::badbit | std::ifstream::failbit);
+		archive = std::make_unique<izstream_t>(*source);
+		if (!archive->has_file(path_t(part_name)))
+			throw std::logic_error("part is not exist");
 	}
 
 	sequence_t& package_t::sequence(size_t nth_element)
@@ -561,9 +563,7 @@ namespace signature
 		sequence_t& sequence(size_t nth_element);
 		package_t& package(const std::string& part_name);
 		compound_t& compound(const std::string& stream_name);
-		const std::string& get_header() const {
-			return header;
-		}
+		const std::string& get_header() const;
 	private:
 		std::string path;
 		std::string header;
@@ -625,10 +625,14 @@ namespace signature
 		return buffer;
 	}
 
+	const std::string& storage_t::get_header() const {
+		return header;
+	}
+
+	template <class name_t>
 	class deterministic_classifier_t
 	{
 	public:
-		typedef std::string name_t;
 		typedef int trie_key_t;
 		typedef trie_impl trie_t;
 		typedef trie_impl::result_t trie_result_t;
@@ -707,10 +711,10 @@ namespace signature
 		std::map<std::string, algorithms_t > classifiers;
 	};
 
+	template <class name_t>
 	class nondeterministic_classifier_t
 	{
 	public:
-		typedef std::string name_t;
 		typedef std::function<bool(storage_t&)> algorithm_t;
 		nondeterministic_classifier_t()
 		{}
@@ -726,7 +730,7 @@ namespace signature
 			return classifiers.find(name)->second;
 		}
 
-		name_t classify_all(storage_t& storage)
+		name_t classify_all(storage_t& storage, const name_t& default_name)
 		{
 			for (auto& algorithm : classifiers)
 			{
@@ -738,7 +742,7 @@ namespace signature
 				catch (const std::exception&)
 				{}
 			}
-			return name_t();
+			return default_name;
 		}
 
 		void insert_algorithm(const name_t& name, algorithm_t algorithm) {
@@ -750,78 +754,29 @@ namespace signature
 		std::map< name_t, algorithm_t > classifiers;
 	};
 
+	template <class name_t>
 	class analyzer_t
 	{
 	public:
-		typedef deterministic_classifier_t::name_t name_t;
-		typedef deterministic_classifier_t::algorithm_t deterministic_algorithm_t;
-		typedef nondeterministic_classifier_t::algorithm_t nondeterministic_algorithm_t;
-		analyzer_t();
-		void make_rules();
-		name_t match(const std::string& path);
+		typedef typename deterministic_classifier_t<name_t>::algorithm_t deterministic_algorithm_t;
+		typedef typename nondeterministic_classifier_t<name_t>::algorithm_t nondeterministic_algorithm_t;
+		analyzer_t(name_t default_name = name_t{});
+		name_t scan(const std::string& path);
+		analyzer_t& deterministic(const name_t& name, const std::string& key);
+		analyzer_t& deterministic(const name_t& name, const std::string& key, deterministic_algorithm_t algorithm);
+		analyzer_t& nondeterministic(const name_t& name, nondeterministic_algorithm_t algorithm);
 	private:
-		analyzer_t& deterministic(const name_t& name, const std::string& key)
-		{
-			if (deterministic_classifiers.exact_match(key))
-				throw std::logic_error("has already registered key in trie");
-			auto trie_key = deterministic_classifiers.insert_key_at_trie(key);
-			deterministic_classifiers.insert_type(trie_key, name);
-			return *this;
-		}
-
-		analyzer_t& deterministic(const name_t& name, const std::string& key, deterministic_algorithm_t algorithm)
-		{
-			if (!deterministic_classifiers.exact_match(key))
-			{
-				auto trie_key = deterministic_classifiers.insert_key_at_trie(key);
-				deterministic_classifiers.insert_type(trie_key, name);
-			}
-			else
-			{
-				// IMPORTANT!
-				auto trie_key = deterministic_classifiers.make_unique_key();
-				deterministic_classifiers.insert_type(trie_key, name);
-			}
-
-			deterministic_classifiers.insert_algorithm(
-				deterministic_classifiers.get_unique_key(), key, algorithm);
-			return *this;
-		}
-
-		analyzer_t& nondeterministic(const name_t& name, nondeterministic_algorithm_t algorithm)
-		{
-			nondeterministic_classifiers.insert_algorithm(name, algorithm);
-			return *this;
-		}
-
-		deterministic_classifier_t deterministic_classifiers;
-		nondeterministic_classifier_t nondeterministic_classifiers;
+		deterministic_classifier_t<name_t> deterministic_classifiers;
+		nondeterministic_classifier_t<name_t> nondeterministic_classifiers;
+		name_t default_name;
 	};
 
-	analyzer_t::analyzer_t()
+	template <class name_t>
+	analyzer_t<name_t>::analyzer_t(name_t default_name) : default_name(default_name)
 	{}
 
-	void analyzer_t::make_rules()
-	{
-		deterministic("pdf", "\x25\x50\x44\x46");
-		deterministic("PKZIP archive_1", "\x50\x4B\x03\x04");
-		deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
-			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
-			});
-		deterministic("hwp50", "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1", [](storage_t& storage) {
-			return storage.compound("/FileHeader").range(0, 32).match("HWP Document File.*");
-			});
-		deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
-			return storage.package("META-INF/container.xml").
-				sequence(3).element("rootfile").attribute("media-type").equal("application/hwpml-package+xml");
-			});
-
-		nondeterministic("hwpml", [](storage_t& storage) {
-			return storage.sequence(1).element("HWPML").exist();
-			});
-	}
-
-	analyzer_t::name_t analyzer_t::match(const std::string& path)
+	template <class name_t>
+	name_t analyzer_t<name_t>::scan(const std::string& path)
 	{
 		try
 		{
@@ -848,33 +803,142 @@ namespace signature
 			if (deterministic_classifiers.exist_type(id))
 				return deterministic_classifiers.find_type(id);
 
-			auto name = nondeterministic_classifiers.classify_all(storage);
-			if (!name.empty())
+			auto name = nondeterministic_classifiers.classify_all(storage, default_name);
+			const name_t empty{};
+			if (name != empty)
 				return name;
 
-			// TODO: text
-
-			return name_t();
+			return default_name;
 		}
 		catch (const std::exception& e)
 		{
 			std::cout << e.what() << std::endl;
 		}
-		return name_t();
+		return default_name;
+	}
+
+	template <class name_t>
+	analyzer_t<name_t>& analyzer_t<name_t>::deterministic(const name_t& name, const std::string& key)
+	{
+		if (deterministic_classifiers.exact_match(key))
+			throw std::logic_error("has already registered key in trie");
+		auto trie_key = deterministic_classifiers.insert_key_at_trie(key);
+		deterministic_classifiers.insert_type(trie_key, name);
+		return *this;
+	}
+
+	template <class name_t>
+	analyzer_t<name_t>& analyzer_t<name_t>::deterministic(const name_t& name, const std::string& key, deterministic_algorithm_t algorithm)
+	{
+		if (!deterministic_classifiers.exact_match(key))
+		{
+			auto trie_key = deterministic_classifiers.insert_key_at_trie(key);
+			deterministic_classifiers.insert_type(trie_key, name);
+		}
+		else
+		{
+			// IMPORTANT!
+			auto trie_key = deterministic_classifiers.make_unique_key();
+			deterministic_classifiers.insert_type(trie_key, name);
+		}
+
+		deterministic_classifiers.insert_algorithm(
+			deterministic_classifiers.get_unique_key(), key, algorithm);
+		return *this;
+	}
+
+	template <class name_t>
+	analyzer_t<name_t>& analyzer_t<name_t>::nondeterministic(const name_t& name, nondeterministic_algorithm_t algorithm)
+	{
+		nondeterministic_classifiers.insert_algorithm(name, algorithm);
+		return *this;
 	}
 }
 }
 
+// examples
+
+std::unique_ptr< filter::signature::analyzer_t<std::string> > build_string_rules()
+{
+	using filter::signature::storage_t;
+	std::unique_ptr< filter::signature::analyzer_t<std::string> > make =
+		std::make_unique<filter::signature::analyzer_t<std::string>>("txt");
+
+	make->deterministic("pdf", "\x25\x50\x44\x46");
+	make->deterministic("PKZIP archive_1", "\x50\x4B\x03\x04");
+	make->deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
+		return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
+		});
+	make->deterministic("hwp50", "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1", [](storage_t& storage) {
+		return storage.compound("/FileHeader").range(0, 32).match("HWP Document File.*");
+		});
+	make->deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
+		return storage.package("META-INF/container.xml").
+			sequence(3).element("rootfile").attribute("media-type").equal("application/hwpml-package+xml");
+		});
+
+	make->nondeterministic("hwpml", [](storage_t& storage) {
+		return storage.sequence(1).element("HWPML").exist();
+		});
+	return make;
+}
+
+enum document_id_t : uint16_t
+{
+	txt = 0,
+	pdf,
+	PKZIP_archive_1,
+	hwp30,
+	hwp50,
+	hwpx,
+	hwpml
+};
+
+std::unique_ptr< filter::signature::analyzer_t<document_id_t> > build_enum_rules()
+{
+	using filter::signature::storage_t;
+	std::unique_ptr< filter::signature::analyzer_t<document_id_t> > make =
+		std::make_unique< filter::signature::analyzer_t<document_id_t> >(document_id_t::txt);
+
+	make->deterministic(document_id_t::pdf, "\x25\x50\x44\x46");
+	make->deterministic(document_id_t::PKZIP_archive_1, "\x50\x4B\x03\x04");
+	make->deterministic(document_id_t::hwp30, "HWP Document File", [](storage_t& storage) {
+		return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
+		});
+	make->deterministic(document_id_t::hwp50, "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1", [](storage_t& storage) {
+		return storage.compound("/FileHeader").range(0, 32).match("HWP Document File.*");
+		});
+	make->deterministic(document_id_t::hwpx, "\x50\x4B\x03\x04", [](storage_t& storage) {
+		return storage.package("META-INF/container.xml").
+			sequence(3).element("rootfile").attribute("media-type").equal("application/hwpml-package+xml");
+		});
+
+	make->nondeterministic(document_id_t::hwpml, [](storage_t& storage) {
+		return storage.sequence(1).element("HWPML").exist();
+		});
+	return make;
+}
+
 void test_signature()
 {
-	filter::signature::analyzer_t analyzer;
-	analyzer.make_rules();
-	std::cout << analyzer.match("d:/signature/txt.txt") << std::endl;
-	std::cout << analyzer.match("d:/signature/pdf.pdf") << std::endl;
-	std::cout << analyzer.match("d:/signature/hwp50.hwp") << std::endl;
-	std::cout << analyzer.match("d:/signature/hwpx.hwpx") << std::endl;
-	std::cout << analyzer.match("d:/signature/hml.hml") << std::endl;
-	std::cout << analyzer.match("d:/signature/hwp30.hwp") << std::endl;
+	{
+		auto rules = build_string_rules();
+		std::cout << rules->scan("d:/signature/txt.txt") << std::endl;
+		std::cout << rules->scan("d:/signature/pdf.pdf") << std::endl;
+		std::cout << rules->scan("d:/signature/hwp50.hwp") << std::endl;
+		std::cout << rules->scan("d:/signature/hwpx.hwpx") << std::endl;
+		std::cout << rules->scan("d:/signature/hml.hml") << std::endl;
+		std::cout << rules->scan("d:/signature/hwp30.hwp") << std::endl;
+	}
+	{
+		auto rules = build_enum_rules();
+		std::cout << rules->scan("d:/signature/txt.txt") << std::endl;
+		std::cout << rules->scan("d:/signature/pdf.pdf") << std::endl;
+		std::cout << rules->scan("d:/signature/hwp50.hwp") << std::endl;
+		std::cout << rules->scan("d:/signature/hwpx.hwpx") << std::endl;
+		std::cout << rules->scan("d:/signature/hml.hml") << std::endl;
+		std::cout << rules->scan("d:/signature/hwp30.hwp") << std::endl;
+	}
 }
 
 int main()
