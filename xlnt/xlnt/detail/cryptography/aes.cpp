@@ -26,6 +26,7 @@
 // https://github.com/libtom/libtomcrypt/blob/develop/src/ciphers/aes/aes.c
 
 #include <algorithm>
+#include <string>
 #include <array>
 #include <assert.h>
 #include <stdlib.h>
