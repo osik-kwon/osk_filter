@@ -104,6 +104,7 @@ namespace signature
 	public:
 		storage_t(const std::string& path);
 		std::string read_header(size_t minimal_length);
+		bool empty() const;
 		range_t& range(size_t begin, size_t end);
 		sequence_t& sequence(size_t nth_element);
 		package_t& package(const std::string& part_name);

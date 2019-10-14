@@ -31,8 +31,10 @@ namespace signature
 	{
 		try
 		{
-			// TODO: zero byte
 			storage_t storage(path);
+			if (storage.empty()) // zero byte document
+				return default_name;
+
 			auto result = deterministic_classifiers.longest_prefix(storage.get_header());
 			auto id = result.value();
 			auto key = result.key();
@@ -56,8 +58,7 @@ namespace signature
 				return deterministic_classifiers.find_type(id);
 
 			auto name = nondeterministic_classifiers.classify_all(storage, default_name);
-			const name_t empty{};
-			if (name != empty)
+			if (name != default_name)
 				return name;
 
 			return default_name;

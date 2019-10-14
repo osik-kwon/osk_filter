@@ -209,8 +209,14 @@ namespace signature
 			buffer_size = file_size;
 
 		std::string buffer;
+		if (buffer_size == 0)
+			return buffer; // zero byte
 		std::copy_n(std::istream_iterator<char>(file), buffer_size, std::back_inserter(buffer));
 		return buffer;
+	}
+
+	bool storage_t::empty() const {
+		return header.empty();
 	}
 
 	const std::string& storage_t::get_header() const {
