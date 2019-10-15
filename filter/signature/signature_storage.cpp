@@ -126,6 +126,36 @@ namespace signature
 		return attribute_t(parser, name);
 	}
 
+	attributes_t::attributes_t(const pugi::xpath_node_set& nodes, const std::string& name) :
+		nodes(nodes), name(name)
+	{}
+
+	bool attributes_t::equal(const std::string& dest) const
+	{
+		// TODO:
+		return true;
+	}
+
+	bool attributes_t::match(const std::string& rule) const
+	{
+		// TODO:
+		return true;
+	}
+
+	bool attributes_t::exist() const
+	{
+		// TODO:
+		/*
+		for (auto it = nodes.begin(); it != nodes.end(); ++it)
+		{
+			auto node = *it;
+			node.node().attribute(name.c_str()).empty();
+			std::cout << node.node().attribute("Filename").value() << "\n";
+		}
+		*/
+		return true;
+	}
+
 	xpath_t::xpath_t()
 	{}
 
@@ -148,10 +178,18 @@ namespace signature
 			throw std::logic_error("invalid xml format"); // TODO: custom exception
 	}
 
-	bool xpath_t::exist()
+	bool xpath_t::exist() const
 	{
 		auto nodes = document->select_nodes(xpath.c_str());
 		return !nodes.empty();
+	}
+
+	attributes_t xpath_t::attributes(const std::string& name)
+	{
+		auto nodes = document->select_nodes(xpath.c_str());
+		if(nodes.empty())
+			throw std::logic_error("invalid xpath"); // TODO: custom exception
+		return attributes_t(nodes, name);
 	}
 
 	package_t::package_t()

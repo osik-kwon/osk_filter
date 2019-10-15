@@ -67,7 +67,18 @@ namespace signature
 		std::unique_ptr<std::istream> stream;
 	};
 
-	// TODO: implement attributes_t
+	class attributes_t
+	{
+	public:
+		typedef xml_traits::xml_document_t xml_document_t;
+		attributes_t(const pugi::xpath_node_set& nodes, const std::string& name);
+		bool equal(const std::string& dest) const;
+		bool match(const std::string& rule) const;
+		bool exist() const;
+	private:
+		const pugi::xpath_node_set& nodes;
+		const std::string& name;
+	};
 
 	class xpath_t
 	{
@@ -76,7 +87,8 @@ namespace signature
 		xpath_t();
 		xpath_t(const std::string& path, const std::string& xpath);
 		xpath_t(std::unique_ptr<std::streambuf>& stream, const std::string& xpath);
-		bool exist();
+		bool exist() const;
+		attributes_t attributes(const std::string& name);
 	private:
 		std::string xpath;
 		std::unique_ptr<xml_document_t> document;
