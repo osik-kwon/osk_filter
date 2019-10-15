@@ -39,6 +39,17 @@ namespace signature
 			throw std::logic_error("attribute is not exist"); // TODO: custom exception
 		return attribute_map.find(name)->second.value == dest;
 	}
+
+	bool attribute_t::match(const std::string& rule) const
+	{
+		auto& attribute_map = parser->attribute_map();
+		if (attribute_map.find(name) == attribute_map.end())
+			throw std::logic_error("attribute is not exist"); // TODO: custom exception
+
+		std::regex matcher(rule);
+		return std::regex_match(attribute_map.find(name)->second.value, matcher);
+	}
+
 	bool attribute_t::exist() const
 	{
 		auto& attribute_map = parser->attribute_map();
@@ -97,6 +108,7 @@ namespace signature
 		{
 			if (event == xml::parser::start_element)
 			{
+				auto& attribute_map = parser->attribute_map(); // IMPORTANT! e->attr_unhandled_ = 0; // Assume all handled.
 				++id;
 				if (id == nth_element)
 					return;

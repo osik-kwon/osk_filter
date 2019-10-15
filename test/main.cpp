@@ -339,6 +339,7 @@ void test_signature()
 {
 	{
 		auto rules = filter::signature::builder_t::build_string_rules();
+		std::cout << rules->scan("d:/signature/docx.docx") << std::endl;
 		std::cout << rules->scan("d:/signature/zero.hwp") << std::endl;
 		std::cout << rules->scan("d:/signature/txt.txt") << std::endl;
 		std::cout << rules->scan("d:/signature/pdf.pdf") << std::endl;
@@ -364,11 +365,11 @@ int main()
 	try
 	{
 		test_signature();
-		test_txt();
-		test_hwpml();
-		test_hwpx();
-		test_hwp30();
-		test_hwp50();		
+		//test_txt();
+		//test_hwpml();
+		//test_hwpx();
+		//test_hwp30();
+		//test_hwp50();		
 	}
 	catch (const std::exception& e)
 	{

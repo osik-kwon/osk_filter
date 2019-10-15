@@ -30,6 +30,7 @@ namespace signature
 	public:
 		attribute_t(const std::unique_ptr<xml::parser>& parser, const std::string& name);
 		bool equal(const std::string& dest) const;
+		bool match(const std::string& rule) const;
 		bool exist() const;
 	private:
 		const std::unique_ptr<xml::parser>& parser;
