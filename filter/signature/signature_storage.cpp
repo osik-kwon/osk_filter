@@ -126,6 +126,34 @@ namespace signature
 		return attribute_t(parser, name);
 	}
 
+	xpath_t::xpath_t()
+	{}
+
+	xpath_t::xpath_t(const std::string& path, const std::string& xpath)
+	{
+		std::ifstream src(to_fstream_path(path), std::ios::binary);
+		src.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+		document = std::make_unique<xml_document_t>();
+		pugi::xml_parse_result result = document->load(src, pugi::parse_default, pugi::xml_encoding::encoding_auto);
+		if (!result)
+			throw std::logic_error("invalid xml format"); // TODO: custom exception
+	}
+
+	xpath_t::xpath_t(std::unique_ptr<std::streambuf>& buf, const std::string& xpath) : xpath(xpath)
+	{
+		std::istream stream(buf.get());
+		document = std::make_unique<xml_document_t>();
+		pugi::xml_parse_result result = document->load(stream, pugi::parse_default, pugi::xml_encoding::encoding_auto);
+		if (!result)
+			throw std::logic_error("invalid xml format"); // TODO: custom exception
+	}
+
+	bool xpath_t::exist()
+	{
+		auto nodes = document->select_nodes(xpath.c_str());
+		return !nodes.empty();
+	}
+
 	package_t::package_t()
 	{}
 
@@ -140,7 +168,7 @@ namespace signature
 		source->exceptions(std::ifstream::badbit | std::ifstream::failbit);
 		archive = std::make_unique<izstream_t>(*source);
 		if (!archive->has_file(path_t(part_name)))
-			throw std::logic_error("part is not exist");
+			throw std::logic_error("part is not exist"); // TODO: custom exception
 	}
 
 	sequence_t& package_t::sequence(size_t nth_element)
@@ -148,6 +176,13 @@ namespace signature
 		auto stream_buf = archive->open(path_t(part_name));
 		sequence_buffer = sequence_t(stream_buf, part_name, nth_element);
 		return sequence_buffer;
+	}
+
+	xpath_t& package_t::xpath(const std::string& path)
+	{
+		auto stream_buf = archive->open(path_t(part_name));
+		xpath_buffer = xpath_t(stream_buf, path);
+		return xpath_buffer;
 	}
 
 	compound_t::compound_t()

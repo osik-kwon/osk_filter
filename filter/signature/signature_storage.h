@@ -3,6 +3,7 @@
 #include <memory>
 #include <fstream>
 
+#include <traits/xml_traits.h>
 #include <pole/pole.h>
 #include <xml/parser>
 #include <xlnt/utils/path.hpp>
@@ -52,7 +53,7 @@ namespace signature
 	{
 	public:
 		sequence_t();
-		sequence_t(std::unique_ptr<std::streambuf>& stream, const std::string& path, size_t nth_element);
+		sequence_t(std::unique_ptr<std::streambuf>& buf, const std::string& path, size_t nth_element);
 		sequence_t(const std::string& path, size_t nth_element);
 		element_t element(const std::string& name) const;
 		attribute_t attribute(const std::string& name) const;
@@ -66,6 +67,21 @@ namespace signature
 		std::unique_ptr<std::istream> stream;
 	};
 
+	// TODO: implement attributes_t
+
+	class xpath_t
+	{
+	public:
+		typedef xml_traits::xml_document_t xml_document_t;
+		xpath_t();
+		xpath_t(const std::string& path, const std::string& xpath);
+		xpath_t(std::unique_ptr<std::streambuf>& stream, const std::string& xpath);
+		bool exist();
+	private:
+		std::string xpath;
+		std::unique_ptr<xml_document_t> document;
+	};
+
 	class package_t
 	{
 	public:
@@ -75,11 +91,13 @@ namespace signature
 		package_t();
 		package_t(const std::string& path, const std::string& part_name);
 		sequence_t& sequence(size_t nth_element);
+		xpath_t& xpath(const std::string& path);
 	private:
 		void open_package();
 		std::string path;
 		std::string part_name;
 		sequence_t sequence_buffer;
+		xpath_t xpath_buffer;
 
 		std::unique_ptr<std::ifstream> source;
 		std::unique_ptr<izstream_t> archive;

@@ -13,9 +13,11 @@ namespace signature
 
 		make->deterministic("pdf", "\x25\x50\x44\x46");
 		make->deterministic("PKZIP archive_1", "\x50\x4B\x03\x04");
+
 		make->deterministic("docx", "\x50\x4B\x03\x04", [](storage_t& storage) {
 			return storage.package("[Content_Types].xml").
-				sequence(4).element("Override").attribute("ContentType").match("application/vnd.openxmlformats-officedocument.wordprocessingml.document.*");
+				xpath("/Types/Override[contains(@ContentType, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')]").
+				exist();
 			});
 		make->deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
 			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
