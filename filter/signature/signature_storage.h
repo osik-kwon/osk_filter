@@ -13,11 +13,27 @@ namespace filter
 {
 namespace signature
 {
+	/*
+	// algorithm syntax
+	<storage> := <range> | <sequence> | <package> | <compound> | empty
+	<compound> := <range> | exist
+	<package> := <sequence> | <xpath>
+
+	<sequence> := <element> | <attribute>
+	<element> := <attribute> | exist | equal | match
+	<attribute> := exist | equal | match
+	<range> := exist | equal | match
+
+	<xpath> := <attributes> | exist
+	<attributes> := exist | equal | match
+	*/
+
 	class range_t
 	{
 	public:
 		range_t();
 		range_t(const std::string& buffer, std::size_t begin, std::size_t end);
+		bool exist() const;
 		bool match(const std::string& rule) const;
 		bool equal(const std::string& dest) const;
 	private:
@@ -30,9 +46,9 @@ namespace signature
 	{
 	public:
 		attribute_t(const std::unique_ptr<xml::parser>& parser, const std::string& name);
+		bool exist() const;
 		bool equal(const std::string& dest) const;
 		bool match(const std::string& rule) const;
-		bool exist() const;
 	private:
 		const std::unique_ptr<xml::parser>& parser;
 		const std::string& name;
@@ -42,8 +58,9 @@ namespace signature
 	{
 	public:
 		element_t(const std::unique_ptr<xml::parser>& parser);
-		bool equal(const std::string& dest) const;
 		bool exist() const;
+		bool equal(const std::string& dest) const;
+		bool match(const std::string& rule) const;
 		attribute_t attribute(const std::string& name) const;
 	private:
 		const std::unique_ptr<xml::parser>& parser;
@@ -73,11 +90,11 @@ namespace signature
 		typedef xml_traits::xml_document_t xml_document_t;
 		attributes_t(const pugi::xpath_node_set& nodes, const std::string& name);
 		bool equal(const std::string& dest) const;
-		bool match(const std::string& rule) const;
 		bool exist() const;
+		bool match(const std::string& rule) const;
 	private:
-		const pugi::xpath_node_set& nodes;
-		const std::string& name;
+		pugi::xpath_node_set nodes;
+		std::string name;
 	};
 
 	class xpath_t
@@ -121,6 +138,7 @@ namespace signature
 		typedef POLE::Storage storage_t;
 		compound_t();
 		compound_t(const std::string& path, const std::string& stream_name);
+		bool exist() const;
 		range_t& range(size_t begin, size_t end);
 	private:
 		void open_storage();

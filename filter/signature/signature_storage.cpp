@@ -15,6 +15,16 @@ namespace signature
 		begin(begin), end(end), data(buffer.begin() + begin, buffer.begin() + end)
 	{}
 
+	bool range_t::exist() const
+	{
+		return !data.empty();
+	}
+
+	bool range_t::equal(const std::string& dest) const
+	{
+		return data == dest;
+	}
+
 	bool range_t::match(const std::string& rule) const
 	{
 		if (data.size() < (begin + end))
@@ -23,14 +33,15 @@ namespace signature
 		return std::regex_match(data.begin(), data.begin() + end, matcher);
 	}
 
-	bool range_t::equal(const std::string& dest) const
-	{
-		return data == dest;
-	}
-
 	attribute_t::attribute_t(const std::unique_ptr<xml::parser>& parser, const std::string& name)
 		: parser(parser), name(name)
 	{}
+
+	bool attribute_t::exist() const
+	{
+		auto& attribute_map = parser->attribute_map();
+		return attribute_map.find(name) != attribute_map.end();
+	}
 
 	bool attribute_t::equal(const std::string& dest) const
 	{
@@ -50,22 +61,23 @@ namespace signature
 		return std::regex_match(attribute_map.find(name)->second.value, matcher);
 	}
 
-	bool attribute_t::exist() const
-	{
-		auto& attribute_map = parser->attribute_map();
-		return attribute_map.find(name) != attribute_map.end();
-	}
-
 	element_t::element_t(const std::unique_ptr<xml::parser>& parser) : parser(parser)
 	{}
+
+	bool element_t::exist() const
+	{
+		return !parser->qname().empty();
+	}
 
 	bool element_t::equal(const std::string& dest) const
 	{
 		return parser->qname() == dest;
 	}
-	bool element_t::exist() const
+
+	bool element_t::match(const std::string& rule) const
 	{
-		return !parser->qname().empty();
+		std::regex matcher(rule);
+		return std::regex_match(parser->qname().name(), matcher);
 	}
 
 	attribute_t element_t::attribute(const std::string& name) const
@@ -132,28 +144,35 @@ namespace signature
 
 	bool attributes_t::equal(const std::string& dest) const
 	{
-		// TODO:
-		return true;
-	}
-
-	bool attributes_t::match(const std::string& rule) const
-	{
-		// TODO:
-		return true;
+		for (auto node = nodes.begin(); node != nodes.end(); ++node)
+		{
+			std::string value = node->node().attribute(name.c_str()).value();
+			if ( value == dest )
+				return true;
+		}
+		return false;
 	}
 
 	bool attributes_t::exist() const
 	{
-		// TODO:
-		/*
-		for (auto it = nodes.begin(); it != nodes.end(); ++it)
+		for (auto node = nodes.begin(); node != nodes.end(); ++node)
 		{
-			auto node = *it;
-			node.node().attribute(name.c_str()).empty();
-			std::cout << node.node().attribute("Filename").value() << "\n";
+			if ( !node->node().attribute(name.c_str()).empty() )
+				return true;
+		}	
+		return false;
+	}
+
+	bool attributes_t::match(const std::string& rule) const
+	{
+		std::regex matcher(rule);
+		for (auto node = nodes.begin(); node != nodes.end(); ++node)
+		{
+			std::string value = node->node().attribute(name.c_str()).value();
+			if (std::regex_match(value, matcher))
+				return true;
 		}
-		*/
-		return true;
+		return false;
 	}
 
 	xpath_t::xpath_t()
@@ -232,8 +251,15 @@ namespace signature
 		open_storage();
 	}
 
+	bool compound_t::exist() const
+	{
+		return storage->exists(stream_name);
+	}
+
 	range_t& compound_t::range(size_t begin, size_t end)
 	{
+		if (!storage->exists(stream_name))
+			throw std::logic_error("stream is not exist");
 		range_buffer = std::make_unique<range_t>(
 			cfb_t::extract_stream_by_string(storage, stream_name), begin, end
 			);
@@ -243,8 +269,6 @@ namespace signature
 	void compound_t::open_storage()
 	{
 		storage = cfb_t::make_read_only_storage(path);
-		if (!storage->exists(stream_name))
-			throw std::logic_error("stream is not exist");
 	}
 
 	range_t& storage_t::range(size_t begin, size_t end)

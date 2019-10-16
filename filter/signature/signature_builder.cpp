@@ -27,8 +27,20 @@ namespace signature
 			});
 		make->deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
 			return storage.package("META-INF/container.xml").
+				xpath("container/rootfiles/rootfile[contains(@media-type, 'application/hwpml-package+xml')]").
+				exist();
+			});
+		/*
+		// examples
+		make->deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
+			return storage.package("META-INF/container.xml").
+				xpath("/container/rootfiles/rootfile").attributes("media-type").equal("application/hwpml-package+xml");
+			});
+		make->deterministic("hwpx", "\x50\x4B\x03\x04", [](storage_t& storage) {
+			return storage.package("META-INF/container.xml").
 				sequence(3).element("rootfile").attribute("media-type").equal("application/hwpml-package+xml");
 			});
+		*/
 
 		make->nondeterministic("hwpml", [](storage_t& storage) {
 			return storage.sequence(1).element("HWPML").exist();

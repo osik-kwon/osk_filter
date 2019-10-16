@@ -340,11 +340,11 @@ void test_signature()
 	{
 		auto rules = filter::signature::builder_t::build_string_rules();
 		std::cout << rules->scan("d:/signature/docx.docx") << std::endl;
+		std::cout << rules->scan("d:/signature/hwpx.hwpx") << std::endl;
 		std::cout << rules->scan("d:/signature/zero.hwp") << std::endl;
 		std::cout << rules->scan("d:/signature/txt.txt") << std::endl;
 		std::cout << rules->scan("d:/signature/pdf.pdf") << std::endl;
 		std::cout << rules->scan("d:/signature/hwp50.hwp") << std::endl;
-		std::cout << rules->scan("d:/signature/hwpx.hwpx") << std::endl;
 		std::cout << rules->scan("d:/signature/hml.hml") << std::endl;
 		std::cout << rules->scan("d:/signature/hwp30.hwp") << std::endl;
 	}
