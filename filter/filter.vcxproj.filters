@@ -46,6 +46,9 @@
     <Filter Include="signature">
       <UniqueIdentifier>{e04ac6d7-5283-4a5e-80bb-807bc3a19a70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="word">
+      <UniqueIdentifier>{cdaa831d-120b-4c6a-b3b4-e9a83ac1bb40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -186,6 +189,15 @@
     </ClCompile>
     <ClCompile Include="signature\signature_builder.cpp">
       <Filter>signature</Filter>
+    </ClCompile>
+    <ClCompile Include="word\doc_filter.cpp">
+      <Filter>word</Filter>
+    </ClCompile>
+    <ClCompile Include="word\doc_syntax.cpp">
+      <Filter>word</Filter>
+    </ClCompile>
+    <ClCompile Include="word\doc_file_information_block.cpp">
+      <Filter>word</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +384,15 @@
     </ClInclude>
     <ClInclude Include="signature\signature_builder.h">
       <Filter>signature</Filter>
+    </ClInclude>
+    <ClInclude Include="word\doc_filter.h">
+      <Filter>word</Filter>
+    </ClInclude>
+    <ClInclude Include="word\doc_syntax.h">
+      <Filter>word</Filter>
+    </ClInclude>
+    <ClInclude Include="word\doc_file_information_block.h">
+      <Filter>word</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

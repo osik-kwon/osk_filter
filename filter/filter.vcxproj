@@ -211,6 +211,9 @@
     <ClCompile Include="trie\trie.cpp" />
     <ClCompile Include="txt\txt_document.cpp" />
     <ClCompile Include="txt\txt_filter.cpp" />
+    <ClCompile Include="word\doc_file_information_block.cpp" />
+    <ClCompile Include="word\doc_filter.cpp" />
+    <ClCompile Include="word\doc_syntax.cpp" />
     <ClCompile Include="xml\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +277,9 @@
     <ClInclude Include="trie\trie.h" />
     <ClInclude Include="txt\txt_document.h" />
     <ClInclude Include="txt\txt_filter.h" />
+    <ClInclude Include="word\doc_file_information_block.h" />
+    <ClInclude Include="word\doc_filter.h" />
+    <ClInclude Include="word\doc_syntax.h" />
     <ClInclude Include="xml\pugiconfig.hpp" />
     <ClInclude Include="xml\pugixml.hpp" />
   </ItemGroup>

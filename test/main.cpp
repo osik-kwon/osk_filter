@@ -8,6 +8,7 @@
 #include "hwp/hwpx_filter.h"
 #include "hwp/hwpml_filter.h"
 #include "txt/txt_filter.h"
+#include "word/doc_filter.h"
 #include "locale/charset_encoder.h"
 #include "traits/editor_traits.h"
 
@@ -360,11 +361,21 @@ void test_signature()
 	}
 }
 
+// TODO: remove
+
+void test_doc()
+{
+	using namespace filter::doc;
+	filter_t filter;
+	auto src = filter.open(to_utf8(L"d:/sombra/text.doc"));
+}
+
 int main()
 {
 	try
 	{
-		test_signature();
+		test_doc();
+		//test_signature();
 		//test_txt();
 		//test_hwpml();
 		//test_hwpx();
