@@ -16,6 +16,9 @@
 #include <signature/signature_analyzer.h>
 #include <signature/signature_builder.h>
 
+// NLP
+#include <textrank/textrank.h>
+
 std::wostream& operator << (std::wostream& stream, const filter::editor_traits::sections_t& sections)
 {
 	stream.imbue(std::locale(""));
@@ -93,8 +96,8 @@ public:
 		// TODO: duplication policy
 		auto open_path = open_root + open;
 		auto save_path = save_root + open + "." + save_extension + "." + open_extension;
-		if(!filesystem::exists(save_root))
-			filesystem::create_directory(save_root);
+		if(!std::filesystem::exists(save_root))
+			std::filesystem::create_directory(save_root);
 
 		std::cout << "==========" << open_extension <<" open/save test ==========" << std::endl;
 		std::wcout << "open path is " << to_wchar(open_path) << std::endl;
@@ -143,8 +146,8 @@ public:
 		// TODO: duplication policy
 		auto open_path = open_root + open;
 		auto save_path = save_root + open + "." + save_extension + "." + open_extension;
-		if (!filesystem::exists(save_root))
-			filesystem::create_directory(save_root);
+		if (!std::filesystem::exists(save_root))
+			std::filesystem::create_directory(save_root);
 
 		std::cout << "==========" << open_extension << " replace privacy test ==========" << std::endl;
 		std::wcout << "open path is " << to_wchar(open_path) << std::endl;
@@ -370,11 +373,371 @@ void test_doc()
 	auto src = filter.open(to_utf8(L"d:/sombra/text.doc"));
 }
 
+#ifndef _ptkUnicodeConverter_
+#define _ptkUnicodeConverter_
+typedef wchar_t UChar;
+namespace ptk
+{
+	// NOTE! : http://confluence.infraware.net:8090/display/POENG/PTK+-+unicode
+	namespace unicode
+	{
+		typedef int unicode_enum_type;
+		enum lexical_t : unicode_enum_type
+		{
+			unknown = 0,
+			exceptional,
+			latin,
+			modern_hangul,
+			// TODO: implement
+			size_of_lexical
+		};
+		// https://unicode-table.com/en/#control-character
+		struct ControlCharacter
+		{
+			static const UChar initial = 0x0000;
+			static inline bool match(UChar code)
+			{
+				return code >= 0x0000 && code <= 0x001F;
+			}
+		};
+
+		// https://unicode-table.com/en/#basic-latin
+		struct BasicLatin
+		{
+			static const UChar initial = 0x0020;
+			static inline bool match(UChar code)
+			{
+				return code >= 0x0020 && code <= 0x007F;
+			}
+			struct LatinSmallLetter
+			{
+				static const UChar initial = 0x0061;
+				static inline bool match(UChar code)
+				{
+					return code >= 0x0061 && code <= 0x007A;
+				}
+			};
+
+			struct LatinCapitalLetter
+			{
+				static const UChar initial = 0x0041;
+				static inline bool match(UChar code)
+				{
+					return code >= 0x0041 && code <= 0x005A;
+				}
+			};
+
+			struct Digit
+			{
+				static const UChar initial = 0x0030;
+				static inline bool match(UChar code)
+				{
+					return code >= 0x0030 && code <= 0x0039;
+				}
+			};
+		};
+
+		// https://unicode-table.com/en/#latin-1-supplement
+		struct Latin_1_Supplement
+		{
+			static const UChar initial = 0x0080;
+			static inline bool match(UChar code)
+			{
+				return code >= 0x0080 && code <= 0x00FF;
+			}
+
+			struct LatinLetter
+			{
+				static const UChar initial = 0x00C0;
+				static inline bool match(UChar code)
+				{
+					return code >= 0x00C0 && code <= 0x00FF && code != 0x00F7; // except Division Sign
+				}
+			};
+		};
+
+		// https://unicode-table.com/en/blocks/latin-extended-additional/
+		struct Latin_Extended_Additional
+		{
+			static const UChar initial = 0x1E00;
+			static inline bool match(UChar code)
+			{
+				return code >= 0x1E00 && code <= 0x1EFF;
+			}
+		};
+
+		// https://unicode-table.com/en/#hangul-syllables
+		struct HangulSyllables
+		{
+			static const UChar initial = 0xAC00;
+			static inline bool match(UChar code)
+			{
+				return code >= 0xAC00 && code <= 0xD7AF;
+			}
+
+			static inline bool match(UChar code, UChar option)
+			{
+				return HangulSyllables::match(code) || code == option;
+			}
+		};
+
+		// https://unicode-table.com/en/#hangul-compatibility-jamo
+		struct HangulCompatibilityJamo
+		{
+			static inline bool match(UChar code)
+			{
+				return code >= 0x3130 && code <= 0x318F;
+			}
+
+			static inline bool match(UChar code, UChar option)
+			{
+				return HangulCompatibilityJamo::match(code) || code == option;
+			}
+
+			struct ModernJamo
+			{
+				static const UChar initial = 0x3131;
+				static inline bool match(UChar code)
+				{
+					// ㄱ ~ ㅣ
+					return (code >= 0x3131 && code <= 0x3163);
+				}
+
+			};
+
+			struct ModernJongSeong
+			{
+				static const UChar initial = 0x3131;
+				static inline bool match(UChar code)
+				{
+					return (code >= 0x3131 && code <= 0x3137) ||
+						(code >= 0x3139 && code <= 0x3142) ||
+						(code >= 0x3144 && code <= 0x314E);
+				}
+
+				static inline bool match(UChar code, UChar option)
+				{
+					return HangulCompatibilityJamo::ModernJongSeong::match(code) || code == option;
+				}
+
+				static inline UChar to_HangulJamo_ModernJongSeong(UChar code);
+			};
+		};
+
+		// https://unicode-table.com/en/#hangul-jamo
+		struct HangulJamo
+		{
+			static inline bool match(UChar code)
+			{
+				return code >= 0x1100 && code <= 0x11FF;
+			}
+
+			static inline bool match(UChar code, UChar option)
+			{
+				return HangulJamo::match(code) || code == option;
+			}
+
+			struct ModernJongSeong
+			{
+				static const UChar initial = 0x11A8;
+				static inline bool match(UChar code)
+				{
+					return (code >= 0x11A8 && code <= 0x11C2);
+				}
+
+				static inline bool match(UChar code, UChar option)
+				{
+					return HangulJamo::ModernJongSeong::match(code) || code == option;
+				}
+			};
+		};
+
+
+		// https://unicode-table.com/en/#enclosed-alphanumerics
+		struct EnclosedAlphanumerics
+		{
+			static const UChar initial = 0x2460;
+			static inline bool match(UChar code)
+			{
+				return code >= 0x2460 && code <= 0x24FF;
+			}
+			struct CircledLatinLetter
+			{
+				static const UChar initial = 0x24B6;
+				static inline bool match(UChar code)
+				{
+					return code >= 0x2460 && code <= 0x24E9;
+				}
+			};
+		};
+
+		// https://unicode-table.com/en/#ethiopic-extended
+		struct EthiopicExtended
+		{
+
+			static const UChar initial = 0x2D80;
+			static const UChar last = 0x2DDF;
+			static inline bool match(UChar code)
+			{
+				return code >= initial && code <= last;
+			}
+		};
+
+		inline UChar HangulCompatibilityJamo::ModernJongSeong::to_HangulJamo_ModernJongSeong(UChar code)
+		{
+			static const UChar diff = HangulCompatibilityJamo::ModernJongSeong::initial - HangulJamo::ModernJongSeong::initial;
+			UChar offset = 0; // ㄱㄲㄳㄴㄵㄶㄷ
+			if (code >= 0x3139) // ㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂ : ㄸ 제외
+				++offset;
+			if (code >= 0x3144) // ㅄㅅㅆㅇㅈ : ㅃ 제외
+				++offset;
+			if (code >= 0x314A) // ㅊㅋㅌㅍㅎ : ㅉ 제외
+				++offset;
+			code -= diff;
+			code -= offset;
+			return code;
+		}
+
+		inline bool is_modern_hangul(UChar code)
+		{
+			return HangulSyllables::match(code) || HangulCompatibilityJamo::ModernJamo::match(code);
+		}
+
+		inline bool is_modern_hangul_or_space(UChar code)
+		{
+			return HangulSyllables::match(code) || HangulCompatibilityJamo::ModernJamo::match(code) || code == ' ';
+		}
+
+		inline bool is_exceptional(UChar code)
+		{
+			static const UChar table[] = {
+				L'!', L'?', L'@', L'#', L'$', L'%', L'_' , L'\\', L'.'
+			};
+			static const size_t size = sizeof(table) / sizeof(UChar);
+			for (size_t i = 0; i < size; ++i)
+			{
+				if (table[i] == code)
+					return true;
+			}
+			return false;
+		}
+
+		inline bool is_basic_latin_letter(UChar code)
+		{
+			return BasicLatin::LatinSmallLetter::match(code) ||
+				BasicLatin::LatinCapitalLetter::match(code);
+		}
+
+		inline bool is_basic_latin_letter_or_digit(UChar code)
+		{
+			return is_basic_latin_letter(code) ||
+				BasicLatin::Digit::match(code);
+		}
+
+		// iso-8859-1 : https://www.terena.org/activities/multiling/ml-docs/iso-8859.html#ISO-8859-1
+		// TODO: add other charsets
+		inline bool is_latin_letter(UChar code)
+		{
+			return BasicLatin::LatinSmallLetter::match(code) ||
+				BasicLatin::LatinCapitalLetter::match(code) ||
+				Latin_1_Supplement::LatinLetter::match(code) ||
+				Latin_Extended_Additional::match(code);
+		}
+
+		static inline bool is_hyphen(UChar code) {
+			// Hyphen-Minus https://unicode-table.com/en/002D/
+			return code == 0x002D;
+		}
+
+		static inline bool is_apostrophe(UChar code) {
+			// apostrophe https://unicode-table.com/en/0027/
+			// Right Single Quotation Mark https://unicode-table.com/en/2019/
+			return code == 0x0027 || code == 0x2019;
+		}
+	};
+} // namespace ptk
+#endif // _ptkUnicodeConverter_
+
+void test_summary()
+{
+	std::wcout.imbue(std::locale("kor"));
+
+	using namespace filter::hwp50;
+	filter_t filter;
+	//auto src = filter.open(to_utf8(L"f:/sombra/legacy2.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/test1.hwp"));
+	auto src = filter.open(to_utf8(L"f:/sombra/article2.hwp"));
+	auto sections = filter.extract_all_texts(src);
+
+	/*
+	std::string input;
+	for (auto& section : sections)
+	{
+		for (auto& para : section)
+		{
+			if (!para.empty() && para.size() > 5)
+			{
+				std::wstring norm;
+				for (auto code : para)
+				{
+					if (
+						!ptk::unicode::is_basic_latin_letter_or_digit(code)
+						&& !ptk::unicode::is_modern_hangul(code)
+						&& (code > 255)
+						)
+					{
+						//norm.push_back(code);
+					}
+					else
+						norm.push_back(code);
+				}
+				if(!norm.empty() && norm.back() != L'\n')
+					norm.push_back(L'\n');
+
+				//std::wcout << norm;
+
+				input += to_utf8(norm);
+			}
+		}
+	}
+	*/
+
+	std::string input;
+	for (auto& section : sections)
+	{
+		for (auto& para : section)
+		{
+			if (!para.empty())
+			{
+				input += to_utf8(para);
+			}
+		}
+	}
+
+	nlp::TextRanker textRanker;
+	std::vector<std::string> keySentences;
+	const int topK = 3;
+	textRanker.ExtractKeySentences(input, keySentences, topK);
+
+	// write top 3 sentences from results
+	std::ofstream out(L"f:/sombra/result.txt");
+	for (int i = 0; i < (int)keySentences.size(); ++i)
+	{
+		std::wstring para = to_wchar(keySentences[i]);
+		out << keySentences[i] << std::endl;
+		//if (wcout.bad())
+		//	wcout.clear();
+		//std::wcout << to_wchar(keySentences[i]) << "\n";
+	}
+	out.close();
+}
+
 int main()
 {
 	try
 	{
-		test_doc();
+		test_summary();
+		//test_doc();
 		//test_signature();
 		//test_txt();
 		//test_hwpml();
