@@ -213,6 +213,8 @@
     <ClCompile Include="txt\txt_filter.cpp" />
     <ClCompile Include="word\doc_file_information_block.cpp" />
     <ClCompile Include="word\doc_filter.cpp" />
+    <ClCompile Include="word\doc_font_family_name.cpp" />
+    <ClCompile Include="word\doc_string_table.cpp" />
     <ClCompile Include="word\doc_syntax.cpp" />
     <ClCompile Include="xml\pugixml.cpp" />
   </ItemGroup>
@@ -279,6 +281,8 @@
     <ClInclude Include="txt\txt_filter.h" />
     <ClInclude Include="word\doc_file_information_block.h" />
     <ClInclude Include="word\doc_filter.h" />
+    <ClInclude Include="word\doc_font_family_name.h" />
+    <ClInclude Include="word\doc_string_table.h" />
     <ClInclude Include="word\doc_syntax.h" />
     <ClInclude Include="xml\pugiconfig.hpp" />
     <ClInclude Include="xml\pugixml.hpp" />

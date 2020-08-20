@@ -199,6 +199,12 @@
     <ClCompile Include="word\doc_file_information_block.cpp">
       <Filter>word</Filter>
     </ClCompile>
+    <ClCompile Include="word\doc_font_family_name.cpp">
+      <Filter>word</Filter>
+    </ClCompile>
+    <ClCompile Include="word\doc_string_table.cpp">
+      <Filter>word</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -392,6 +398,12 @@
       <Filter>word</Filter>
     </ClInclude>
     <ClInclude Include="word\doc_file_information_block.h">
+      <Filter>word</Filter>
+    </ClInclude>
+    <ClInclude Include="word\doc_font_family_name.h">
+      <Filter>word</Filter>
+    </ClInclude>
+    <ClInclude Include="word\doc_string_table.h">
       <Filter>word</Filter>
     </ClInclude>
   </ItemGroup>
