@@ -399,11 +399,22 @@ void test_summary()
 		}
 	}
 
+	std::vector< std::pair< std::wstring, double> > keywords;
+	nlp::text_ranker::key_words(input, keywords, 10);
+
 	std::vector<std::wstring> key_sentences;
 	nlp::text_ranker::key_sentences(input, key_sentences, 3);
 
 	std::locale::global(std::locale(""));
 	std::ofstream out(L"f:/sombra/result.txt");
+
+	out << "[keywords]" << std::endl;
+	for (auto& keyword : keywords)
+	{
+		out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+	}
+
+	out << "[key sentences]" << std::endl;
 	for (auto& key_sentence : key_sentences)
 	{
 		out << to_utf8(key_sentence) << std::endl;

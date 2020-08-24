@@ -13,6 +13,7 @@
 #include <unordered_set>
 #include <cmath>
 #include <set>
+#include <map>
 
 using namespace std;
 
@@ -116,32 +117,34 @@ namespace nlp
 	{
 	public:
 		explicit text_ranker_impl()
-			: m_d(0.85), mMaxIter(100), mTol(1.0e-5) { }
-		explicit text_ranker_impl(double d, int maxIter, double tol)
-			: m_d(d), mMaxIter(maxIter), mTol(tol) { }
+			: m_damping_factor(0.85), m_max_iterations(100), m_tolerance(1.0e-5)
+		{}
+		explicit text_ranker_impl(double damping_factor, int max_iterations, double tolerance)
+			: m_damping_factor(damping_factor), m_max_iterations(max_iterations), m_tolerance(tolerance)
+		{}
 
 		~text_ranker_impl() { }
 
-		bool make_key_sentences(const value_type& input, std::vector<value_type>& outputs, int topK);
+		bool make_key_sentences(const value_type& src, std::vector<value_type>& dest, int topK);
 
 	private:
 		bool make_sentences(const value_type& input, std::vector<value_type>& output);
 		bool remove_duplicates(const std::vector<value_type>& src, std::vector<value_type>& dest);
 		bool build_graph(const std::vector<value_type>& sentences);
-		double GetSimilarity(int a, int b);
-		bool CalcSentenceScores();
-		bool InitWordSet(const std::vector<value_type>& sentences);
+		double get_similarity(int a, int b);
+		bool rank_sentences();
+		bool make_wordsets(const std::vector<value_type>& sentences);
 
 	private:
-		double m_d;
-		int mMaxIter;
-		double mTol;
-		std::vector<value_type> mSentences;
-		std::vector< std::vector<double> > mAdjacencyMatrix;
-		std::vector<double> mOutWeightSum;
-		std::vector<double> mScores;
-		std::vector< std::set<value_type> > mWordSets;
-		std::vector<int> mWordSizes;
+		double m_damping_factor;
+		int m_max_iterations;
+		double m_tolerance;
+		std::vector<value_type> m_sentences;
+		std::vector< std::vector<double> > m_similarity_matrix ;
+		std::vector<double> m_out_weight_sum;
+		std::vector<double> m_scores;
+		std::vector< std::set<value_type> > m_wordsets;
+		std::vector<int> m_wordsizes;
 	};
 
 	template <class value_type>
@@ -153,18 +156,18 @@ namespace nlp
 		}
 
 		bool ret = true;
-		ret &= make_sentences(input, mSentences);
-		ret &= build_graph(mSentences);
-		ret &= CalcSentenceScores();
+		ret &= make_sentences(input, m_sentences);
+		ret &= build_graph(m_sentences);
+		ret &= rank_sentences();
 
 		if (!ret) {
 			return false;
 		}
 
-		int kDim = mSentences.size();
+		int kDim = m_sentences.size();
 		std::vector< std::pair<int, double> > visitPairs;  // (id, score)
 		for (int i = 0; i < kDim; ++i) {
-			visitPairs.push_back(std::pair<int, double>(i, mScores[i]));
+			visitPairs.push_back(std::pair<int, double>(i, m_scores[i]));
 		}
 
 		std::sort(visitPairs.begin(), visitPairs.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
@@ -173,7 +176,7 @@ namespace nlp
 
 		for (int i = 0; i < topK && i < kDim; ++i) {
 			int id = visitPairs[i].first;
-			outputs.push_back(mSentences[id]);
+			outputs.push_back(m_sentences[id]);
 		}
 		return true;
 	}
@@ -237,29 +240,29 @@ namespace nlp
 
 		int kDim = sentences.size();
 
-		mAdjacencyMatrix.clear();
-		mAdjacencyMatrix.resize(kDim, std::vector<double>(kDim, 0.0));
+		m_similarity_matrix .clear();
+		m_similarity_matrix .resize(kDim, std::vector<double>(kDim, 0.0));
 
-		InitWordSet(sentences);
+		make_wordsets(sentences);
 
 		for (int i = 0; i < kDim - 1; i++)
 		{
 			for (int j = i + 1; j < kDim; j++)
 			{
-				double similarity = GetSimilarity(i, j);
+				double similarity = get_similarity(i, j);
 				// the similarity matrix is symmetrical, so transposes are filled in with the same similarity
-				mAdjacencyMatrix[i][j] = similarity;
-				mAdjacencyMatrix[j][i] = similarity;
+				m_similarity_matrix [i][j] = similarity;
+				m_similarity_matrix [j][i] = similarity;
 			}
 		}
 
-		mOutWeightSum.clear();
-		mOutWeightSum.resize(kDim, 0.0);
+		m_out_weight_sum.clear();
+		m_out_weight_sum.resize(kDim, 0.0);
 
 		for (int i = 0; i < kDim; ++i) {
 			for (int j = 0; j < kDim; ++j) {
 				if (i == j) { continue; }
-				mOutWeightSum[i] += mAdjacencyMatrix[i][j];
+				m_out_weight_sum[i] += m_similarity_matrix [i][j];
 			}
 		}
 
@@ -267,42 +270,42 @@ namespace nlp
 	}
 
 	template <class value_type>
-	bool text_ranker_impl<value_type>::InitWordSet(const std::vector<value_type>& sentences)
+	bool text_ranker_impl<value_type>::make_wordsets(const std::vector<value_type>& sentences)
 	{
 		int kDim = sentences.size();
 		if (sentences.empty()) {
 			return false;
 		}
 
-		mWordSets.clear();
-		mWordSets.resize(kDim, std::set<value_type>());
-		mWordSizes.clear();
-		mWordSizes.resize(kDim, 0);
+		m_wordsets.clear();
+		m_wordsets.resize(kDim, std::set<value_type>());
+		m_wordsizes.clear();
+		m_wordsizes.resize(kDim, 0);
 
 		for (int i = 0; i < kDim; ++i) {
 			std::vector<value_type> aWords;
 			boost::split(aWords, sentences[i], boost::is_any_of(L"\t ¡¢,"));
 
-			mWordSizes[i] = aWords.size();
+			m_wordsizes[i] = aWords.size();
 			std::set<value_type> aWordSet(aWords.begin(), aWords.end());
-			mWordSets[i] = aWordSet;
+			m_wordsets[i] = aWordSet;
 		}
 
 		return true;
 	}
 
 	template <class value_type>
-	double text_ranker_impl<value_type>::GetSimilarity(int a, int b)
+	double text_ranker_impl<value_type>::get_similarity(int a, int b)
 	{
-		if ((int)mWordSets.size() <= a || (int)mWordSets.size() <= b || mWordSets.size() != mWordSizes.size())
+		if ((int)m_wordsets.size() <= a || (int)m_wordsets.size() <= b || m_wordsets.size() != m_wordsizes.size())
 		{
 			return 0.0;
 		}
 		std::vector<value_type> commonWords;
 		const string_similarity<value_type>::similarity_t same = 0.75;
-		for (const auto& first : mWordSets[a])
+		for (const auto& first : m_wordsets[a])
 		{
-			for (const auto& second : mWordSets[b])
+			for (const auto& second : m_wordsets[b])
 			{
 				auto similarity = string_similarity<value_type>::similarity(first, second);
 				if (similarity > same)
@@ -313,7 +316,7 @@ namespace nlp
 			}
 		}
 
-		double denominator = std::log(double(mWordSizes[a])) + std::log(double(mWordSizes[b]));
+		double denominator = std::log(double(m_wordsizes[a])) + std::log(double(m_wordsizes[b]));
 		if (std::fabs(denominator) < 1e-6) {
 			return 0.0;
 		}
@@ -321,20 +324,20 @@ namespace nlp
 	}
 
 	template <class value_type>
-	bool text_ranker_impl<value_type>::CalcSentenceScores()
+	bool text_ranker_impl<value_type>::rank_sentences()
 	{
-		if (mAdjacencyMatrix.empty() || mAdjacencyMatrix[0].empty() || mOutWeightSum.empty()) {
+		if (m_similarity_matrix .empty() || m_similarity_matrix [0].empty() || m_out_weight_sum.empty()) {
 			return false;
 		}
 
-		int kDim = mSentences.size();
+		int kDim = m_sentences.size();
 
-		mScores.clear();
-		mScores.resize(kDim, 1.0);
+		m_scores.clear();
+		m_scores.resize(kDim, 1.0);
 
 		// iterate
 		int iterNum = 0;
-		for (; iterNum < mMaxIter; ++iterNum)
+		for (; iterNum < m_max_iterations; ++iterNum)
 		{
 			double maxDelta = 0.0;
 			vector<double> newScores(kDim, 0.0); // current iteration score
@@ -342,21 +345,22 @@ namespace nlp
 			for (int i = 0; i < kDim; ++i)
 			{
 				double sum_weight = 0.0;
-				for (int j = 0; j < kDim; ++j) {
-					if (i == j || mOutWeightSum[j] < 1e-6)
+				for (int j = 0; j < kDim; ++j)
+				{
+					if (i == j || m_out_weight_sum[j] < 1e-6)
 						continue;
-					double weight = mAdjacencyMatrix[j][i];
-					sum_weight += weight / mOutWeightSum[j] * mScores[j];
+					double weight = m_similarity_matrix [j][i];
+					sum_weight += weight / m_out_weight_sum[j] * m_scores[j];
 				}
-				double newScore = 1.0 - m_d + m_d * sum_weight;
+				double newScore = 1.0 - m_damping_factor + m_damping_factor * sum_weight;
 				newScores[i] = newScore;
 
-				double delta = fabs(newScore - mScores[i]);
+				double delta = fabs(newScore - m_scores[i]);
 				maxDelta = max(maxDelta, delta);
 			}
 
-			mScores = newScores;
-			if (maxDelta < mTol) {
+			m_scores = newScores;
+			if (maxDelta < m_tolerance) {
 				break;
 			}
 		}
@@ -367,6 +371,275 @@ namespace nlp
 	{
 		text_ranker_impl<std::wstring> ranker;
 		return ranker.make_key_sentences(texts, sentences, topK);
+	}
+
+	struct value_great
+	{
+		template <typename T>
+		bool operator()(const std::pair<T, double>& x, const std::pair<T, double>& y) const
+		{
+			return x.second > y.second;
+		}
+	};
+
+	template <class value_type>
+	class TextRank
+	{
+	public:
+		TextRank() :
+			m_window_length(3),
+			m_max_iter_num(100),
+			m_d(0.85),
+			m_least_delta(1e-6)
+		{}
+		TextRank(int window_length, int max_iter_num, double d, double least_delta) :
+			m_window_length(window_length),
+			m_max_iter_num(max_iter_num),
+			m_d(d),
+			m_least_delta(least_delta)
+		{}
+
+		~TextRank() {}
+
+		void ExtractHighTfWords(const std::vector<value_type>& token_vec, std::vector<std::pair<value_type, double> >& keywords, const size_t topN);
+		void ExtractKeyword(const std::vector<value_type>& token_vec, std::vector<std::pair<value_type, double> >& keywords, const size_t topN = 10);
+
+	private:
+		int BuildWordRelation(const std::vector<value_type>& token_vec, std::map<size_t, std::set<size_t> >& word_neighbors);
+		void CalcWordScore(const std::map<size_t, std::set<size_t> >& word_neighbors, std::map<size_t, double>& score_map);
+		void UpdateWeightMap(size_t i, size_t j);
+		double GetWeight(size_t i, size_t j) const;
+		void Clear();
+
+	private:
+		size_t m_window_length;
+		size_t m_max_iter_num;
+		double m_d;
+		double m_least_delta;
+
+		std::vector<value_type> m_word_vec;
+		std::map<value_type, size_t> m_word_index;                 // word -> word index of m_word_vec
+		std::map<std::pair<size_t, size_t>, double> m_weight_map;   // edge weight  
+		std::map<size_t, double> m_out_sum_map;                     // out edges weight sum of one node  
+	};
+
+	template <class value_type>
+	void TextRank<value_type>::ExtractHighTfWords(const vector<value_type>& token_vec, vector<pair<value_type, double> >& keywords, const size_t topN)
+	{
+		keywords.clear();
+		if (token_vec.empty())
+			return;
+		map<value_type, double> word_tf;
+		for (size_t i = 0; i < token_vec.size(); ++i)
+		{
+			const value_type& word = token_vec[i];
+			if (word_tf.find(word) == word_tf.end())
+				word_tf[word] = 1;
+			else
+				word_tf[word] += 1;
+		}
+		vector<pair<value_type, double> > word_tf_vec(word_tf.begin(), word_tf.end());
+		sort(word_tf_vec.begin(), word_tf_vec.end(), value_great());
+		for (size_t i = 0; i < word_tf_vec.size(); ++i)
+		{
+			if (i == topN)
+				break;
+			keywords.push_back(word_tf_vec[i]);
+		}
+	}
+
+	template <class value_type>
+	void TextRank<value_type>::ExtractKeyword(const vector<value_type>& token_vec, vector<pair<value_type, double> >& keywords, const size_t topN)
+	{
+		keywords.clear();
+		if (token_vec.empty())
+			return;
+
+		Clear();
+
+		map<size_t, set<size_t> > word_neighbors;
+		map<size_t, double> score_map;
+
+		BuildWordRelation(token_vec, word_neighbors);
+		CalcWordScore(word_neighbors, score_map);
+
+		vector<pair<size_t, double> > score_vec(score_map.begin(), score_map.end());
+		sort(score_vec.begin(), score_vec.end(), value_great());
+
+		for (size_t i = 0; i < score_vec.size(); ++i)
+		{
+			if (i == topN)
+				break;
+			const value_type& word = m_word_vec[score_vec[i].first];
+			keywords.push_back(make_pair(word, score_vec[i].second));
+		}
+	}
+
+	template <class value_type>
+	void TextRank<value_type>::UpdateWeightMap(size_t i, size_t j)
+	{
+		if (i > j)
+		{
+			size_t tmp = i;
+			i = j;
+			j = tmp;
+		}
+		pair<size_t, size_t> key(i, j);
+		if (m_weight_map.find(key) != m_weight_map.end())
+			m_weight_map[key] += 1;
+		else
+			m_weight_map.insert(make_pair(key, 1.0));
+	}
+
+	template <class value_type>
+	double TextRank<value_type>::GetWeight(size_t i, size_t j) const
+	{
+		if (i > j)
+		{
+			size_t tmp = i;
+			i = j;
+			j = tmp;
+		}
+		pair<size_t, size_t> key(i, j);
+		if (m_weight_map.find(key) != m_weight_map.end())
+			return m_weight_map.at(key);
+		return 0;
+	}
+
+	template <class value_type>
+	int TextRank<value_type>::BuildWordRelation(const vector<value_type>& token_vec, map<size_t, set<size_t> >& word_neighbors)
+	{
+		m_weight_map.clear();
+		word_neighbors.clear();
+
+		const size_t n = token_vec.size();
+
+		// use word index to replace string word 
+		for (size_t i = 0; i < n; ++i)
+		{
+			const value_type& word = token_vec[i];
+			if ( m_word_index.find(word) == m_word_index.end())
+			{
+				m_word_vec.push_back(word);
+				m_word_index.insert(make_pair(word, m_word_vec.size() - 1));
+			}
+		}
+
+		for (size_t i = 0; i < n; ++i)
+		{
+			const value_type& word = token_vec[i];
+			size_t id1 = m_word_index.at(word);
+
+			if (word_neighbors.find(id1) == word_neighbors.end())
+				word_neighbors.insert(make_pair(id1, set<size_t>()));
+
+			for (size_t j = 1; j < m_window_length; ++j)
+			{
+				if (i + j >= n)
+					break;
+				size_t id2 = m_word_index.at(token_vec[i + j]);
+				if (id2 == id1)
+					continue;
+
+				UpdateWeightMap(id1, id2);
+
+				word_neighbors[id1].insert(id2);
+
+				// undirected graph
+				if (word_neighbors.find(id2) == word_neighbors.end())
+					word_neighbors.insert(make_pair(id2, set<size_t>()));
+				word_neighbors[id2].insert(id1);
+			}
+		}
+
+		// calc weight sum of out-edges
+		map<size_t, set<size_t> >::iterator witer = word_neighbors.begin();
+		for (; witer != word_neighbors.end(); ++witer)
+		{
+			size_t id1 = witer->first;
+			set<size_t>& neighbors = witer->second;
+			set<size_t>::iterator niter = neighbors.begin();
+			double sum = 0;
+			for (; niter != neighbors.end(); ++niter)
+			{
+				size_t id2 = *niter;
+				sum += GetWeight(id1, id2);
+			}
+			m_out_sum_map.insert(make_pair(id1, sum));
+		}
+		return 0;
+	}
+
+	template <class value_type>
+	void TextRank<value_type>::CalcWordScore(const map<size_t, set<size_t> >& word_neighbors, map<size_t, double>& score_map)
+	{
+		score_map.clear();
+
+		// initialize
+		map<size_t, set<size_t> >::const_iterator witer = word_neighbors.begin();
+		for (; witer != word_neighbors.end(); ++witer)
+			score_map.insert(make_pair(witer->first, 1.0));
+
+		// iterate
+		for (size_t i = 0; i < m_max_iter_num; ++i)
+		{
+			double max_delta = 0;
+			map<size_t, double> new_score_map; // current iteration score
+
+			for (witer = word_neighbors.begin(); witer != word_neighbors.end(); ++witer)
+			{
+				size_t id1 = witer->first;
+				double new_score = 1 - m_d;
+				double sum_weight = 0;
+				const set<size_t>& neighbors = witer->second;
+				set<size_t>::const_iterator niter = neighbors.begin();
+				for (; niter != neighbors.end(); ++niter)
+				{
+					size_t id2 = *niter;
+					double weight = GetWeight(id2, id1);
+					sum_weight += weight / m_out_sum_map.at(id2) * score_map[id2];
+					//sum_weight +=  1.0/word_neighbors[id2].size()*score_map[id2];
+				}
+				new_score += m_d * sum_weight;
+				new_score_map.insert(make_pair(id1, new_score));
+
+				double delta = fabs(new_score - score_map[id1]);
+				max_delta = max(max_delta, delta);
+			}
+			score_map = new_score_map;
+			if (max_delta < m_least_delta)
+			{
+				break;
+			}
+		}
+	}
+
+	template <class value_type>
+	void TextRank<value_type>::Clear()
+	{
+		m_word_vec.clear();
+		m_word_index.clear();
+		m_weight_map.clear();
+		m_out_sum_map.clear();
+	}
+
+	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& keywords, int topK)
+	{
+		std::vector<std::wstring> tokens;
+		boost::split(tokens, texts, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,"));
+
+		std::vector<std::wstring> norms;
+		norms.reserve(tokens.size());
+		for (auto& token : tokens)
+		{
+			if (token.size() > 1)
+				norms.push_back(token);
+		}
+		
+		TextRank<std::wstring> ranker;
+		ranker.ExtractKeyword(norms, keywords, topK);
+		//ranker.ExtractHighTfWords(norms, keywords, topK);
+		return true;
 	}
 }
 
