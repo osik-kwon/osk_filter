@@ -122,12 +122,12 @@ namespace nlp
 
 		~text_ranker_impl() { }
 
-		bool ExtractKeySentences(const value_type& input, std::vector<value_type>& outputs, int topK);
+		bool make_key_sentences(const value_type& input, std::vector<value_type>& outputs, int topK);
 
 	private:
-		bool ExtractSentences(const value_type& input, std::vector<value_type>& output);
-		bool RemoveDuplicates(const std::vector<value_type>& input, std::vector<value_type>& output);
-		bool BuildGraph(const std::vector<value_type>& sentences);
+		bool make_sentences(const value_type& input, std::vector<value_type>& output);
+		bool remove_duplicates(const std::vector<value_type>& src, std::vector<value_type>& dest);
+		bool build_graph(const std::vector<value_type>& sentences);
 		double GetSimilarity(int a, int b);
 		bool CalcSentenceScores();
 		bool InitWordSet(const std::vector<value_type>& sentences);
@@ -145,7 +145,7 @@ namespace nlp
 	};
 
 	template <class value_type>
-	bool text_ranker_impl<value_type>::ExtractKeySentences(const value_type& input, std::vector<value_type>& outputs, int topK)
+	bool text_ranker_impl<value_type>::make_key_sentences(const value_type& input, std::vector<value_type>& outputs, int topK)
 	{
 		outputs.clear();
 		if (input.empty() || topK < 1) {
@@ -153,8 +153,8 @@ namespace nlp
 		}
 
 		bool ret = true;
-		ret &= ExtractSentences(input, mSentences);
-		ret &= BuildGraph(mSentences);
+		ret &= make_sentences(input, mSentences);
+		ret &= build_graph(mSentences);
 		ret &= CalcSentenceScores();
 
 		if (!ret) {
@@ -179,7 +179,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	bool text_ranker_impl<value_type>::ExtractSentences(const value_type& input, std::vector<value_type>& outputs)
+	bool text_ranker_impl<value_type>::make_sentences(const value_type& input, std::vector<value_type>& outputs)
 	{
 		outputs.clear();
 		if (input.empty()) {
@@ -205,13 +205,13 @@ namespace nlp
 		vector<value_type> tempOutput2;
 		for (int i = 0; i < (int)tempOutput.size(); ++i)
 		{
-			if ((int)tempOutput[i].size() > minSentenceLen)
+			if (!tempOutput[i].empty() && (int)tempOutput[i].size() > minSentenceLen)
 			{
 				tempOutput2.push_back(tempOutput[i]);
 			}
 		}
 
-		RemoveDuplicates(tempOutput2, outputs);
+		remove_duplicates(tempOutput2, outputs);
 
 		static const int maxSentencesNum = 500;
 		if ((int)outputs.size() > maxSentencesNum) {
@@ -222,18 +222,16 @@ namespace nlp
 	}
 
 	template <class value_type>
-	bool text_ranker_impl<value_type>::RemoveDuplicates(const std::vector<value_type>& inputs, std::vector<value_type>& outputs)
+	bool text_ranker_impl<value_type>::remove_duplicates(const std::vector<value_type>& src, std::vector<value_type>& dest)
 	{
-		outputs.clear();
-
-		std::unordered_set<value_type> s(inputs.begin(), inputs.end());
-		outputs = std::vector<value_type>(s.begin(), s.end());
-
+		dest.clear();
+		std::unordered_set<value_type> set(src.begin(), src.end());
+		dest = std::vector<value_type>(set.begin(), set.end());
 		return true;
 	}
 
 	template <class value_type>
-	bool text_ranker_impl<value_type>::BuildGraph(const std::vector<value_type>& sentences)
+	bool text_ranker_impl<value_type>::build_graph(const std::vector<value_type>& sentences)
 	{
 		if (sentences.empty()) { return false; }
 
@@ -283,8 +281,7 @@ namespace nlp
 
 		for (int i = 0; i < kDim; ++i) {
 			std::vector<value_type> aWords;
-
-			boost::split(aWords, sentences[i], boost::is_any_of(L"\t "));
+			boost::split(aWords, sentences[i], boost::is_any_of(L"\t ¡¢,"));
 
 			mWordSizes[i] = aWords.size();
 			std::set<value_type> aWordSet(aWords.begin(), aWords.end());
@@ -302,7 +299,7 @@ namespace nlp
 			return 0.0;
 		}
 		std::vector<value_type> commonWords;
-		const string_similarity<value_type>::similarity_t same = 0.85;
+		const string_similarity<value_type>::similarity_t same = 0.75;
 		for (const auto& first : mWordSets[a])
 		{
 			for (const auto& second : mWordSets[b])
@@ -369,7 +366,7 @@ namespace nlp
 	bool text_ranker::key_sentences(const std::wstring& texts, std::vector<std::wstring>& sentences, int topK)
 	{
 		text_ranker_impl<std::wstring> ranker;
-		return ranker.ExtractKeySentences(texts, sentences, topK);
+		return ranker.make_key_sentences(texts, sentences, topK);
 	}
 }
 

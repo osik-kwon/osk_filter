@@ -379,8 +379,12 @@ void test_summary()
 	filter_t filter;
 
 	//auto src = filter.open(to_utf8(L"f:/sombra/legacy2.hwp"));
-	//auto src = filter.open(to_utf8(L"f:/sombra/test1.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/test3.hwp"));
 	auto src = filter.open(to_utf8(L"f:/sombra/article3.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/english1.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/japanese1.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/dutch4.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/china2.hwp"));
 	auto sections = filter.extract_all_texts(src);
 
 	std::wstring input;
@@ -399,10 +403,10 @@ void test_summary()
 	nlp::text_ranker::key_sentences(input, key_sentences, 3);
 
 	std::locale::global(std::locale(""));
-	std::wofstream out(L"f:/sombra/result.txt");
+	std::ofstream out(L"f:/sombra/result.txt");
 	for (auto& key_sentence : key_sentences)
 	{
-		out << key_sentence << std::endl;
+		out << to_utf8(key_sentence) << std::endl;
 	}
 	out.close();
 }
