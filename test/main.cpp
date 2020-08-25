@@ -385,6 +385,7 @@ void test_summary()
 	//auto src = filter.open(to_utf8(L"f:/sombra/japanese1.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/dutch4.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/china2.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/note1.hwp"));
 	auto sections = filter.extract_all_texts(src);
 
 	std::wstring input;
@@ -399,11 +400,17 @@ void test_summary()
 		}
 	}
 
+	nlp::text_ranker text_ranker;
+	std::vector<std::string> stop_words_pathes;
+	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+	text_ranker.load_stop_words(stop_words_pathes);
+
 	std::vector< std::pair< std::wstring, double> > keywords;
-	nlp::text_ranker::key_words(input, keywords, 10);
+	text_ranker.key_words(input, keywords, 10);
 
 	std::vector<std::wstring> key_sentences;
-	nlp::text_ranker::key_sentences(input, key_sentences, 3);
+	text_ranker.key_sentences(input, key_sentences, 3);
 
 	std::locale::global(std::locale(""));
 	std::ofstream out(L"f:/sombra/result.txt");
@@ -426,6 +433,23 @@ int main()
 {
 	try
 	{
+		/*
+		std::ifstream src(L"f:/sombra/stopwords.txt");
+		std::ofstream dest(L"f:/sombra/stopwords_dest.txt");
+
+		dest << "{" << std::endl;
+		std::string line;
+		while (!src.eof())
+		{
+			std::getline(src, line);
+			dest << "\tL\""<< line << "\"," << std::endl;
+		}
+		dest << "}" << std::endl;
+
+		src.close();
+		dest.close();
+		*/
+
 		test_summary();
 		//test_doc();
 		//test_signature();

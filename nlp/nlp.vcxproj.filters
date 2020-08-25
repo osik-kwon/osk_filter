@@ -5,16 +5,25 @@
       <Filter>textrank</Filter>
     </ClCompile>
     <ClCompile Include="nlp_pch.cpp" />
+    <ClCompile Include="stopwords\stop_words.cpp">
+      <Filter>stopwords</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="textrank\textrank.h">
       <Filter>textrank</Filter>
     </ClInclude>
     <ClInclude Include="nlp_pch.h" />
+    <ClInclude Include="stopwords\stop_words.h">
+      <Filter>stopwords</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="textrank">
       <UniqueIdentifier>{5058ca03-0712-4fc3-b695-76da52982f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stopwords">
+      <UniqueIdentifier>{c93b17a2-d5d6-4b0f-9213-2b880ba91b62}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

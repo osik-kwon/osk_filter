@@ -140,7 +140,7 @@ namespace nlp
 		int m_max_iterations;
 		double m_tolerance;
 		std::vector<value_type> m_sentences;
-		std::vector< std::vector<double> > m_similarity_matrix ;
+		std::vector< std::vector<double> > m_similarity_matrix;
 		std::vector<double> m_out_weight_sum;
 		std::vector<double> m_scores;
 		std::vector< std::set<value_type> > m_wordsets;
@@ -240,8 +240,8 @@ namespace nlp
 
 		int kDim = sentences.size();
 
-		m_similarity_matrix .clear();
-		m_similarity_matrix .resize(kDim, std::vector<double>(kDim, 0.0));
+		m_similarity_matrix.clear();
+		m_similarity_matrix.resize(kDim, std::vector<double>(kDim, 0.0));
 
 		make_wordsets(sentences);
 
@@ -251,8 +251,8 @@ namespace nlp
 			{
 				double similarity = get_similarity(i, j);
 				// the similarity matrix is symmetrical, so transposes are filled in with the same similarity
-				m_similarity_matrix [i][j] = similarity;
-				m_similarity_matrix [j][i] = similarity;
+				m_similarity_matrix[i][j] = similarity;
+				m_similarity_matrix[j][i] = similarity;
 			}
 		}
 
@@ -262,7 +262,7 @@ namespace nlp
 		for (int i = 0; i < kDim; ++i) {
 			for (int j = 0; j < kDim; ++j) {
 				if (i == j) { continue; }
-				m_out_weight_sum[i] += m_similarity_matrix [i][j];
+				m_out_weight_sum[i] += m_similarity_matrix[i][j];
 			}
 		}
 
@@ -326,7 +326,7 @@ namespace nlp
 	template <class value_type>
 	bool text_ranker_impl<value_type>::rank_sentences()
 	{
-		if (m_similarity_matrix .empty() || m_similarity_matrix [0].empty() || m_out_weight_sum.empty()) {
+		if (m_similarity_matrix.empty() || m_similarity_matrix[0].empty() || m_out_weight_sum.empty()) {
 			return false;
 		}
 
@@ -349,7 +349,7 @@ namespace nlp
 				{
 					if (i == j || m_out_weight_sum[j] < 1e-6)
 						continue;
-					double weight = m_similarity_matrix [j][i];
+					double weight = m_similarity_matrix[j][i];
 					sum_weight += weight / m_out_weight_sum[j] * m_scores[j];
 				}
 				double newScore = 1.0 - m_damping_factor + m_damping_factor * sum_weight;
@@ -518,7 +518,7 @@ namespace nlp
 		for (size_t i = 0; i < n; ++i)
 		{
 			const value_type& word = token_vec[i];
-			if ( m_word_index.find(word) == m_word_index.end())
+			if (m_word_index.find(word) == m_word_index.end())
 			{
 				m_word_vec.push_back(word);
 				m_word_index.insert(make_pair(word, m_word_vec.size() - 1));
@@ -623,22 +623,26 @@ namespace nlp
 		m_out_sum_map.clear();
 	}
 
+	text_ranker::text_ranker() : stop_words(std::make_unique<stop_words_t>())
+	{}
+
+	void text_ranker::load_stop_words(const std::vector<std::string>& stop_words_pathes)
+	{
+		for (auto& path : stop_words_pathes)
+		{
+			stop_words->load_dictionary(path);
+		}
+	}
+
 	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& keywords, int topK)
 	{
 		std::vector<std::wstring> tokens;
 		boost::split(tokens, texts, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,"));
+		stop_words->remove_stop_words(tokens);
 
-		std::vector<std::wstring> norms;
-		norms.reserve(tokens.size());
-		for (auto& token : tokens)
-		{
-			if (token.size() > 1)
-				norms.push_back(token);
-		}
-		
 		TextRank<std::wstring> ranker;
-		ranker.ExtractKeyword(norms, keywords, topK);
-		//ranker.ExtractHighTfWords(norms, keywords, topK);
+		ranker.ExtractKeyword(tokens, keywords, -1);
+		//ranker.ExtractHighTfWords(tokens, keywords, topK);
 		return true;
 	}
 }

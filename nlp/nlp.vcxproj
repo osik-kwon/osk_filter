@@ -29,10 +29,12 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nlp_pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nlp_pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="stopwords\stop_words.cpp" />
     <ClCompile Include="textrank\textrank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nlp_pch.h" />
+    <ClInclude Include="stopwords\stop_words.h" />
     <ClInclude Include="textrank\textrank.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
