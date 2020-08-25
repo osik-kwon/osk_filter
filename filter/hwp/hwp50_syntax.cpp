@@ -303,7 +303,7 @@ namespace hwp50
 				if (streams.find(entry) != streams.end())
 					throw std::runtime_error(entry + " stream already exist");
 				if(!plain.empty())
-					streams.emplace(std::move(entry), std::make_unique<buffer_t>(std::move(plain)));
+					streams.emplace(entry, std::make_unique<buffer_t>(std::move(plain)));
 			}
 		}
 		catch (const std::exception& e)

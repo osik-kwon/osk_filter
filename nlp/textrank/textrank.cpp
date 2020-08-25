@@ -14,6 +14,7 @@
 #include <cmath>
 #include <set>
 #include <map>
+#include <sstream>
 
 using namespace std;
 
@@ -116,11 +117,11 @@ namespace nlp
 	class text_ranker_impl
 	{
 	public:
-		explicit text_ranker_impl()
-			: m_damping_factor(0.85), m_max_iterations(100), m_tolerance(1.0e-5)
+		explicit text_ranker_impl(stop_words_t* stop_words)
+			: m_stop_words(stop_words), m_damping_factor(0.85), m_max_iterations(100), m_tolerance(1.0e-5)
 		{}
-		explicit text_ranker_impl(double damping_factor, int max_iterations, double tolerance)
-			: m_damping_factor(damping_factor), m_max_iterations(max_iterations), m_tolerance(tolerance)
+		explicit text_ranker_impl(stop_words_t* stop_words, double damping_factor, int max_iterations, double tolerance)
+			: m_stop_words(stop_words), m_damping_factor(damping_factor), m_max_iterations(max_iterations), m_tolerance(tolerance)
 		{}
 
 		~text_ranker_impl() { }
@@ -145,6 +146,8 @@ namespace nlp
 		std::vector<double> m_scores;
 		std::vector< std::set<value_type> > m_wordsets;
 		std::vector<int> m_wordsizes;
+
+		stop_words_t* m_stop_words;
 	};
 
 	template <class value_type>
@@ -157,6 +160,7 @@ namespace nlp
 
 		bool ret = true;
 		ret &= make_sentences(input, m_sentences);
+		ret &= make_wordsets(m_sentences);
 		ret &= build_graph(m_sentences);
 		ret &= rank_sentences();
 
@@ -243,8 +247,6 @@ namespace nlp
 		m_similarity_matrix.clear();
 		m_similarity_matrix.resize(kDim, std::vector<double>(kDim, 0.0));
 
-		make_wordsets(sentences);
-
 		for (int i = 0; i < kDim - 1; i++)
 		{
 			for (int j = i + 1; j < kDim; j++)
@@ -282,13 +284,15 @@ namespace nlp
 		m_wordsizes.clear();
 		m_wordsizes.resize(kDim, 0);
 
-		for (int i = 0; i < kDim; ++i) {
-			std::vector<value_type> aWords;
-			boost::split(aWords, sentences[i], boost::is_any_of(L"\t ¡¢,"));
-
-			m_wordsizes[i] = aWords.size();
-			std::set<value_type> aWordSet(aWords.begin(), aWords.end());
-			m_wordsets[i] = aWordSet;
+		for (int i = 0; i < kDim; ++i)
+		{
+			std::vector<value_type> tokens;
+			boost::split(tokens, sentences[i], boost::is_any_of(L"\t ¡¢,"));
+			if(m_stop_words)
+				m_stop_words->remove_stop_words(tokens, 2);
+			m_wordsizes[i] = tokens.size();
+			std::set<value_type> wordset(tokens.begin(), tokens.end());
+			std::swap(m_wordsets[i], wordset);
 		}
 
 		return true;
@@ -365,12 +369,6 @@ namespace nlp
 			}
 		}
 		return true;
-	}
-
-	bool text_ranker::key_sentences(const std::wstring& texts, std::vector<std::wstring>& sentences, int topK)
-	{
-		text_ranker_impl<std::wstring> ranker;
-		return ranker.make_key_sentences(texts, sentences, topK);
 	}
 
 	struct value_great
@@ -623,6 +621,239 @@ namespace nlp
 		m_out_sum_map.clear();
 	}
 
+	void ExtractNgram(const wstring& text, size_t n, vector<wstring>& res)
+	{
+		res.clear();
+
+		if (text.size() < n)
+		{
+			cout << "text is too short" << endl;
+			return;
+		}
+
+		wstringstream ss;
+		size_t char_num = text.size();
+		for (size_t i = 0; i < char_num; ++i)
+		{
+			for (size_t j = 0; j < n; ++j)
+			{
+				if (i + j >= char_num)
+					return;
+				ss << text[i + j];
+			}
+			res.push_back(ss.str());
+			ss.str(L"");
+			ss.clear();
+		}
+	}
+
+	template <class value_type>
+	class SentenceRank
+	{
+		struct value_great
+		{
+			template <typename T>
+			bool operator()(const std::pair<T, double>& x, const std::pair<T, double>& y) const
+			{
+				return x.second > y.second;
+			}
+		};
+
+	public:
+		SentenceRank() :
+			m_window_length(3),
+			m_max_iter_num(100),
+			m_d(0.85),
+			m_least_delta(1e-6)
+		{}
+		SentenceRank(int window_length, int max_iter_num, double d, double least_delta) :
+			m_window_length(window_length),
+			m_max_iter_num(max_iter_num),
+			m_d(d),
+			m_least_delta(least_delta) {}
+
+		~SentenceRank() {}
+		void ExtractKeySentence(const std::map<value_type, std::vector<value_type> >& sentence_token_map, std::vector<std::pair<value_type, double> >& key_sentences, const size_t topN = 5);
+
+	private:
+		double CalcDist(const std::vector<value_type>& token_vec1, const std::vector<value_type>& token_vec2);
+		void BuildSentenceRelation(const std::map<value_type, std::vector<value_type> >& sentence_token_map);
+		void CalcSentenceScore(std::map<size_t, double>& score_map);
+		double GetWeight(size_t i, size_t j) const;
+		void Clear();
+
+	private:
+		size_t m_window_length;
+		size_t m_max_iter_num;
+		double m_d;
+		double m_least_delta;
+
+		std::vector<value_type> m_sentence_vec;
+		std::map<value_type, size_t> m_sentence_index;
+		std::map<std::pair<size_t, size_t>, double> m_weight_map;   // edge weight
+		std::map<size_t, double> m_out_sum_map;                     // out edges weight sum of one node  
+	};
+
+	template <class value_type>
+	void SentenceRank<value_type>::ExtractKeySentence(const map<value_type, vector<value_type> >& sentence_token_map, vector<pair<value_type, double> >& key_sentences, const size_t topN)
+	{
+		key_sentences.clear();
+
+		size_t n = sentence_token_map.size();
+
+		if (n == 0)
+			return;
+
+		if (n == 1)
+		{
+			key_sentences.push_back(make_pair(sentence_token_map.begin()->first, 1.0));
+			return;
+		}
+
+		Clear();
+
+		BuildSentenceRelation(sentence_token_map);
+
+		map<size_t, double> score_map;
+		CalcSentenceScore(score_map);
+
+		vector<pair<size_t, double> > score_vec(score_map.begin(), score_map.end());
+		sort(score_vec.begin(), score_vec.end(), value_great());
+
+		for (size_t i = 0; i < score_vec.size(); ++i)
+		{
+			if (i == topN)
+				break;
+			const value_type& sent = m_sentence_vec[score_vec[i].first];
+			key_sentences.push_back(make_pair(sent, score_vec[i].second));
+		}
+
+	}
+
+	template <class value_type>
+	double SentenceRank<value_type>::CalcDist(const vector<value_type>& token_vec1, const vector<value_type>& token_vec2)
+	{
+		size_t both_num = 0;
+		size_t n1 = token_vec1.size();
+		size_t n2 = token_vec2.size();
+		if (n1 < 2 || n2 < 2)
+			return 0;
+		for (size_t i = 0; i < n1; ++i)
+		{
+			const value_type& token = token_vec1[i];
+			for (size_t j = 0; j < n2; ++j)
+			{
+				if (token == token_vec2[j])
+				{
+					both_num++;
+					break;
+				}
+			}
+		}
+		double dist = both_num / (log(n1) + log(n2));
+		return dist;
+	}
+
+	template <class value_type>
+	double SentenceRank<value_type>::GetWeight(size_t i, size_t j) const
+	{
+		if (i > j)
+		{
+			size_t tmp = i;
+			i = j;
+			j = tmp;
+		}
+		pair<size_t, size_t> key(i, j);
+		if (m_weight_map.find(key) != m_weight_map.end())
+			return m_weight_map.at(key);
+		return 0;
+	}
+
+	template <class value_type>
+	void SentenceRank<value_type>::BuildSentenceRelation(const map<value_type, vector<value_type> >& sentence_token_map)
+	{
+		auto iter = sentence_token_map.begin();
+		for (; iter != sentence_token_map.end(); ++iter)
+		{
+			m_sentence_vec.push_back(iter->first);
+			size_t i = m_sentence_vec.size() - 1;
+			m_sentence_index.insert(make_pair(iter->first, i));
+			size_t j = i + 1;
+			auto iter2 = iter;
+			advance(iter2, 1);
+			for (; iter2 != sentence_token_map.end(); ++iter2)
+			{
+				double dist = CalcDist(iter->second, iter2->second);
+				pair<size_t, size_t> key(i, j);
+				m_weight_map.insert(make_pair(key, dist));
+				j++;
+			}
+		}
+		// calc weight sum of out-edges
+		size_t n = m_sentence_vec.size();
+		for (size_t i = 0; i < n; ++i)
+		{
+			double sum = 0.0;
+			for (size_t j = 0; j < n; ++j)
+			{
+				if (j != i)
+					sum += GetWeight(i, j);
+			}
+			m_out_sum_map.insert(make_pair(i, sum));
+		}
+
+	}
+
+	template <class value_type>
+	void  SentenceRank<value_type>::CalcSentenceScore(map<size_t, double>& score_map)
+	{
+		score_map.clear();
+
+		// initialize
+		size_t n = m_sentence_vec.size();
+		for (size_t id = 0; id < n; ++id)
+			score_map.insert(make_pair(id, 1.0));
+
+		// iterate
+		for (size_t i = 0; i < m_max_iter_num; ++i)
+		{
+			double max_delta = 0;
+			map<size_t, double> new_score_map; // current iteration score
+
+			for (size_t id1 = 0; id1 < n; ++id1)
+			{
+				double new_score = 1 - m_d;
+				double sum_weight = 0.0;
+				for (size_t id2 = 0; id2 < n; ++id2)
+				{
+					if (id1 == id2 || m_out_sum_map[id2] < 1e-6)
+						continue;
+					double weight = GetWeight(id2, id1);
+					sum_weight += weight / m_out_sum_map.at(id2) * score_map[id2];
+				}
+				new_score += m_d * sum_weight;
+				new_score_map.insert(make_pair(id1, new_score));
+
+				double delta = fabs(new_score - score_map[id1]);
+				max_delta = max(max_delta, delta);
+			}
+			score_map = new_score_map;
+			if (max_delta < m_least_delta)
+			{
+				break;
+			}
+		}
+	}
+
+	template <class value_type>
+	void SentenceRank<value_type>::Clear()
+	{
+		m_sentence_vec.clear();
+		m_sentence_index.clear();
+		m_weight_map.clear();
+		m_out_sum_map.clear();
+	}
+
 	text_ranker::text_ranker() : stop_words(std::make_unique<stop_words_t>())
 	{}
 
@@ -637,13 +868,78 @@ namespace nlp
 	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& keywords, int topK)
 	{
 		std::vector<std::wstring> tokens;
-		boost::split(tokens, texts, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,"));
-		stop_words->remove_stop_words(tokens);
 
+		static const int maxTextLen = 100000;
+		std::wstring input;
+		if ((int)texts.size() > maxTextLen) {
+			input = texts.substr(0, maxTextLen);
+		}
+		else {
+			input = texts;
+		}
+
+		boost::split(tokens, input, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,"));
+		for (auto& token : tokens)
+			boost::algorithm::to_lower(token);
+		stop_words->remove_stop_words(tokens, 2);		
 		TextRank<std::wstring> ranker;
-		ranker.ExtractKeyword(tokens, keywords, -1);
+		ranker.ExtractKeyword(tokens, keywords, topK);
 		//ranker.ExtractHighTfWords(tokens, keywords, topK);
 		return true;
+	}
+
+
+	bool text_ranker::key_sentences(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& key_sentences, int topK)
+	{
+		std::vector<std::wstring> raws;
+
+		static const int maxTextLen = 100000;
+		std::wstring input;
+		if ((int)texts.size() > maxTextLen) {
+			input = texts.substr(0, maxTextLen);
+		}
+		else {
+			input = texts;
+		}
+
+		boost::split(raws, input, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n"));
+
+		static const int maxSentencesNum = 500;
+		std::vector<std::wstring> sentences;
+		for (int i = 0; i < (int)raws.size(); ++i)
+		{
+			if ((int)i > maxSentencesNum)
+				break;
+			if (!raws[i].empty() && (int)raws[i].size() > 30)
+			{
+				sentences.push_back(raws[i]);
+			}
+		}
+
+		vector<wstring> bigram_vec;
+		map<wstring, vector<wstring> > sentence_token_map;
+		for (size_t i = 0; i < sentences.size(); ++i)
+		{
+			ExtractNgram(sentences[i], 3, bigram_vec);
+			if (bigram_vec.empty())
+				continue;
+
+			for (auto& token : bigram_vec)
+				boost::algorithm::to_lower(token);
+			
+			stop_words->remove_stop_words(bigram_vec, 2);
+			sentence_token_map.insert(make_pair(sentences[i], bigram_vec));
+		}
+
+		SentenceRank<std::wstring> ranker;
+		ranker.ExtractKeySentence(sentence_token_map, key_sentences, topK);
+		return true;
+	}
+
+	bool text_ranker::key_sentences(const std::wstring& texts, std::vector<std::wstring>& sentences, int topK)
+	{
+		text_ranker_impl<std::wstring> ranker(stop_words.get());
+		return ranker.make_key_sentences(texts, sentences, topK);
 	}
 }
 

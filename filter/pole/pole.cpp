@@ -52,7 +52,7 @@
 #include <limits>
 
 #include <cstring>
-
+#include <boost/algorithm/string/case_conv.hpp>
 #include "pole.h"
 
 #ifdef POLE_USE_UTF16_FILENAMES
@@ -642,12 +642,22 @@ int DirEntry::compare(const DirEntry& de)
 
 int DirEntry::compare(const std::string& name2)
 {
+    /*
+    For each UTF-16 code point, convert to uppercase by using the Unicode Default Case
+    Conversion Algorithm, simple case conversion variant (simple case foldings), with the
+    following notes.<3>Compare each uppercased UTF-16 code point binary value.
+    */
     if (name.length() < name2.length())
         return -1;
     else if (name.length() > name2.length())
         return 1;
     else
-        return name.compare(name2);
+    {
+        auto a = boost::algorithm::to_upper_copy(name);
+        auto b = boost::algorithm::to_upper_copy(name2);
+        return a.compare(b);
+       // return name.compare(name2);
+    }
 }
 
 

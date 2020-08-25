@@ -33,13 +33,13 @@ namespace nlp
 		}
 	}
 
-	void stop_words_t::remove_stop_words(std::vector<std::wstring>& tokens)
+	void stop_words_t::remove_stop_words(std::vector<std::wstring>& tokens, size_t min)
 	{
 		std::vector<std::wstring> norms;
 		norms.reserve(tokens.size());
 		for (int i = 0; i < tokens.size(); ++i)
 		{
-			if (tokens[i].empty())
+			if (tokens[i].size() < min)
 				continue;
 			auto unigram = tokens[i];
 			auto bigram = unigram;

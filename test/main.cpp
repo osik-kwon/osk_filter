@@ -18,6 +18,7 @@
 
 // NLP
 #include <textrank/textrank.h>
+#include <chrono>
 
 std::wostream& operator << (std::wostream& stream, const filter::editor_traits::sections_t& sections)
 {
@@ -373,6 +374,141 @@ void test_doc()
 	auto src = filter.open(to_utf8(L"d:/sombra/text.doc"));
 }
 
+void test_summary_file(const std::wstring& src_path, const std::wstring& dest_path)
+{
+	try
+	{
+		auto rules = filter::signature::builder_t::build_string_rules();
+		auto spec = rules->scan(to_utf8(src_path));
+
+		std::wstring input;
+		if (spec == "hwp30")
+		{
+			using namespace filter::hwp30;
+			filter_t filter;
+			auto src = filter.open(to_utf8(src_path));
+			auto sections = filter.extract_all_texts(src);
+			for (auto& section : sections)
+			{
+				for (auto& para : section)
+				{
+					if (!para.empty())
+					{
+						input += para;
+					}
+				}
+			}
+		}
+		else if (spec == "hwp50")
+		{
+			using namespace filter::hwp50;
+			filter_t filter;
+			auto src = filter.open(to_utf8(src_path));
+			auto sections = filter.extract_all_texts(src);
+			for (auto& section : sections)
+			{
+				for (auto& para : section)
+				{
+					if (!para.empty())
+					{
+						input += para;
+					}
+				}
+			}
+		}
+		else if (spec == "hwpx")
+		{
+			using namespace filter::hwpx;
+			filter_t filter;
+			auto src = filter.open(to_utf8(src_path));
+			auto sections = filter.extract_all_texts(src);
+			for (auto& section : sections)
+			{
+				for (auto& para : section)
+				{
+					if (!para.empty())
+					{
+						input += para;
+					}
+				}
+			}
+		}
+		else if (spec == "hwpml")
+		{
+			using namespace filter::hml;
+			filter_t filter;
+			auto src = filter.open(to_utf8(src_path));
+			auto sections = filter.extract_all_texts(src);
+			for (auto& section : sections)
+			{
+				for (auto& para : section)
+				{
+					if (!para.empty())
+					{
+						input += para;
+					}
+				}
+			}
+		}
+		
+
+		nlp::text_ranker text_ranker;
+		std::vector<std::string> stop_words_pathes;
+		for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+		text_ranker.load_stop_words(stop_words_pathes);
+
+		std::vector< std::pair< std::wstring, double> > keywords;
+		text_ranker.key_words(input, keywords, 10);
+
+		std::vector< std::pair< std::wstring, double> > key_sentences;
+		text_ranker.key_sentences(input, key_sentences, 3);
+
+		std::locale::global(std::locale(""));
+		std::ofstream out(dest_path);
+
+		out << "[keywords]" << std::endl;
+		for (auto& keyword : keywords)
+		{
+			out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+		}
+
+		out << std::endl << "[key sentences]" << std::endl;
+		for (auto& key_sentence : key_sentences)
+		{
+			out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
+		}
+		out.close();
+	}
+	catch (const std::exception& e)
+	{
+		std::wcout << L"[error] " << src_path << L" " << e.what();
+	}
+}
+
+void test_summary_directory(const std::wstring& src, const std::wstring& dest_root)
+{
+	std::wcout.imbue(std::locale(""));
+	std::vector<std::wstring> src_pathes;
+	std::vector<std::wstring> dest_pathes;
+	for (auto& path : std::filesystem::directory_iterator(src))
+	{
+		src_pathes.push_back(std::filesystem::absolute(path).wstring());
+		dest_pathes.push_back(dest_root + std::filesystem::path(path).filename().wstring() + L".txt");
+	}
+
+	for (int i = 0; i < src_pathes.size(); ++i)
+	{
+		std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+		test_summary_file(src_pathes[i], dest_pathes[i]);
+		std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+		std::wcout << L"[" << i << "/" << src_pathes.size() << L"][" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" <<
+			src_pathes[i] << std::endl;
+	}
+
+}
+
 void test_summary()
 {
 	using namespace filter::hwp50;
@@ -380,14 +516,17 @@ void test_summary()
 
 	//auto src = filter.open(to_utf8(L"f:/sombra/legacy2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/test3.hwp"));
-	auto src = filter.open(to_utf8(L"f:/sombra/article3.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/article4.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/english1.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/japanese1.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/dutch4.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/china2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/note1.hwp"));
+	//auto src = filter.open(to_utf8(L"d:/ci/hwp/0805_(8일조간)_정보통신산업과_11년 7월 IT수출입동향.hwp"));
+	auto src = filter.open(to_utf8(L"d:/ci/hwp/10505kgq.hwp"));
+	//auto src = filter.open(to_utf8(L"d:/ci/hwp/10335744.자유탐구_결과_보고서2.hwp"));
 	auto sections = filter.extract_all_texts(src);
-
+	//filter.save(to_utf8(L"d:/sombra/10505kgq-save.hwp"), src);
 	std::wstring input;
 	for (auto& section : sections)
 	{
@@ -409,8 +548,11 @@ void test_summary()
 	std::vector< std::pair< std::wstring, double> > keywords;
 	text_ranker.key_words(input, keywords, 10);
 
-	std::vector<std::wstring> key_sentences;
+	std::vector< std::pair< std::wstring, double> > key_sentences;
 	text_ranker.key_sentences(input, key_sentences, 3);
+
+	//std::vector<std::wstring> key_sentences;
+	//text_ranker.key_sentences(input, key_sentences, 3);
 
 	std::locale::global(std::locale(""));
 	std::ofstream out(L"f:/sombra/result.txt");
@@ -424,7 +566,8 @@ void test_summary()
 	out << "[key sentences]" << std::endl;
 	for (auto& key_sentence : key_sentences)
 	{
-		out << to_utf8(key_sentence) << std::endl;
+		//out << to_utf8(key_sentence) << std::endl;
+		out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
 	}
 	out.close();
 }
@@ -433,23 +576,7 @@ int main()
 {
 	try
 	{
-		/*
-		std::ifstream src(L"f:/sombra/stopwords.txt");
-		std::ofstream dest(L"f:/sombra/stopwords_dest.txt");
-
-		dest << "{" << std::endl;
-		std::string line;
-		while (!src.eof())
-		{
-			std::getline(src, line);
-			dest << "\tL\""<< line << "\"," << std::endl;
-		}
-		dest << "}" << std::endl;
-
-		src.close();
-		dest.close();
-		*/
-
+		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
 		test_summary();
 		//test_doc();
 		//test_signature();
