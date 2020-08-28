@@ -174,6 +174,40 @@ namespace nlp
 			visitPairs.push_back(std::pair<int, double>(i, m_scores[i]));
 		}
 
+		/*
+		for (size_t i = 0; i < m_scores.size(); i++)
+		{
+			std::wcout << "[" << i << "] ";
+			std::wcout << m_sentences[i] << " : ";
+			std::wcout << m_scores[i] << std::endl;
+		}
+
+		size_t id = 0;
+		for (auto& wordset : m_wordsets)
+		{
+			std::wcout << "[" << id << "] ";
+			for (auto& token : wordset)
+			{
+				std::wcout << "(" << token << ")";
+			}
+			std::wcout << std::endl;
+			++id;
+		}
+
+		for (size_t i = 0; i < m_similarity_matrix.size(); i++)
+		{
+			std::wcout << "[" << i << "] ";
+			std::wcout << m_sentences[i] << " : ";
+			std::wcout << m_scores[i] << std::endl;
+
+			for (size_t j = 0; j < m_similarity_matrix[i].size(); j++)
+			{
+				if(m_similarity_matrix[i][j] > 0.0)
+					std::wcout << L"\t" << "sim(" << i << " , " << j << ") = " << m_similarity_matrix[i][j] << std::endl;
+			}
+		}
+		*/
+
 		std::sort(visitPairs.begin(), visitPairs.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
 			return a.second > b.second;
 			});
@@ -294,7 +328,6 @@ namespace nlp
 			std::set<value_type> wordset(tokens.begin(), tokens.end());
 			std::swap(m_wordsets[i], wordset);
 		}
-
 		return true;
 	}
 
@@ -306,6 +339,17 @@ namespace nlp
 			return 0.0;
 		}
 		std::vector<value_type> commonWords;
+		/*
+		std::set_intersection
+		(
+			m_wordsets[a].begin(),
+			m_wordsets[a].end(),
+			m_wordsets[b].begin(),
+			m_wordsets[b].end(),
+			std::back_inserter(commonWords)
+		);
+		*/
+		
 		const string_similarity<value_type>::similarity_t same = 0.75;
 		for (const auto& first : m_wordsets[a])
 		{
@@ -319,6 +363,7 @@ namespace nlp
 				}
 			}
 		}
+		
 
 		double denominator = std::log(double(m_wordsizes[a])) + std::log(double(m_wordsizes[b]));
 		if (std::fabs(denominator) < 1e-6) {
@@ -368,6 +413,7 @@ namespace nlp
 				break;
 			}
 		}
+
 		return true;
 	}
 
@@ -716,7 +762,24 @@ namespace nlp
 
 		map<size_t, double> score_map;
 		CalcSentenceScore(score_map);
+		/*
+		for (auto score : score_map)
+		{
+			std::wcout << score.second << std::endl;
+		}
 
+		size_t id = 0;
+		for (auto& sentence : m_sentence_vec)
+		{
+			std::wcout <<"["<<id<<"] "<< sentence << " : "<< score_map.find(id)->second << std::endl;
+			for (auto token :  sentence_token_map.find(sentence)->second)
+			{
+				std::wcout << "(" << token << ") ";
+			}
+			std::wcout << std::endl;
+			++id;
+		}
+		*/
 		vector<pair<size_t, double> > score_vec(score_map.begin(), score_map.end());
 		sort(score_vec.begin(), score_vec.end(), value_great());
 
@@ -869,7 +932,7 @@ namespace nlp
 	{
 		std::vector<std::wstring> tokens;
 
-		static const int maxTextLen = 100000;
+		static const int maxTextLen = 10000;
 		std::wstring input;
 		if ((int)texts.size() > maxTextLen) {
 			input = texts.substr(0, maxTextLen);
@@ -879,6 +942,10 @@ namespace nlp
 		}
 
 		boost::split(tokens, input, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,"));
+		static const int max_tokens = 500;
+		if (tokens.size() > tokens.size())
+			tokens.resize(max_tokens);
+
 		for (auto& token : tokens)
 			boost::algorithm::to_lower(token);
 		stop_words->remove_stop_words(tokens, 2);		

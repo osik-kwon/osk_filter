@@ -374,6 +374,24 @@ void test_doc()
 	auto src = filter.open(to_utf8(L"d:/sombra/text.doc"));
 }
 
+template <typename filter_t>
+void exract_text(const std::wstring& src_path, std::wstring& dest)
+{
+	filter_t filter;
+	auto src = filter.open(to_utf8(src_path));
+	auto sections = filter.extract_all_texts(src);
+	for (auto& section : sections)
+	{
+		for (auto& para : section)
+		{
+			if (!para.empty())
+			{
+				dest += para;
+			}
+		}
+	}
+}
+
 void test_summary_file(const std::wstring& src_path, const std::wstring& dest_path)
 {
 	try
@@ -384,72 +402,24 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 		std::wstring input;
 		if (spec == "hwp30")
 		{
-			using namespace filter::hwp30;
-			filter_t filter;
-			auto src = filter.open(to_utf8(src_path));
-			auto sections = filter.extract_all_texts(src);
-			for (auto& section : sections)
-			{
-				for (auto& para : section)
-				{
-					if (!para.empty())
-					{
-						input += para;
-					}
-				}
-			}
+			exract_text<filter::hwp30::filter_t>(src_path, input);
 		}
 		else if (spec == "hwp50")
 		{
-			using namespace filter::hwp50;
-			filter_t filter;
-			auto src = filter.open(to_utf8(src_path));
-			auto sections = filter.extract_all_texts(src);
-			for (auto& section : sections)
-			{
-				for (auto& para : section)
-				{
-					if (!para.empty())
-					{
-						input += para;
-					}
-				}
-			}
+			exract_text<filter::hwp50::filter_t>(src_path, input);
 		}
 		else if (spec == "hwpx")
 		{
-			using namespace filter::hwpx;
-			filter_t filter;
-			auto src = filter.open(to_utf8(src_path));
-			auto sections = filter.extract_all_texts(src);
-			for (auto& section : sections)
-			{
-				for (auto& para : section)
-				{
-					if (!para.empty())
-					{
-						input += para;
-					}
-				}
-			}
+			exract_text<filter::hwpx::filter_t>(src_path, input);
 		}
 		else if (spec == "hwpml")
 		{
-			using namespace filter::hml;
-			filter_t filter;
-			auto src = filter.open(to_utf8(src_path));
-			auto sections = filter.extract_all_texts(src);
-			for (auto& section : sections)
-			{
-				for (auto& para : section)
-				{
-					if (!para.empty())
-					{
-						input += para;
-					}
-				}
-			}
+			exract_text<filter::hml::filter_t>(src_path, input);
 		}
+		//else if (spec == "docx")
+		//{
+		//	exract_text<filter::hwpx::filter_t>(src_path, input);
+		//}
 		
 
 		nlp::text_ranker text_ranker;
@@ -503,6 +473,8 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 		test_summary_file(src_pathes[i], dest_pathes[i]);
 		std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 
+		if (std::wcout.bad())
+			std::wcout.clear();
 		std::wcout << L"[" << i << "/" << src_pathes.size() << L"][" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" <<
 			src_pathes[i] << std::endl;
 	}
@@ -511,20 +483,35 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 
 void test_summary()
 {
+	std::locale::global(std::locale(""));
+
 	using namespace filter::hwp50;
 	filter_t filter;
-
+	//std::wstring src_path = L"f:/sombra/제1차 국가교통조사계획.hwp";
+	//std::wstring src_path = L"f:/sombra/교육과정내용.hwp";
+	std::wstring src_path = L"f:/sombra/2011 중앙대 수시 모집요강.hwp";
+	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+	//auto src = filter.open(to_utf8(src_path));
 	//auto src = filter.open(to_utf8(L"f:/sombra/legacy2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/test3.hwp"));
-	//auto src = filter.open(to_utf8(L"f:/sombra/article4.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/article1.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/english1.hwp"));
-	//auto src = filter.open(to_utf8(L"f:/sombra/japanese1.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/japanese2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/dutch4.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/china2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/note1.hwp"));
 	//auto src = filter.open(to_utf8(L"d:/ci/hwp/0805_(8일조간)_정보통신산업과_11년 7월 IT수출입동향.hwp"));
 	auto src = filter.open(to_utf8(L"d:/ci/hwp/10505kgq.hwp"));
+	//auto src = filter.open(to_utf8(L"f:/sombra/survey1.hwp"));
 	//auto src = filter.open(to_utf8(L"d:/ci/hwp/10335744.자유탐구_결과_보고서2.hwp"));
+
+	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+	if (std::wcout.bad())
+		std::wcout.clear();
+	std::wcout << L"open : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
 	auto sections = filter.extract_all_texts(src);
 	//filter.save(to_utf8(L"d:/sombra/10505kgq-save.hwp"), src);
 	std::wstring input;
@@ -538,23 +525,34 @@ void test_summary()
 			}
 		}
 	}
+	end = std::chrono::system_clock::now();
+	std::wcout << L"extract : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
+	start = std::chrono::system_clock::now();
 	nlp::text_ranker text_ranker;
 	std::vector<std::string> stop_words_pathes;
 	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
 		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 	text_ranker.load_stop_words(stop_words_pathes);
 
+	end = std::chrono::system_clock::now();
+	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+
+	start = std::chrono::system_clock::now();
 	std::vector< std::pair< std::wstring, double> > keywords;
 	text_ranker.key_words(input, keywords, 10);
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
+	start = std::chrono::system_clock::now();
 	std::vector< std::pair< std::wstring, double> > key_sentences;
 	text_ranker.key_sentences(input, key_sentences, 3);
-
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key sentences : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 	//std::vector<std::wstring> key_sentences;
 	//text_ranker.key_sentences(input, key_sentences, 3);
 
-	std::locale::global(std::locale(""));
 	std::ofstream out(L"f:/sombra/result.txt");
 
 	out << "[keywords]" << std::endl;
@@ -572,12 +570,109 @@ void test_summary()
 	out.close();
 }
 
-int main()
+void test_docx()
+{
+	using namespace filter::hwpx;
+	filter_t filter;
+	auto src = filter.open(to_utf8(L"F:/sombra/0212.docx"));
+	auto sections = filter.extract_all_texts(src);
+}
+
+void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, const std::wstring& stop_words_path)
 {
 	try
 	{
-		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
+		std::locale::global(std::locale(""));
+		std::wcout << src_path << std::endl;
+		std::wcout << dest_path << std::endl;
+		std::filesystem::remove(dest_path);
+		auto rules = filter::signature::builder_t::build_string_rules();
+		auto spec = rules->scan(to_utf8(src_path));
+
+		std::wstring input;
+		if (spec == "hwp30")
+		{
+			exract_text<filter::hwp30::filter_t>(src_path, input);
+		}
+		else if (spec == "hwp50")
+		{
+			exract_text<filter::hwp50::filter_t>(src_path, input);
+		}
+		else if (spec == "hwpx")
+		{
+			exract_text<filter::hwpx::filter_t>(src_path, input);
+		}
+		else if (spec == "hwpml")
+		{
+			exract_text<filter::hml::filter_t>(src_path, input);
+		}
+		else
+			return;
+		//else if (spec == "docx")
+		//{
+		//	exract_text<filter::hwpx::filter_t>(src_path, input);
+		//}
+
+		nlp::text_ranker text_ranker;
+		std::vector<std::string> stop_words_pathes;
+		for (auto& path : std::filesystem::directory_iterator(stop_words_path))
+			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+		text_ranker.load_stop_words(stop_words_pathes);
+
+		std::vector< std::pair< std::wstring, double> > key_sentences;
+		text_ranker.key_sentences(input, key_sentences, 3);
+		if (key_sentences.empty())
+			return ;
+
+		std::vector< std::pair< std::wstring, double> > keywords;
+		text_ranker.key_words(input, keywords, 10);
+
+		std::ofstream out(dest_path);
+
+		out << to_utf8(L"[키워드]") << std::endl;
+		for (auto& keyword : keywords)
+		{
+			out << to_utf8(keyword.first) << " ";
+		}
+
+		out << std::endl << std::endl << to_utf8(L"[3줄 요약]") << std::endl;
+		for (auto& key_sentence : key_sentences)
+		{
+			out << to_utf8(key_sentence.first) << std::endl;
+		}
+		out.close();
+	}
+	catch (const std::exception& e)
+	{
+		std::wcout << L"[error] " << src_path << L" " << e.what();
+		return;
+	}
+}
+
+#include <atlstr.h>
+
+int main(int argc, char* argv[])
+{
+	try
+	{
 		test_summary();
+		return 0;
+		if (argc < 4)
+			return 0;
+
+		CString a = argv[1];
+		CString b = argv[2];
+		CString c = argv[3];
+		USES_CONVERSION;
+		WCHAR* wa = T2W(a.GetBuffer());
+		WCHAR* wb = T2W(b.GetBuffer());
+		WCHAR* wc = T2W(c.GetBuffer());
+
+		cmd_summary(wa, wb, wc);
+		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
+		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
+		//test_docx();
+		//test_summary();
 		//test_doc();
 		//test_signature();
 		//test_txt();

@@ -286,6 +286,9 @@ namespace hwp50
 			header = read_file_header(storage);
 			for (auto& entry : entries)
 			{
+				// TODO: remove
+				//if (!has_paragraph(entry))
+				//	continue;
 				auto plain = cfb_t::extract_stream(storage, entry);
 				if (header.options[file_header_t::distribution] && can_crypt(entry))
 				{
