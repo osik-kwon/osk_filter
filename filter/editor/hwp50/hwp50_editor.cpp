@@ -62,7 +62,8 @@ namespace hwp50
 				strategy->change_rule(find_and_replace_strategy_t::find_and_replace);
 
 			strategy->run(para_text_record_refs);
-			write_records(consumer, src);
+			if (!rules.empty())
+				write_records(consumer, src);
 		}
 		catch (const std::exception& e)
 		{

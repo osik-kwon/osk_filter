@@ -95,6 +95,8 @@ namespace hwp50
 		DECLARE_BINARY_SERIALIZER(record_t);
 
 		size_t size() const {
+			if (header.body_size >= 0xFFF)
+				return header.size() * 2  + body.size();
 			return header.size() + body.size();
 		}
 

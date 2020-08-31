@@ -11,6 +11,8 @@ namespace filter
 {
 namespace zip
 {
+	std::vector<char> decompress_impl(const char* data, size_t size);
+
 	struct RFC1521
 	{
 		static boost::iostreams::zlib_params make_param();
@@ -85,6 +87,8 @@ namespace zip
 
 		static buffer_t decompress(const char* data, size_t size)
 		{
+			return decompress_impl(data, size);
+			/*
 			boost::iostreams::array_source src(reinterpret_cast<const char*>(data), size);
 			boost::iostreams::filtering_istreambuf iin;
 			iin.push(boost::iostreams::zlib_decompressor(algorithm_t::make_param()));
@@ -93,6 +97,7 @@ namespace zip
 			buffer_t out;
 			out.assign(std::istreambuf_iterator<char>(&iin), {});
 			return out;
+			*/
 		}
 
 		static std::string compress_string(const std::string& data)

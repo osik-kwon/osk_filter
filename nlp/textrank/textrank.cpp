@@ -971,7 +971,7 @@ namespace nlp
 
 		boost::split(raws, input, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n"));
 
-		static const int maxSentencesNum = 500;
+		static const int maxSentencesNum = 100;
 		std::vector<std::wstring> sentences;
 		for (int i = 0; i < (int)raws.size(); ++i)
 		{

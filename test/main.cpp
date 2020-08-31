@@ -467,6 +467,8 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 		dest_pathes.push_back(dest_root + std::filesystem::path(path).filename().wstring() + L".txt");
 	}
 
+	std::vector<std::wstring> todo_pathes;
+	long long total = 0.0;
 	for (int i = 0; i < src_pathes.size(); ++i)
 	{
 		std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
@@ -475,10 +477,17 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 
 		if (std::wcout.bad())
 			std::wcout.clear();
-		std::wcout << L"[" << i << "/" << src_pathes.size() << L"][" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" <<
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		total += ms;
+		if (ms > 900)
+			todo_pathes.push_back(src_pathes[i]);
+
+		std::wcout << L"[" << i+1 << "/" << src_pathes.size() << L"][" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" <<
 			src_pathes[i] << std::endl;
 	}
-
+	std::wcout << L"total : " << total << " ms , average : " << total / src_pathes.size() << L" ms"<< std::endl;
+	for (auto& path : todo_pathes)
+		std::wcout << path << std::endl;
 }
 
 void test_summary()
@@ -487,11 +496,15 @@ void test_summary()
 
 	using namespace filter::hwp50;
 	filter_t filter;
+
+	//std::wstring src_path = L"f:/sombra/GPS측량(2003).hwp";
+	std::wstring src_path = L"f:/sombra/2012_독해연습1_변형문제(1-19강).hwp";
+	//std::wstring src_path = L"f:/sombra/Forging_Cold1.hwp";
 	//std::wstring src_path = L"f:/sombra/제1차 국가교통조사계획.hwp";
 	//std::wstring src_path = L"f:/sombra/교육과정내용.hwp";
-	std::wstring src_path = L"f:/sombra/2011 중앙대 수시 모집요강.hwp";
+	//std::wstring src_path = L"f:/sombra/2011 중앙대 수시 모집요강.hwp";
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
-	//auto src = filter.open(to_utf8(src_path));
+	auto src = filter.open(to_utf8(src_path));
 	//auto src = filter.open(to_utf8(L"f:/sombra/legacy2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/test3.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/article1.hwp"));
@@ -501,7 +514,7 @@ void test_summary()
 	//auto src = filter.open(to_utf8(L"f:/sombra/china2.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/note1.hwp"));
 	//auto src = filter.open(to_utf8(L"d:/ci/hwp/0805_(8일조간)_정보통신산업과_11년 7월 IT수출입동향.hwp"));
-	auto src = filter.open(to_utf8(L"d:/ci/hwp/10505kgq.hwp"));
+	//auto src = filter.open(to_utf8(L"d:/ci/hwp/10505kgq.hwp"));
 	//auto src = filter.open(to_utf8(L"f:/sombra/survey1.hwp"));
 	//auto src = filter.open(to_utf8(L"d:/ci/hwp/10335744.자유탐구_결과_보고서2.hwp"));
 
@@ -513,7 +526,7 @@ void test_summary()
 
 	start = std::chrono::system_clock::now();
 	auto sections = filter.extract_all_texts(src);
-	//filter.save(to_utf8(L"d:/sombra/10505kgq-save.hwp"), src);
+	//filter.save(to_utf8(L"f:/sombra/result-save.hwp"), src);
 	std::wstring input;
 	for (auto& section : sections)
 	{
@@ -655,6 +668,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
+		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
 		test_summary();
 		return 0;
 		if (argc < 4)
