@@ -152,7 +152,7 @@ namespace zip
 	boost::iostreams::zlib_params RFC1521::make_param()
 	{
 		using namespace boost::iostreams::zlib;
-		// NOTE! https://www.ietf.org/rfc/rfc1521.txt
+		// NOTE! https://www.ietf.org/rfc/rfc1951.txt
 		boost::iostreams::zlib_params params;
 
 		//params.level = default_compression;

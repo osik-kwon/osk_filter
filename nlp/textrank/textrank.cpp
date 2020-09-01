@@ -975,7 +975,7 @@ namespace nlp
 		std::vector<std::wstring> sentences;
 		for (int i = 0; i < (int)raws.size(); ++i)
 		{
-			if ((int)i > maxSentencesNum)
+			if (sentences.size() >= maxSentencesNum)
 				break;
 			if (!raws[i].empty() && (int)raws[i].size() > 30)
 			{
