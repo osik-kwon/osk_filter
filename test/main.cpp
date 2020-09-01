@@ -9,6 +9,7 @@
 #include "hwp/hwpml_filter.h"
 #include "txt/txt_filter.h"
 #include "word/doc_filter.h"
+#include "word/docx_filter.h"
 #include "locale/charset_encoder.h"
 #include "traits/editor_traits.h"
 
@@ -416,10 +417,12 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 		{
 			exract_text<filter::hml::filter_t>(src_path, input);
 		}
-		//else if (spec == "docx")
-		//{
-		//	exract_text<filter::hwpx::filter_t>(src_path, input);
-		//}
+		else if (spec == "docx")
+		{
+			exract_text<filter::docx::filter_t>(src_path, input);
+		}
+		else
+			return;
 		
 
 		nlp::text_ranker text_ranker;
@@ -493,7 +496,8 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 void test_summary()
 {
 	std::locale::global(std::locale(""));
-	std::wstring src_path = L"f:/sombra/중앙대_2011수시_100802.hwp";
+	std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
+	//std::wstring src_path = L"f:/sombra/중앙대_2011수시_100802.hwp";
 	//std::wstring src_path = L"f:/sombra/GPS측량(2003).hwp";
 	//std::wstring src_path = L"f:/sombra/2012_독해연습1_변형문제(1-19강).hwp";
 	//std::wstring src_path = L"f:/sombra/Forging_Cold1.hwp";
@@ -521,6 +525,10 @@ void test_summary()
 	else if (spec == "hwpml")
 	{
 		exract_text<filter::hml::filter_t>(src_path, input);
+	}
+	else if (spec == "docx")
+	{
+		exract_text<filter::docx::filter_t>(src_path, input);
 	}
 
 
@@ -592,7 +600,8 @@ void test_summary()
 
 void test_docx()
 {
-	using namespace filter::hwpx;
+	std::wcout.imbue(std::locale(""));
+	using namespace filter::docx;
 	filter_t filter;
 	auto src = filter.open(to_utf8(L"F:/sombra/0212.docx"));
 	auto sections = filter.extract_all_texts(src);
@@ -626,12 +635,12 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		{
 			exract_text<filter::hml::filter_t>(src_path, input);
 		}
+		else if (spec == "docx")
+		{
+			exract_text<filter::docx::filter_t>(src_path, input);
+		}
 		else
 			return;
-		//else if (spec == "docx")
-		//{
-		//	exract_text<filter::hwpx::filter_t>(src_path, input);
-		//}
 
 		nlp::text_ranker text_ranker;
 		std::vector<std::string> stop_words_pathes;
@@ -675,21 +684,54 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
+		//test_hwpx();
+		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
+		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
 		//test_summary();
-		return 0;
-		if (argc < 4)
+		//test_docx();
+		//return 0;
+
+		if (argc < 2)
 			return 0;
 
-		CString a = argv[1];
-		CString b = argv[2];
-		CString c = argv[3];
+		CString arg_path = (argv[1]);
 		USES_CONVERSION;
+		WCHAR* w_arg_path = T2W(arg_path.GetBuffer());
+
+		std::ifstream arg(w_arg_path);
+		if(!arg.is_open())
+			return 0;
+
+		std::string exe;
+		std::getline(arg, exe);
+		std::string src;
+		std::getline(arg, src);
+		std::string result;
+		std::getline(arg, result);
+		std::string stop_words;
+		std::getline(arg, stop_words);
+		arg.close();
+
+		cmd_summary(to_wchar(src), to_wchar(result), to_wchar(stop_words));
+		//cmd_summary((wchar_t*)(argv[1]), (wchar_t*)(argv[2]), (wchar_t*)(argv[3]));
+		//cmd_summary(to_wchar(argv[1]), to_wchar(argv[2]), to_wchar(argv[3]));
+		//return 0 ;
+		
+		//CString a = ConvertMultibyteToUnicode(argv[1]);
+		//CString b = ConvertMultibyteToUnicode(argv[2]);
+		//CString c = ConvertMultibyteToUnicode(argv[3]);
+		/*
+		CString a = (argv[1]);
+		CString b = (argv[2]);
+		CString c = (argv[3]);
+		//USES_CONVERSION;
 		WCHAR* wa = T2W(a.GetBuffer());
 		WCHAR* wb = T2W(b.GetBuffer());
 		WCHAR* wc = T2W(c.GetBuffer());
 
 		cmd_summary(wa, wb, wc);
+		*/
+		
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_docx();

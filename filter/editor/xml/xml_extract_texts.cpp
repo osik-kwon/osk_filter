@@ -28,9 +28,10 @@ namespace xml
 	}
 
 	bool extract_texts_t::for_each(pugi::xml_node& node)
-	{
+	{	
 		end_paragraph_element();
 		auto name = std::string(node.name());
+		
 		if (name == text_tag)
 		{
 			std::string text(node.first_child().value());
@@ -59,7 +60,8 @@ namespace xml
 		if (!para_nodes.empty())
 		{
 			auto cur = depth();
-			auto upper = para_nodes.upper_bound(cur);
+			//auto upper = para_nodes.upper_bound(cur);
+			auto upper = para_nodes.find(cur);
 			if (upper == para_nodes.end())
 				upper = para_nodes.find(cur);
 			while (upper != para_nodes.end())

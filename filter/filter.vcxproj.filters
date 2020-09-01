@@ -205,6 +205,9 @@
     <ClCompile Include="word\doc_string_table.cpp">
       <Filter>word</Filter>
     </ClCompile>
+    <ClCompile Include="word\docx_filter.cpp">
+      <Filter>word</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pole\pole.h">
@@ -404,6 +407,9 @@
       <Filter>word</Filter>
     </ClInclude>
     <ClInclude Include="word\doc_string_table.h">
+      <Filter>word</Filter>
+    </ClInclude>
+    <ClInclude Include="word\docx_filter.h">
       <Filter>word</Filter>
     </ClInclude>
   </ItemGroup>
