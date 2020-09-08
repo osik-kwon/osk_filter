@@ -7,6 +7,12 @@
 #include <boost/algorithm/string.hpp> 
 #include <boost/algorithm/string/case_conv.hpp>
 
+
+#include <boost/algorithm/searching/boyer_moore.hpp>
+#include <boost/algorithm/searching/boyer_moore_horspool.hpp>
+#include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+
+#include <regex>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -112,6 +118,9 @@ namespace nlp
 				/ longer_length;
 		}
 	};
+
+	static const std::wstring para_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n";
+	static const std::wstring word_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,\"¡°¡±()¡®¡¯'";
 
 	template <class value_type>
 	class text_ranker_impl
@@ -242,7 +251,7 @@ namespace nlp
 		static const int minSentenceLen = 30;
 		vector<value_type> tempOutput;
 
-		boost::split(tempOutput, tempInput, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n"));
+		boost::split(tempOutput, tempInput, boost::is_any_of(para_delimiter));
 		vector<value_type> tempOutput2;
 		for (int i = 0; i < (int)tempOutput.size(); ++i)
 		{
@@ -681,13 +690,27 @@ namespace nlp
 		size_t char_num = text.size();
 		for (size_t i = 0; i < char_num; ++i)
 		{
+			int delimiter_count = 0;
+			int same_count = 1;
+			wchar_t prev = 0;
 			for (size_t j = 0; j < n; ++j)
 			{
 				if (i + j >= char_num)
 					return;
+				for (auto demilier : word_delimiter)
+				{
+					if (demilier == text[i + j])
+						++delimiter_count;
+				}
+
+				if (prev == text[i + j])
+					++same_count;
 				ss << text[i + j];
+				prev = text[i + j];
 			}
-			res.push_back(ss.str());
+			
+			if (same_count < n && delimiter_count < (n-1))
+				res.push_back(ss.str());
 			ss.str(L"");
 			ss.clear();
 		}
@@ -941,7 +964,7 @@ namespace nlp
 			input = texts;
 		}
 
-		boost::split(tokens, input, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,"));
+		boost::split(tokens, input, boost::is_any_of(word_delimiter));
 		static const int max_tokens = 500;
 		if (tokens.size() > tokens.size())
 			tokens.resize(max_tokens);
@@ -952,6 +975,210 @@ namespace nlp
 		TextRank<std::wstring> ranker;
 		ranker.ExtractKeyword(tokens, keywords, topK);
 		//ranker.ExtractHighTfWords(tokens, keywords, topK);
+		return true;
+	}
+	
+	class expand_words_t
+	{
+	public:
+		typedef std::wstring container_t;
+		typedef container_t::iterator iterator;
+		typedef container_t::reverse_iterator reverse_iterator;
+		typedef std::pair<iterator, iterator> locator_t;
+		typedef std::function<bool(wchar_t)> is_delimiter_t;
+		expand_words_t(is_delimiter_t is_delimiter) : is_delimiter(is_delimiter)
+		{}
+
+		inline container_t expand(const container_t& corpus, locator_t loc) const
+		{
+			iterator left = loc.first;
+			iterator right = --loc.second;
+			//if (is_delimiter(*loc.first) && !is_delimiter(*loc.second))
+			//	return container_t(to_right_concat(corpus, ++left), to_right(corpus, right));
+
+			//if (!is_delimiter(*loc.first) && is_delimiter(*loc.second))
+			//	return container_t(to_left(corpus, left), to_left_concat(corpus, --right));
+
+			if (!is_delimiter(*left) && !is_delimiter(*right))
+				return container_t(to_left(corpus, left), to_right(corpus, right));
+
+			return container_t();
+		}
+	private:
+		iterator make_forward(reverse_iterator rit) const
+		{
+			return --(rit.base()); // move result of .base() back by one.
+			// alternatively
+			// return (++rit).base() ;
+			// or
+			// return (rit+1).base().
+		}
+
+		inline iterator to_left(const container_t& corpus, iterator loc) const
+		{		
+			//reverse_iterator prev = std::make_reverse_iterator(++loc.first);
+			//for (reverse_iterator left = std::make_reverse_iterator(loc.first); left != corpus.rend() && !is_delimiter(*left); ++left)
+			//	prev = left;
+			//return make_forward(prev);
+			
+			reverse_iterator left = std::make_reverse_iterator(++loc);
+			for (; left != corpus.rend() && !is_delimiter(*left); ++left);
+			if (left == corpus.rend())
+				--left;
+			//if (is_delimiter(*left))
+			//	--left;
+
+			return make_forward(left);
+		}
+
+		inline iterator to_left_concat(const container_t& corpus, iterator loc) const
+		{
+			//reverse_iterator prev = std::make_reverse_iterator(++loc.first);
+			//for (reverse_iterator left = std::make_reverse_iterator(loc.first); left != corpus.rend() && !is_delimiter(*left); ++left)
+			//	prev = left;
+			//return make_forward(prev);
+
+			reverse_iterator left = std::make_reverse_iterator(++loc);
+			for (; left != corpus.rend() && is_delimiter(*left); ++left);
+			return make_forward(left);
+		}
+
+		inline iterator to_right(const container_t& corpus, iterator loc) const
+		{
+			iterator right = loc;
+			for (; right != corpus.end() && !is_delimiter(*right); ++right);
+			return right;
+		}
+
+		inline iterator to_right_concat(const container_t& corpus, iterator loc) const
+		{
+			iterator right = loc;
+			for (; right != corpus.end() && is_delimiter(*right); ++right);
+			return right;
+		}
+
+		is_delimiter_t is_delimiter;
+	};
+
+	size_t knuth_morris_pratt_count(std::wstring& corpus, const std::wstring& pattern)
+	{
+		size_t count = 0;
+		auto cur = corpus.begin();
+		while (cur != corpus.end())
+		{
+			auto search = boost::algorithm::knuth_morris_pratt_search(cur, corpus.end(), pattern.begin(), pattern.end());
+			if (search.first != corpus.end())
+			{
+				cur = search.second;
+				++count;
+			}
+			else
+			{
+				cur = search.second;
+			}
+		}
+		return count;
+	}
+
+
+	template<typename A, typename B>
+	std::pair<B, A> flip_pair(const std::pair<A, B>& p)
+	{
+		return std::pair<B, A>(p.second, p.first);
+	}
+
+	template<typename A, typename B>
+	void flip_map(std::multimap<B, A>& dst, const std::map<A, B>& src)
+	{
+		std::transform(src.begin(), src.end(), std::inserter(dst, dst.begin()),
+			flip_pair<A, B>);
+	}
+
+	void lookup(std::map<std::wstring, int>& keywords, std::wstring& corpus, std::pair< std::wstring, double>& pattern)
+	{
+		auto cur = corpus.begin();
+		while (cur != corpus.end())
+		{
+			auto search = boost::algorithm::knuth_morris_pratt_search(cur, corpus.end(), pattern.first.begin(), pattern.first.end());
+			if (search.first != corpus.end())
+			{
+				expand_words_t expander(boost::is_any_of(word_delimiter));
+				auto big_gram_range = expander.expand(corpus, search);
+				std::vector<std::wstring> words;
+				boost::split(words, big_gram_range, boost::is_any_of(word_delimiter));
+				for (auto& word : words)
+				{
+					if (word.size() > 1 && keywords.find(word) == keywords.end())
+						keywords.insert(std::make_pair(word, 0));
+				}
+			}
+			cur = search.second;
+		}
+
+		/*
+		std::wstring plat_keywords;
+		for (auto& keyword : keywords)
+		{
+			plat_keywords += keyword.first;
+			plat_keywords += L' ';
+		}
+
+		for (auto& keyword : keywords)
+		{
+			keyword.second = knuth_morris_pratt_count(plat_keywords, keyword.first);
+		}
+		*/
+	}
+
+	bool text_ranker::key_words_ngram(const std::wstring& texts, std::vector< std::pair< std::wstring, int> >& tf_keywords, int topK)
+	{
+		std::vector<std::wstring> tokens;
+
+		static const int maxTextLen = 10000;
+		std::wstring input;
+		if ((int)texts.size() > maxTextLen) {
+			input = texts.substr(0, maxTextLen);
+		}
+		else {
+			input = texts;
+		}
+
+		ExtractNgram(input, 3, tokens);
+
+		std::vector< std::pair< std::wstring, double> > keywords;
+		TextRank<std::wstring> ranker;
+		//ranker.ExtractKeyword(tokens, keywords, 20);
+		ranker.ExtractKeyword(tokens, keywords, tokens.size());
+
+		std::map<std::wstring, int> ngram_keywords;
+		for (auto keyword : keywords)
+		{
+			lookup(ngram_keywords, input, keyword);
+		}
+
+		std::wstring plat_keywords;
+		for (auto& keyword : ngram_keywords)
+		{
+			plat_keywords += keyword.first;
+			plat_keywords += L' ';
+		}
+
+		for (auto& keyword : ngram_keywords)
+		{
+			keyword.second = knuth_morris_pratt_count(plat_keywords, keyword.first);
+		}
+
+		stop_words->remove_stop_words(ngram_keywords, 2);
+
+		std::multimap<int, std::wstring> sort_ngram_keywords;
+		flip_map(sort_ngram_keywords, ngram_keywords);
+		
+		for (auto i = sort_ngram_keywords.rbegin(); i != sort_ngram_keywords.rend(); ++i)
+		{
+			if (topK <= tf_keywords.size())
+				break;
+			tf_keywords.push_back(std::make_pair(i->second, i->first));
+		}
 		return true;
 	}
 
@@ -969,25 +1196,32 @@ namespace nlp
 			input = texts;
 		}
 
-		boost::split(raws, input, boost::is_any_of(L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n"));
-
-		static const int maxSentencesNum = 100;
+		boost::split(raws, input, boost::is_any_of(para_delimiter));
+		
+		static const int maxSentencesNum = 500;
 		std::vector<std::wstring> sentences;
 		for (int i = 0; i < (int)raws.size(); ++i)
 		{
 			if (sentences.size() >= maxSentencesNum)
 				break;
-			if (!raws[i].empty() && (int)raws[i].size() > 30)
+			if (!raws[i].empty() && (int)raws[i].size() > 3)
 			{
 				sentences.push_back(raws[i]);
 			}
 		}
 
+		int complexity = 0;
+		static const int ngram_limit = 250000;
+		size_t count_of_tokens = 0;
 		vector<wstring> bigram_vec;
 		map<wstring, vector<wstring> > sentence_token_map;
 		for (size_t i = 0; i < sentences.size(); ++i)
 		{
 			ExtractNgram(sentences[i], 3, bigram_vec);
+			count_of_tokens += bigram_vec.size();
+			complexity = sentence_token_map.size()* count_of_tokens;
+			if (complexity > ngram_limit)
+				break;
 			if (bigram_vec.empty())
 				continue;
 
@@ -997,6 +1231,9 @@ namespace nlp
 			stop_words->remove_stop_words(bigram_vec, 2);
 			sentence_token_map.insert(make_pair(sentences[i], bigram_vec));
 		}
+
+		std::cout << "sentences is " << sentence_token_map.size() << " , token is " << count_of_tokens << 
+			" = " << sentence_token_map.size() * count_of_tokens <<std::endl;
 
 		SentenceRank<std::wstring> ranker;
 		ranker.ExtractKeySentence(sentence_token_map, key_sentences, topK);

@@ -431,8 +431,8 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 		text_ranker.load_stop_words(stop_words_pathes);
 
-		std::vector< std::pair< std::wstring, double> > keywords;
-		text_ranker.key_words(input, keywords, 10);
+		std::vector< std::pair< std::wstring, int> > keywords;
+		text_ranker.key_words_ngram(input, keywords, 10);
 
 		std::vector< std::pair< std::wstring, double> > key_sentences;
 		text_ranker.key_sentences(input, key_sentences, 3);
@@ -496,7 +496,13 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 void test_summary()
 {
 	std::locale::global(std::locale(""));
-	std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
+	//std::wstring src_path = L"d:/ci/hwp/2011충북대_정시모집요강.hwp";
+	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
+	//std::wstring src_path = L"f:/sombra/english1.hwp";
+	//std::wstring src_path = L"f:/sombra/article1.hwp";
+	//std::wstring src_path = L"f:/sombra/article4.hwp";
+	//std::wstring src_path = L"d:/ci/hwp/(2) 무단방치 자전거 이동보관 현장 사진.hwp";
+	//std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
 	//std::wstring src_path = L"f:/sombra/중앙대_2011수시_100802.hwp";
 	//std::wstring src_path = L"f:/sombra/GPS측량(2003).hwp";
 	//std::wstring src_path = L"f:/sombra/2012_독해연습1_변형문제(1-19강).hwp";
@@ -504,6 +510,8 @@ void test_summary()
 	//std::wstring src_path = L"f:/sombra/제1차 국가교통조사계획.hwp";
 	//std::wstring src_path = L"f:/sombra/교육과정내용.hwp";
 	//std::wstring src_path = L"f:/sombra/2011 중앙대 수시 모집요강.hwp";
+	std::wstring src_path = L"d:/ci/hwp/HSK_시험에_잘나오는_的의_세가지_용법.hwp";
+
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
 	auto rules = filter::signature::builder_t::build_string_rules();
@@ -568,8 +576,8 @@ void test_summary()
 
 
 	start = std::chrono::system_clock::now();
-	std::vector< std::pair< std::wstring, double> > keywords;
-	text_ranker.key_words(input, keywords, 10);
+	std::vector< std::pair< std::wstring, int> > keywords;
+	text_ranker.key_words_ngram(input, keywords, 10);
 	end = std::chrono::system_clock::now();
 	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
@@ -653,8 +661,8 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		if (key_sentences.empty())
 			return ;
 
-		std::vector< std::pair< std::wstring, double> > keywords;
-		text_ranker.key_words(input, keywords, 10);
+		std::vector< std::pair< std::wstring, int> > keywords;
+		text_ranker.key_words_ngram(input, keywords, 10);
 
 		std::ofstream out(dest_path);
 
@@ -687,9 +695,9 @@ int main(int argc, char* argv[])
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
-		//test_summary();
+		test_summary();
 		//test_docx();
-		//return 0;
+		return 0;
 
 		if (argc < 2)
 			return 0;

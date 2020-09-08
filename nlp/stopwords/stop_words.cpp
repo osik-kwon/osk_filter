@@ -2,8 +2,12 @@
 #include "stopwords/stop_words.h"
 #include <exception>
 #include <iostream>
+#include <algorithm>
 #include <io/file_stream.h>
 #include <locale/charset_encoder.h>
+
+#include <boost/algorithm/string.hpp> 
+#include <boost/algorithm/string/case_conv.hpp>
 
 namespace nlp
 {
@@ -33,6 +37,40 @@ namespace nlp
 		}
 	}
 
+	void stop_words_t::remove_stop_words(std::map<std::wstring, int>& tokens, size_t min)
+	{
+		std::map < std::wstring, int> norms;
+
+		for (auto& token : tokens)
+		{
+			if (token.first.size() < min)
+				continue;
+			auto unigram = token.first;
+			/*
+			auto bigram = unigram;
+			auto trigram = unigram;
+			if (i + 1 < tokens.size())
+			{
+				bigram += L" ";
+				bigram += tokens[i + 1].first;
+			}
+			if (i + 2 < tokens.size())
+			{
+				trigram = bigram;
+				trigram += L" ";
+				trigram += tokens[i + 2].first;
+			}
+			*/
+			if (stop_words.find(unigram) == stop_words.end())
+				//	if (stop_words.find(bigram) == stop_words.end())
+				//		if (stop_words.find(trigram) == stop_words.end())
+			{			
+				if(!std::all_of(unigram.begin(), unigram.end(), boost::algorithm::is_digit()))
+					norms.insert(std::make_pair(unigram, token.second));
+			}
+		}
+		std::swap(tokens, norms);
+	}
 	void stop_words_t::remove_stop_words(std::vector<std::wstring>& tokens, size_t min)
 	{
 		std::vector<std::wstring> norms;

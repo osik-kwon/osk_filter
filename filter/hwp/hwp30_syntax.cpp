@@ -982,6 +982,9 @@ namespace hwp30
 			stream >> para;
 			end_of_para = para.para_header.empty();
 			data.para_list.push_back(std::move(para));
+			// TODO: remove
+			if (data.para_list.size() >= 100)
+				return stream;
 		} while (!end_of_para);
 		return stream;
 	}
@@ -1146,6 +1149,9 @@ namespace hwp30
 			throw std::runtime_error("hwp30 parse body error");
 		bufferstream body_tail_stream(&body_tail[0], body_tail.size());
 		body_tail_stream >> document->body;
+		// TODO: remove
+		if (document->body.sections.para_list.size() >= 100)
+			return document;
 		body_tail_stream >> document->tail;
 		return document;
 	}
