@@ -20,6 +20,7 @@ namespace xml
 		std::map< depth_t, pugi::xml_node > para_nodes;
 
 		extract_texts_t(const std::string& text_tag, const std::string& para_tag);
+		extract_texts_t(const std::string& text_tag, const std::string& para_tag, std::map<uint32_t, std::string>* shared_strings);
 		~extract_texts_t();
 		virtual bool for_each(pugi::xml_node& node);
 		extract_texts_t& make_rule(const rule_t& pattern, char16_t replacement = u'*');
@@ -36,6 +37,9 @@ namespace xml
 		ruler_t ruler;
 		std::string text_tag;
 		std::string para_tag;
+
+		std::map<uint32_t, std::string>* shared_strings;
+		bool has_shared;
 	};
 }
 }

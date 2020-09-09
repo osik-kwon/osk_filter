@@ -36,6 +36,30 @@ namespace xml
 		return *this;
 	}
 
+	editor_t& editor_t::finalize(xml_document_t* document, std::map<uint32_t, std::string>* shared_strings)
+	{
+		try
+		{
+			if (!document)
+				return *this;
+			strategy = std::make_unique<extract_texts_t>(text_tag, para_tag, shared_strings);
+			for (auto& rule : rules)
+			{
+				strategy->make_rule(rule);
+			}
+			if (!rules.empty())
+				strategy->change_rule(find_and_replace_strategy_t::find_only);
+			if (replacement != 0)
+				strategy->change_rule(find_and_replace_strategy_t::find_and_replace);
+			document->traverse(*strategy);
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		return *this;
+	}
+
 	editor_t& editor_t::finalize(xml_document_t* document)
 	{
 		try

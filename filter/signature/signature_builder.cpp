@@ -19,6 +19,17 @@ namespace signature
 				xpath("/Types/Override[contains(@ContentType, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')]").
 				exist();
 			});
+		make->deterministic("pptx", "\x50\x4B\x03\x04", [](storage_t& storage) {
+			return storage.package("[Content_Types].xml").
+				xpath("/Types/Override[contains(@ContentType, 'application/vnd.openxmlformats-officedocument.presentationml.presentation')]").
+				exist();
+			});
+		make->deterministic("xlsx", "\x50\x4B\x03\x04", [](storage_t& storage) {
+			return storage.package("[Content_Types].xml").
+				xpath("/Types/Override[contains(@ContentType, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')]").
+				exist();
+			});
+
 		make->deterministic("hwp30", "HWP Document File", [](storage_t& storage) {
 			return storage.range(0, 30).match("HWP Document File V[1-3]\\.[0-9]{2} \x1a\x1\x2\x3\x4\x5");
 			});

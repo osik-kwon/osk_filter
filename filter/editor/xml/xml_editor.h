@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <map>
 #include "traits/editor_traits.h"
 #include "traits/xml_traits.h"
 
@@ -26,7 +27,7 @@ namespace xml
 		editor_t& replace(char16_t replacement = u'*');
 		editor_t& finalize(std::unique_ptr<xml_document_t>& document);
 		editor_t& finalize(xml_document_t* document);
-
+		editor_t& finalize(xml_document_t* document, std::map<uint32_t, std::string>* shared_strings);
 		section_t get_extract_result();
 		sections_t get_find_result();
 	private:

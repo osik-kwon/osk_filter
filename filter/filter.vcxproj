@@ -204,10 +204,12 @@
     <ClCompile Include="locale\hchar_converter.cpp" />
     <ClCompile Include="locale\kssm_ks_converter.cpp" />
     <ClCompile Include="pole\pole.cpp" />
+    <ClCompile Include="sheet\xlsx_filter.cpp" />
     <ClCompile Include="signature\signature_analyzer.cpp" />
     <ClCompile Include="signature\signature_builder.cpp" />
     <ClCompile Include="signature\signature_classifier.cpp" />
     <ClCompile Include="signature\signature_storage.cpp" />
+    <ClCompile Include="slide\pptx_filter.cpp" />
     <ClCompile Include="trie\trie.cpp" />
     <ClCompile Include="txt\txt_document.cpp" />
     <ClCompile Include="txt\txt_filter.cpp" />
@@ -268,10 +270,12 @@
     <ClInclude Include="locale\utf_selector.hpp" />
     <ClInclude Include="locale\utf_sizes.hpp" />
     <ClInclude Include="pole\pole.h" />
+    <ClInclude Include="sheet\xlsx_filter.h" />
     <ClInclude Include="signature\signature_analyzer.h" />
     <ClInclude Include="signature\signature_builder.h" />
     <ClInclude Include="signature\signature_classifier.h" />
     <ClInclude Include="signature\signature_storage.h" />
+    <ClInclude Include="slide\pptx_filter.h" />
     <ClInclude Include="traits\binary_traits.h" />
     <ClInclude Include="traits\compound_file_binary_traits.h" />
     <ClInclude Include="traits\editor_traits.h" />

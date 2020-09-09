@@ -49,6 +49,12 @@
     <Filter Include="word">
       <UniqueIdentifier>{cdaa831d-120b-4c6a-b3b4-e9a83ac1bb40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="slide">
+      <UniqueIdentifier>{33bb5048-f571-45f9-bb85-edc381c2e0e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sheet">
+      <UniqueIdentifier>{8612399a-bf64-42f7-8b78-cc94e8f78658}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -207,6 +213,12 @@
     </ClCompile>
     <ClCompile Include="word\docx_filter.cpp">
       <Filter>word</Filter>
+    </ClCompile>
+    <ClCompile Include="slide\pptx_filter.cpp">
+      <Filter>slide</Filter>
+    </ClCompile>
+    <ClCompile Include="sheet\xlsx_filter.cpp">
+      <Filter>sheet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -411,6 +423,12 @@
     </ClInclude>
     <ClInclude Include="word\docx_filter.h">
       <Filter>word</Filter>
+    </ClInclude>
+    <ClInclude Include="slide\pptx_filter.h">
+      <Filter>slide</Filter>
+    </ClInclude>
+    <ClInclude Include="sheet\xlsx_filter.h">
+      <Filter>sheet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

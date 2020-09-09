@@ -10,6 +10,8 @@
 #include "txt/txt_filter.h"
 #include "word/doc_filter.h"
 #include "word/docx_filter.h"
+#include "slide/pptx_filter.h"
+#include "sheet/xlsx_filter.h"
 #include "locale/charset_encoder.h"
 #include "traits/editor_traits.h"
 
@@ -421,6 +423,14 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 		{
 			exract_text<filter::docx::filter_t>(src_path, input);
 		}
+		else if (spec == "pptx")
+		{
+			exract_text<filter::pptx::filter_t>(src_path, input);
+		}
+		else if (spec == "xlsx")
+		{
+			exract_text<filter::xlsx::filter_t>(src_path, input);
+		}
 		else
 			return;
 		
@@ -533,8 +543,10 @@ void test_summary()
 	//std::wstring src_path = L"d:/ci/hwp/HSK_시험에_잘나오는_的의_세가지_용법.hwp";
 	//std::wstring src_path = L"f:/sombra/다이나믹 북 99호 - 카페를 100년간 이어가기 위해.hwp";
 	//std::wstring src_path = L"d:/ci/hwp/홍콩심천(06.09).hwp";
-	std::wstring src_path = L"F:/sombra/confidential/2016년/임시 보관함/문서 임시 보관함/PM Team.docx";
-
+	//std::wstring src_path = L"F:/sombra/confidential/2016년/임시 보관함/문서 임시 보관함/PM Team.docx";
+	//std::wstring src_path = L"F:/sombra/confidential/2016년/광고 부분.pptx";
+	//std::wstring src_path = L"F:/sombra/xlsx.xlsx";
+	std::wstring src_path = L"F:/sombra/오피스 2017 요금 및 혜택.xlsx";
 	
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
@@ -562,6 +574,16 @@ void test_summary()
 	{
 		exract_text<filter::docx::filter_t>(src_path, input);
 	}
+	else if (spec == "pptx")
+	{
+		exract_text<filter::pptx::filter_t>(src_path, input);
+	}
+	else if (spec == "xlsx")
+	{
+		exract_text<filter::xlsx::filter_t>(src_path, input);
+	}
+	else
+		return;
 
 
 	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
@@ -637,6 +659,11 @@ void test_summary()
 		catch (const std::exception&)
 		{}	
 	}
+
+	out << std::endl << "[original texts]" << std::endl;
+	out << to_utf8(input) << std::endl;
+	out.close();
+
 	out.close();
 }
 
@@ -680,6 +707,14 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		else if (spec == "docx")
 		{
 			exract_text<filter::docx::filter_t>(src_path, input);
+		}
+		else if (spec == "pptx")
+		{
+			exract_text<filter::pptx::filter_t>(src_path, input);
+		}
+		else if (spec == "xlsx")
+		{
+			exract_text<filter::xlsx::filter_t>(src_path, input);
 		}
 		else
 			return;

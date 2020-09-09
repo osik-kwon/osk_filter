@@ -891,7 +891,7 @@ namespace nlp
 
 	bool text_ranker::key_words_ngram(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& tf_keywords, int topK)
 	{
-		std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+		//std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 		std::vector<std::pair<std::wstring, std::wstring::iterator> > tokens;
 
 		static const int maxTextLen = 10000;
@@ -940,9 +940,9 @@ namespace nlp
 			tf_keywords.push_back(std::make_pair(i->second, i->first));
 		}
 		
-		std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
-		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-		std::cout << "tokens is " << keywords.size() << ", time : " << ms << " ms" << std::endl;
+		//std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+		//auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		//std::cout << "tokens is " << keywords.size() << ", time : " << ms << " ms" << std::endl;
 
 		return true;
 	}
