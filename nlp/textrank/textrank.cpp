@@ -997,8 +997,8 @@ namespace nlp
 			sentence_token_map.insert(make_pair(sentences[i], bigram_vec));
 		}
 
-		std::cout << "sentences is " << sentence_token_map.size() << " , token is " << count_of_tokens << 
-			" = " << sentence_token_map.size() * count_of_tokens <<std::endl;
+		//std::cout << "sentences is " << sentence_token_map.size() << " , token is " << count_of_tokens << 
+		//	" = " << sentence_token_map.size() * count_of_tokens <<std::endl;
 
 		SentenceRank<std::wstring> ranker;
 		ranker.ExtractKeySentence(sentence_token_map, key_sentences, topK);

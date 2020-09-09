@@ -23,6 +23,9 @@
 #include <textrank/textrank.h>
 #include <chrono>
 
+#include <boost/algorithm/string.hpp> 
+#include <boost/algorithm/string/case_conv.hpp>
+
 std::wostream& operator << (std::wostream& stream, const filter::editor_traits::sections_t& sections)
 {
 	stream.imbue(std::locale(""));
@@ -395,6 +398,27 @@ void exract_text(const std::wstring& src_path, std::wstring& dest)
 	}
 }
 
+std::wstring normalize_texts(const std::wstring& src)
+{
+	const std::wstring para_delimiter = L"\n";
+	std::vector<std::wstring> paragraphes;
+	boost::split(paragraphes, src, boost::is_any_of(para_delimiter));
+	
+	std::wstring dest;
+	dest.reserve(paragraphes.size() * paragraphes.size());
+	for (auto& paragraph : paragraphes)
+	{
+		if (paragraph.size() > 0 && paragraph[0] != L'\n')
+		{
+			dest += paragraph;
+			if(paragraph.back() != L'\n')
+				dest += L'\n';
+		}
+	}
+	return dest;
+}
+
+
 void test_summary_file(const std::wstring& src_path, const std::wstring& dest_path)
 {
 	try
@@ -475,7 +499,7 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 		}
 
 		out << std::endl << "[original texts]" << std::endl;
-		out << to_utf8(input) << std::endl;
+		out << to_utf8(normalize_texts(input)) << std::endl;
 		out.close();
 	}
 	catch (const std::exception& e)
@@ -661,7 +685,7 @@ void test_summary()
 	}
 
 	out << std::endl << "[original texts]" << std::endl;
-	out << to_utf8(input) << std::endl;
+	out << to_utf8(normalize_texts(input)) << std::endl;
 	out.close();
 
 	out.close();
@@ -744,7 +768,12 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		out << std::endl << std::endl << to_utf8(L"[3ÁÙ ¿ä¾à]") << std::endl;
 		for (auto& key_sentence : key_sentences)
 		{
-			out << to_utf8(key_sentence.first) << std::endl;
+			try
+			{
+				out << to_utf8(key_sentence.first) << std::endl;
+			}
+			catch (const std::exception&)
+			{}
 		}
 		out.close();
 	}
@@ -764,10 +793,10 @@ int main(int argc, char* argv[])
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
-		test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
+		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
 		//test_summary();
 		//test_docx();
-		return 0;
+		//return 0;
 
 		if (argc < 2)
 			return 0;
