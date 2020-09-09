@@ -37,9 +37,9 @@ namespace nlp
 		}
 	}
 
-	void stop_words_t::remove_stop_words(std::map<std::wstring, int>& tokens, size_t min)
+	void stop_words_t::remove_stop_words(std::map<std::wstring, double>& tokens, size_t min)
 	{
-		std::map < std::wstring, int> norms;
+		std::map < std::wstring, double> norms;
 
 		for (auto& token : tokens)
 		{
@@ -75,7 +75,7 @@ namespace nlp
 	{
 		std::vector<std::wstring> norms;
 		norms.reserve(tokens.size());
-		for (int i = 0; i < tokens.size(); ++i)
+		for (size_t i = 0; i < tokens.size(); ++i)
 		{
 			if (tokens[i].size() < min)
 				continue;

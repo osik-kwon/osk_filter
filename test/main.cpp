@@ -431,26 +431,41 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 		text_ranker.load_stop_words(stop_words_pathes);
 
-		std::vector< std::pair< std::wstring, int> > keywords;
+		std::vector< std::pair< std::wstring, double> > keywords;
 		text_ranker.key_words_ngram(input, keywords, 10);
 
 		std::vector< std::pair< std::wstring, double> > key_sentences;
 		text_ranker.key_sentences(input, key_sentences, 3);
 
+		if (keywords.empty() && key_sentences.empty())
+			return;
 		std::locale::global(std::locale(""));
 		std::ofstream out(dest_path);
 
 		out << "[keywords]" << std::endl;
 		for (auto& keyword : keywords)
 		{
-			out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+			try
+			{
+				out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+			}
+			catch (const std::exception&)
+			{}
 		}
 
 		out << std::endl << "[key sentences]" << std::endl;
 		for (auto& key_sentence : key_sentences)
 		{
-			out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
+			try
+			{
+				out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
+			}
+			catch (const std::exception&)
+			{}
 		}
+
+		out << std::endl << "[original texts]" << std::endl;
+		out << to_utf8(input) << std::endl;
 		out.close();
 	}
 	catch (const std::exception& e)
@@ -464,14 +479,18 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 	std::wcout.imbue(std::locale(""));
 	std::vector<std::wstring> src_pathes;
 	std::vector<std::wstring> dest_pathes;
-	for (auto& path : std::filesystem::directory_iterator(src))
+	for (auto& path : std::filesystem::recursive_directory_iterator(src))
 	{
-		src_pathes.push_back(std::filesystem::absolute(path).wstring());
-		dest_pathes.push_back(dest_root + std::filesystem::path(path).filename().wstring() + L".txt");
+		if (!path.is_directory())
+		{
+			src_pathes.push_back(std::filesystem::absolute(path).wstring());
+			dest_pathes.push_back(dest_root + std::filesystem::path(path).filename().wstring() + L".txt");
+		}	
 	}
 
 	std::vector<std::wstring> todo_pathes;
 	long long total = 0;
+	long long max = 0;
 	for (int i = 0; i < src_pathes.size(); ++i)
 	{
 		std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
@@ -481,6 +500,7 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 		if (std::wcout.bad())
 			std::wcout.clear();
 		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		max = std::max(ms, max);
 		total += ms;
 		if (ms > 900)
 			todo_pathes.push_back(src_pathes[i]);
@@ -488,7 +508,7 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 		std::wcout << L"[" << i+1 << "/" << src_pathes.size() << L"][" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" <<
 			src_pathes[i] << std::endl;
 	}
-	std::wcout << L"total : " << total << " ms , average : " << total / src_pathes.size() << L" ms"<< std::endl;
+	std::wcout << L"total : " << total << " ms , average : " << total / src_pathes.size() << L" ms"<< " , max : "<< max << " ms" <<std::endl;
 	for (auto& path : todo_pathes)
 		std::wcout << path << std::endl;
 }
@@ -510,8 +530,12 @@ void test_summary()
 	//std::wstring src_path = L"f:/sombra/제1차 국가교통조사계획.hwp";
 	//std::wstring src_path = L"f:/sombra/교육과정내용.hwp";
 	//std::wstring src_path = L"f:/sombra/2011 중앙대 수시 모집요강.hwp";
-	std::wstring src_path = L"d:/ci/hwp/HSK_시험에_잘나오는_的의_세가지_용법.hwp";
+	//std::wstring src_path = L"d:/ci/hwp/HSK_시험에_잘나오는_的의_세가지_용법.hwp";
+	//std::wstring src_path = L"f:/sombra/다이나믹 북 99호 - 카페를 100년간 이어가기 위해.hwp";
+	//std::wstring src_path = L"d:/ci/hwp/홍콩심천(06.09).hwp";
+	std::wstring src_path = L"F:/sombra/confidential/2016년/임시 보관함/문서 임시 보관함/PM Team.docx";
 
+	
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
 	auto rules = filter::signature::builder_t::build_string_rules();
@@ -576,7 +600,7 @@ void test_summary()
 
 
 	start = std::chrono::system_clock::now();
-	std::vector< std::pair< std::wstring, int> > keywords;
+	std::vector< std::pair< std::wstring, double> > keywords;
 	text_ranker.key_words_ngram(input, keywords, 10);
 	end = std::chrono::system_clock::now();
 	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
@@ -594,14 +618,24 @@ void test_summary()
 	out << "[keywords]" << std::endl;
 	for (auto& keyword : keywords)
 	{
-		out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+		try
+		{
+			out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+		}
+		catch (const std::exception&)
+		{}	
 	}
 
 	out << "[key sentences]" << std::endl;
 	for (auto& key_sentence : key_sentences)
 	{
-		//out << to_utf8(key_sentence) << std::endl;
-		out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
+		try
+		{
+			//out << to_utf8(key_sentence) << std::endl;
+			out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
+		}
+		catch (const std::exception&)
+		{}	
 	}
 	out.close();
 }
@@ -661,7 +695,7 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		if (key_sentences.empty())
 			return ;
 
-		std::vector< std::pair< std::wstring, int> > keywords;
+		std::vector< std::pair< std::wstring, double> > keywords;
 		text_ranker.key_words_ngram(input, keywords, 10);
 
 		std::ofstream out(dest_path);
@@ -695,7 +729,8 @@ int main(int argc, char* argv[])
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
-		test_summary();
+		test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
+		//test_summary();
 		//test_docx();
 		return 0;
 

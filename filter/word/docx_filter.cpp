@@ -28,7 +28,7 @@ namespace docx
 	}
 
 	std::string filter_t::para_tag_name() const {
-		return std::string("w:r");
+		return std::string("w:p");
 	}
 
 	std::unique_ptr<consumer_t> filter_t::open(const std::string& path)
