@@ -405,7 +405,7 @@ std::wstring normalize_texts(const std::wstring& src)
 	boost::split(paragraphes, src, boost::is_any_of(para_delimiter));
 	
 	std::wstring dest;
-	dest.reserve(paragraphes.size() * paragraphes.size());
+	dest.reserve(paragraphes.size());
 	for (auto& paragraph : paragraphes)
 	{
 		if (paragraph.size() > 0 && paragraph[0] != L'\n')
@@ -466,7 +466,7 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 		text_ranker.load_stop_words(stop_words_pathes);
 
 		std::vector< std::pair< std::wstring, double> > keywords;
-		text_ranker.key_words_ngram(input, keywords, 10);
+		text_ranker.key_words(input, keywords, 10);
 
 		std::vector< std::pair< std::wstring, double> > key_sentences;
 		text_ranker.key_sentences(input, key_sentences, 3);
@@ -553,7 +553,7 @@ void test_summary()
 	//std::wstring src_path = L"d:/ci/hwp/2011충북대_정시모집요강.hwp";
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
-	//std::wstring src_path = L"f:/sombra/article1.hwp";
+	std::wstring src_path = L"f:/sombra/article1.hwp";
 	//std::wstring src_path = L"f:/sombra/article4.hwp";
 	//std::wstring src_path = L"d:/ci/hwp/(2) 무단방치 자전거 이동보관 현장 사진.hwp";
 	//std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
@@ -572,8 +572,11 @@ void test_summary()
 	//std::wstring src_path = L"F:/sombra/xlsx.xlsx";
 	//std::wstring src_path = L"F:/sombra/오피스 2017 요금 및 혜택.xlsx";
 	//std::wstring src_path = L"F:/sombra/오피스 2017 요금 및 혜택.xlsx";
-	std::wstring src_path = L"F:/sombra/프로젝트별 매출 현황_161013.xlsx";
-	
+	//std::wstring src_path = L"F:/sombra/프로젝트별 매출 현황_161013.xlsx";
+	//std::wstring src_path = L"f:/sombra/article5.hwp";
+	//std::wstring src_path = L"f:/sombra/2007년 친환경상품 구매지침_40704.hwp";
+	//std::wstring src_path = L"d:/ci/hwp/07_14_2010_down01_01.hwp";
+
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
 	auto rules = filter::signature::builder_t::build_string_rules();
@@ -649,7 +652,7 @@ void test_summary()
 
 	start = std::chrono::system_clock::now();
 	std::vector< std::pair< std::wstring, double> > keywords;
-	text_ranker.key_words_ngram(input, keywords, 10);
+	text_ranker.key_words(input, keywords, 10);
 	end = std::chrono::system_clock::now();
 	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
@@ -688,7 +691,6 @@ void test_summary()
 
 	out << std::endl << "[original texts]" << std::endl;
 	out << to_utf8(normalize_texts(input)) << std::endl;
-	out.close();
 
 	out.close();
 }
@@ -757,14 +759,19 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 			return ;
 
 		std::vector< std::pair< std::wstring, double> > keywords;
-		text_ranker.key_words_ngram(input, keywords, 10);
+		text_ranker.key_words(input, keywords, 10);
 
 		std::ofstream out(dest_path);
 
 		out << to_utf8(L"[키워드]") << std::endl;
 		for (auto& keyword : keywords)
 		{
-			out << to_utf8(keyword.first) << " ";
+			try
+			{
+				out << to_utf8(keyword.first) << " ";
+			}
+			catch (const std::exception&)
+			{}		
 		}
 
 		out << std::endl << std::endl << to_utf8(L"[3줄 요약]") << std::endl;
@@ -795,8 +802,8 @@ int main(int argc, char* argv[])
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
-		test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
-		//test_summary();
+		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
+		test_summary();
 		//test_docx();
 		return 0;
 

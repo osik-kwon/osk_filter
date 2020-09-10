@@ -30,133 +30,38 @@ using namespace std;
 
 namespace nlp
 {
-	template <class value_type>
-	class string_similarity
-	{
-	public:
-		string_similarity() {}
-		typedef double similarity_t;
-
-		static similarity_t similarity(const value_type& longer, const value_type& shorter)
-		{
-			if (longer.size() < shorter.size())
-			{
-				return similarity_impl(shorter, longer);
-			}
-			return similarity_impl(longer, shorter);
-		}
-
-		static similarity_t average_of_similarities(const value_type& source, const std::vector<value_type>& words)
-		{
-			if (words.size() == 0)
-				return different();
-
-			similarity_t length = static_cast<similarity_t>(words.size());
-			similarity_t sum_of_similarity = static_cast<similarity_t>(0.0);
-			for (auto& word : words)
-				sum_of_similarity += similarity(source, word);
-			return sum_of_similarity / length;
-		}
-
-		/*
-		Levenshtein distance
-		TODO: implement damerau modification (transpose cost)
-		time complexity: O(m * n)
-		space complexity : O(m * n)
-		*/
-		template<typename T>
-		static typename T::size_type edit_distance(const T& source, const T& target,
-			typename T::size_type insert_cost = 1,
-			typename T::size_type delete_cost = 1,
-			typename T::size_type replace_cost = 1)
-		{
-			if (source.size() > target.size())
-			{
-				return edit_distance(target, source, delete_cost, insert_cost, replace_cost);
-			}
-
-			typedef typename T::size_type size_type;
-			const size_type min_size = source.size(), max_size = target.size();
-			std::vector<size_type> lev_dist(min_size + 1);
-
-			lev_dist[0] = 0;
-			for (size_type i = 1; i <= min_size; ++i)
-			{
-				lev_dist[i] = lev_dist[i - 1] + delete_cost;
-			}
-
-			for (size_type j = 1; j <= max_size; ++j) {
-				size_type previous_diagonal = lev_dist[0], previous_diagonal_save;
-				lev_dist[0] += insert_cost;
-
-				for (size_type i = 1; i <= min_size; ++i) {
-					previous_diagonal_save = lev_dist[i];
-					if (source[i - 1] == target[j - 1]) {
-						lev_dist[i] = previous_diagonal;
-					}
-					else {
-						lev_dist[i] = std::min(std::min(lev_dist[i - 1] + delete_cost, lev_dist[i] + insert_cost), previous_diagonal + replace_cost);
-					}
-					previous_diagonal = previous_diagonal_save;
-				}
-			}
-			return lev_dist[min_size];
-		}
-	private:
-		static similarity_t same() {
-			return static_cast<similarity_t>(1.0);
-		}
-
-		static similarity_t different() {
-			return static_cast<similarity_t>(0.0);
-		}
-
-		static similarity_t similarity_impl(const value_type& longer, const value_type& shorter)
-		{
-			if (longer.size() == 0)
-				return same();
-			similarity_t longer_length = static_cast<similarity_t>(longer.size());
-			if (longer_length == 0)
-				return same();
-			return (longer_length - static_cast<similarity_t>(edit_distance(longer, shorter)))
-				/ longer_length;
-		}
-	};
-
 	static const std::wstring para_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n";
 	static const std::wstring word_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,\"¡°¡±()[]¡®¡¯'";
 
 	template <class value_type>
-	class TextRank
+	class text_rank_impl_t
 	{
 	public:
 		typedef typename value_type::iterator iterator;
-		TextRank() :
+		text_rank_impl_t() :
 			m_window_length(3),
 			m_max_iter_num(100),
 			m_d(0.85),
 			m_least_delta(1e-6)
 		{}
 
-		TextRank(int window_length, int max_iter_num, double d, double least_delta) :
+		text_rank_impl_t(int window_length, int max_iter_num, double d, double least_delta) :
 			m_window_length(window_length),
 			m_max_iter_num(max_iter_num),
 			m_d(d),
 			m_least_delta(least_delta)
 		{}
 
-		~TextRank() {}
-
-		void ExtractHighTfWords(const std::vector<value_type>& token_vec, std::vector<std::pair<value_type, double> >& keywords, const size_t topN);
-		void ExtractKeyword(const std::vector< std::pair<value_type, iterator> >& token_vec,
+		~text_rank_impl_t() {}
+		void extract_keywords(const std::vector< std::pair<value_type, iterator> >& token_vec,
 			std::vector<std::pair<std::pair<value_type, iterator>, double> >& keywords, const size_t topN = 10);
 
 	private:
-		int BuildWordRelation(const std::vector< std::pair<value_type, iterator> >& token_vec, std::map<size_t, std::set<size_t> >& word_neighbors);
-		void CalcWordScore(const std::map<size_t, std::set<size_t> >& word_neighbors, std::map<size_t, double>& score_map);
-		void UpdateWeightMap(size_t i, size_t j);
-		double GetWeight(size_t i, size_t j) const;
-		void Clear();
+		int build_relations(const std::vector< std::pair<value_type, iterator> >& token_vec, std::map<size_t, std::set<size_t> >& word_neighbors);
+		void calculate_score(const std::map<size_t, std::set<size_t> >& word_neighbors, std::map<size_t, double>& score_map);
+		void update_weight_map(size_t i, size_t j);
+		double get_weight(size_t i, size_t j) const;
+		void clear();
 
 	private:
 		size_t m_window_length;
@@ -171,48 +76,20 @@ namespace nlp
 	};
 
 	template <class value_type>
-	void TextRank<value_type>::ExtractHighTfWords(const vector<value_type>& token_vec, vector<pair<value_type, double> >& keywords, const size_t topN)
-	{
-		keywords.clear();
-		if (token_vec.empty())
-			return;
-		map<value_type, double> word_tf;
-		for (size_t i = 0; i < token_vec.size(); ++i)
-		{
-			const value_type& word = token_vec[i];
-			if (word_tf.find(word) == word_tf.end())
-				word_tf[word] = 1;
-			else
-				word_tf[word] += 1;
-		}
-		vector<pair<value_type, double> > word_tf_vec(word_tf.begin(), word_tf.end());
-		sort(word_tf_vec.begin(), word_tf_vec.end(), [](const std::pair<value_type, double> & x, const std::pair<value_type, double> & y)
-		{
-			return x.second > y.second;
-		});
-		for (size_t i = 0; i < word_tf_vec.size(); ++i)
-		{
-			if (i == topN)
-				break;
-			keywords.push_back(word_tf_vec[i]);
-		}
-	}
-
-	template <class value_type>
-	void TextRank<value_type>::ExtractKeyword(const vector< std::pair<value_type, iterator> >& token_vec, 
+	void text_rank_impl_t<value_type>::extract_keywords(const vector< std::pair<value_type, iterator> >& token_vec, 
 		vector<pair<std::pair<value_type, iterator>, double> >& keywords, const size_t topN)
 	{
 		keywords.clear();
 		if (token_vec.empty())
 			return;
 
-		Clear();
+		clear();
 
 		map<size_t, set<size_t> > word_neighbors;
 		map<size_t, double> score_map;
 
-		BuildWordRelation(token_vec, word_neighbors);
-		CalcWordScore(word_neighbors, score_map);
+		build_relations(token_vec, word_neighbors);
+		calculate_score(word_neighbors, score_map);
 
 		vector<pair<size_t, double> > score_vec(score_map.begin(), score_map.end());
 		sort(score_vec.begin(), score_vec.end(), [](const std::pair<size_t, double>& x, const std::pair<size_t, double>& y) {
@@ -229,13 +106,11 @@ namespace nlp
 	}
 
 	template <class value_type>
-	void TextRank<value_type>::UpdateWeightMap(size_t i, size_t j)
+	void text_rank_impl_t<value_type>::update_weight_map(size_t i, size_t j)
 	{
 		if (i > j)
 		{
-			size_t tmp = i;
-			i = j;
-			j = tmp;
+			std::swap(i, j);
 		}
 		pair<size_t, size_t> key(i, j);
 		if (m_weight_map.find(key) != m_weight_map.end())
@@ -245,7 +120,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	double TextRank<value_type>::GetWeight(size_t i, size_t j) const
+	double text_rank_impl_t<value_type>::get_weight(size_t i, size_t j) const
 	{
 		if (i > j)
 		{
@@ -260,7 +135,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	int TextRank<value_type>::BuildWordRelation(const vector< std::pair<value_type, iterator> >& token_vec, map<size_t, set<size_t> >& word_neighbors)
+	int text_rank_impl_t<value_type>::build_relations(const vector< std::pair<value_type, iterator> >& token_vec, map<size_t, set<size_t> >& word_neighbors)
 	{
 		m_weight_map.clear();
 		word_neighbors.clear();
@@ -292,7 +167,7 @@ namespace nlp
 				if (id2 == id1)
 					continue;
 
-				UpdateWeightMap(id1, id2);
+				update_weight_map(id1, id2);
 
 				word_neighbors[id1].insert(id2);
 
@@ -314,7 +189,7 @@ namespace nlp
 			for (; niter != neighbors.end(); ++niter)
 			{
 				size_t id2 = *niter;
-				sum += GetWeight(id1, id2);
+				sum += get_weight(id1, id2);
 			}
 			m_out_sum_map.insert(make_pair(id1, sum));
 		}
@@ -322,7 +197,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	void TextRank<value_type>::CalcWordScore(const map<size_t, set<size_t> >& word_neighbors, map<size_t, double>& score_map)
+	void text_rank_impl_t<value_type>::calculate_score(const map<size_t, set<size_t> >& word_neighbors, map<size_t, double>& score_map)
 	{
 		score_map.clear();
 
@@ -347,7 +222,7 @@ namespace nlp
 				for (; niter != neighbors.end(); ++niter)
 				{
 					size_t id2 = *niter;
-					double weight = GetWeight(id2, id1);
+					double weight = get_weight(id2, id1);
 					sum_weight += weight / m_out_sum_map.at(id2) * score_map[id2];
 					//sum_weight +=  1.0/word_neighbors[id2].size()*score_map[id2];
 				}
@@ -366,7 +241,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	void TextRank<value_type>::Clear()
+	void text_rank_impl_t<value_type>::clear()
 	{
 		m_word_vec.clear();
 		m_word_index.clear();
@@ -375,39 +250,30 @@ namespace nlp
 	}
 
 	template <class value_type>
-	class SentenceRank
+	class sentence_rank_impl_t
 	{
-		struct value_great
-		{
-			template <typename T>
-			bool operator()(const std::pair<T, double>& x, const std::pair<T, double>& y) const
-			{
-				return x.second > y.second;
-			}
-		};
-
 	public:
-		SentenceRank() :
+		sentence_rank_impl_t() :
 			m_window_length(3),
 			m_max_iter_num(100),
 			m_d(0.85),
 			m_least_delta(1e-6)
 		{}
-		SentenceRank(int window_length, int max_iter_num, double d, double least_delta) :
+		sentence_rank_impl_t(int window_length, int max_iter_num, double d, double least_delta) :
 			m_window_length(window_length),
 			m_max_iter_num(max_iter_num),
 			m_d(d),
 			m_least_delta(least_delta) {}
 
-		~SentenceRank() {}
-		void ExtractKeySentence(const std::map<value_type, std::vector<value_type> >& sentence_token_map, std::vector<std::pair<value_type, double> >& key_sentences, const size_t topN = 5);
+		~sentence_rank_impl_t() {}
+		void extract_key_sentences(const std::map<value_type, std::vector<value_type> >& sentence_token_map, std::vector<std::pair<value_type, double> >& key_sentences, const size_t topN = 5);
 
 	private:
-		double CalcDist(const std::vector<value_type>& token_vec1, const std::vector<value_type>& token_vec2);
-		void BuildSentenceRelation(const std::map<value_type, std::vector<value_type> >& sentence_token_map);
-		void CalcSentenceScore(std::map<size_t, double>& score_map);
-		double GetWeight(size_t i, size_t j) const;
-		void Clear();
+		double get_similarity(const std::vector<value_type>& token_vec1, const std::vector<value_type>& token_vec2);
+		void build_relations(const std::map<value_type, std::vector<value_type> >& sentence_token_map);
+		void calculate_score(std::map<size_t, double>& score_map);
+		double get_weight(size_t i, size_t j) const;
+		void clear();
 
 	private:
 		size_t m_window_length;
@@ -422,7 +288,7 @@ namespace nlp
 	};
 
 	template <class value_type>
-	void SentenceRank<value_type>::ExtractKeySentence(const map<value_type, vector<value_type> >& sentence_token_map, vector<pair<value_type, double> >& key_sentences, const size_t topN)
+	void sentence_rank_impl_t<value_type>::extract_key_sentences(const map<value_type, vector<value_type> >& sentence_token_map, vector<pair<value_type, double> >& key_sentences, const size_t topN)
 	{
 		key_sentences.clear();
 
@@ -437,32 +303,16 @@ namespace nlp
 			return;
 		}
 
-		Clear();
+		clear();
 
-		BuildSentenceRelation(sentence_token_map);
+		build_relations(sentence_token_map);
 
 		map<size_t, double> score_map;
-		CalcSentenceScore(score_map);
-		/*
-		for (auto score : score_map)
-		{
-			std::wcout << score.second << std::endl;
-		}
-
-		size_t id = 0;
-		for (auto& sentence : m_sentence_vec)
-		{
-			std::wcout <<"["<<id<<"] "<< sentence << " : "<< score_map.find(id)->second << std::endl;
-			for (auto token :  sentence_token_map.find(sentence)->second)
-			{
-				std::wcout << "(" << token << ") ";
-			}
-			std::wcout << std::endl;
-			++id;
-		}
-		*/
+		calculate_score(score_map);
 		vector<pair<size_t, double> > score_vec(score_map.begin(), score_map.end());
-		sort(score_vec.begin(), score_vec.end(), value_great());
+		sort(score_vec.begin(), score_vec.end(), [](const std::pair<size_t, double>& x, const std::pair<size_t, double>& y) {
+			return x.second > y.second;
+			});
 
 		for (size_t i = 0; i < score_vec.size(); ++i)
 		{
@@ -475,7 +325,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	double SentenceRank<value_type>::CalcDist(const vector<value_type>& token_vec1, const vector<value_type>& token_vec2)
+	double sentence_rank_impl_t<value_type>::get_similarity(const vector<value_type>& token_vec1, const vector<value_type>& token_vec2)
 	{
 		size_t both_num = 0;
 		size_t n1 = token_vec1.size();
@@ -499,7 +349,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	double SentenceRank<value_type>::GetWeight(size_t i, size_t j) const
+	double sentence_rank_impl_t<value_type>::get_weight(size_t i, size_t j) const
 	{
 		if (i > j)
 		{
@@ -514,7 +364,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	void SentenceRank<value_type>::BuildSentenceRelation(const map<value_type, vector<value_type> >& sentence_token_map)
+	void sentence_rank_impl_t<value_type>::build_relations(const map<value_type, vector<value_type> >& sentence_token_map)
 	{
 		auto iter = sentence_token_map.begin();
 		for (; iter != sentence_token_map.end(); ++iter)
@@ -527,7 +377,7 @@ namespace nlp
 			advance(iter2, 1);
 			for (; iter2 != sentence_token_map.end(); ++iter2)
 			{
-				double dist = CalcDist(iter->second, iter2->second);
+				double dist = get_similarity(iter->second, iter2->second);
 				pair<size_t, size_t> key(i, j);
 				m_weight_map.insert(make_pair(key, dist));
 				j++;
@@ -541,7 +391,7 @@ namespace nlp
 			for (size_t j = 0; j < n; ++j)
 			{
 				if (j != i)
-					sum += GetWeight(i, j);
+					sum += get_weight(i, j);
 			}
 			m_out_sum_map.insert(make_pair(i, sum));
 		}
@@ -549,7 +399,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	void  SentenceRank<value_type>::CalcSentenceScore(map<size_t, double>& score_map)
+	void  sentence_rank_impl_t<value_type>::calculate_score(map<size_t, double>& score_map)
 	{
 		score_map.clear();
 
@@ -572,7 +422,7 @@ namespace nlp
 				{
 					if (id1 == id2 || m_out_sum_map[id2] < 1e-6)
 						continue;
-					double weight = GetWeight(id2, id1);
+					double weight = get_weight(id2, id1);
 					sum_weight += weight / m_out_sum_map.at(id2) * score_map[id2];
 				}
 				new_score += m_d * sum_weight;
@@ -590,7 +440,7 @@ namespace nlp
 	}
 
 	template <class value_type>
-	void SentenceRank<value_type>::Clear()
+	void sentence_rank_impl_t<value_type>::clear()
 	{
 		m_sentence_vec.clear();
 		m_sentence_index.clear();
@@ -609,38 +459,6 @@ namespace nlp
 		}
 	}
 
-	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& keywords, int topK)
-	{
-		/*
-		std::vector<std::wstring> tokens;
-
-		static const int maxTextLen = 10000;
-		std::wstring input;
-		if ((int)texts.size() > maxTextLen) {
-			input = texts.substr(0, maxTextLen);
-		}
-		else {
-			input = texts;
-		}
-
-		boost::split(tokens, input, boost::is_any_of(word_delimiter));
-		static const int max_tokens = 500;
-		if (tokens.size() > tokens.size())
-			tokens.resize(max_tokens);
-
-		for (auto& token : tokens)
-			boost::algorithm::to_lower(token);
-		stop_words->remove_stop_words(tokens, 2);
-
-
-		std::vector<std::pair<std::wstring, std::wstring::iterator> > tokens2;
-		TextRank<std::wstring> ranker;
-		ranker.ExtractKeyword(tokens2, keywords, topK);
-		//ranker.ExtractHighTfWords(tokens, keywords, topK);
-		*/
-		return true;
-	}
-	
 	class expand_words_t
 	{
 	public:
@@ -889,7 +707,7 @@ namespace nlp
 		}
 	}
 
-	bool text_ranker::key_words_ngram(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& tf_keywords, int topK)
+	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& tf_keywords, int topK)
 	{
 		//std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 		std::vector<std::pair<std::wstring, std::wstring::iterator> > tokens;
@@ -906,9 +724,9 @@ namespace nlp
 		ngram_transform_t<std::wstring>::to_ngram(input, 3, tokens, 3000);
 
 		std::vector< std::pair< std::pair<std::wstring, std::wstring::iterator>,  double> > keywords;
-		TextRank<std::wstring> ranker;
+		text_rank_impl_t<std::wstring> ranker;
 		//ranker.ExtractKeyword(tokens, keywords, 1000);
-		ranker.ExtractKeyword(tokens, keywords, tokens.size());
+		ranker.extract_keywords(tokens, keywords, tokens.size());
 
 		boost::accumulators::accumulator_set<double, boost::accumulators::features<boost::accumulators::tag::mean> > acc;
 		for (auto& keyword : keywords)
@@ -1000,8 +818,8 @@ namespace nlp
 		//std::cout << "sentences is " << sentence_token_map.size() << " , token is " << count_of_tokens << 
 		//	" = " << sentence_token_map.size() * count_of_tokens <<std::endl;
 
-		SentenceRank<std::wstring> ranker;
-		ranker.ExtractKeySentence(sentence_token_map, key_sentences, topK);
+		sentence_rank_impl_t<std::wstring> ranker;
+		ranker.extract_key_sentences(sentence_token_map, key_sentences, topK);
 		return true;
 	}
 }

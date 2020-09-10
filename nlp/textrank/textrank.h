@@ -13,7 +13,6 @@ namespace nlp
 		void load_stop_words(const std::vector<std::string>& stop_words_pathes);
 		bool key_sentences(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& key_sentences, int topK);
 		bool key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& keywords, int topK);
-		bool key_words_ngram(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& keywords, int topK);
 	private:
 		std::unique_ptr<stop_words_t> stop_words;
 		std::vector<std::wstring> n_grams;

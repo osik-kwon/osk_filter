@@ -8,6 +8,9 @@
     <ClCompile Include="stopwords\stop_words.cpp">
       <Filter>stopwords</Filter>
     </ClCompile>
+    <ClCompile Include="similarity\text_similarity.cpp">
+      <Filter>similarity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="textrank\textrank.h">
@@ -17,6 +20,9 @@
     <ClInclude Include="stopwords\stop_words.h">
       <Filter>stopwords</Filter>
     </ClInclude>
+    <ClInclude Include="similarity\text_similarity.h">
+      <Filter>similarity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="textrank">
@@ -24,6 +30,9 @@
     </Filter>
     <Filter Include="stopwords">
       <UniqueIdentifier>{c93b17a2-d5d6-4b0f-9213-2b880ba91b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="similarity">
+      <UniqueIdentifier>{9514e4e9-74e1-40be-8553-6008c8460e8e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
