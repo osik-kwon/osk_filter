@@ -39,16 +39,19 @@ namespace xml
 		auto name = std::string(node.name());
 		if (name == text_tag)
 		{
-			if (shared_strings && has_shared)
+			if (shared_strings)
 			{
-				uint32_t id = std::atoi(node.first_child().value());
-				auto texts = shared_strings->find(id);
-				if (texts == shared_strings->end())
-					throw std::runtime_error("invalid shared strings");
+				if (has_shared)
+				{
+					uint32_t id = std::atoi(node.first_child().value());
+					auto texts = shared_strings->find(id);
+					if (texts == shared_strings->end())
+						throw std::runtime_error("invalid shared strings");
 
-				section.back() += to_wchar(texts->second);
-				section.back() += L"\n";
-				ruler(texts->second, node, rules);
+					section.back() += to_wchar(texts->second);
+					section.back() += L"\n";
+					ruler(texts->second, node, rules);
+				}				
 				return true;
 			}
 

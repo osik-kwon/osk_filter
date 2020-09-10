@@ -46,6 +46,7 @@ namespace nlp
 			if (token.first.size() < min)
 				continue;
 			auto unigram = token.first;
+			boost::algorithm::to_lower(unigram);
 			/*
 			auto bigram = unigram;
 			auto trigram = unigram;
@@ -66,7 +67,7 @@ namespace nlp
 				//		if (stop_words.find(trigram) == stop_words.end())
 			{			
 				if(!std::all_of(unigram.begin(), unigram.end(), boost::algorithm::is_digit()))
-					norms.insert(std::make_pair(unigram, token.second));
+					norms.insert(std::make_pair(token.first, token.second));
 			}
 		}
 		std::swap(tokens, norms);

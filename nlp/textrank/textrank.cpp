@@ -124,7 +124,7 @@ namespace nlp
 	};
 
 	static const std::wstring para_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n";
-	static const std::wstring word_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,\"¡°¡±()¡®¡¯'";
+	static const std::wstring word_delimiter = L"?!.;£¿£¡¡££»¡¦¡¦¡¦\n\t ¡¢,\"¡°¡±()[]¡®¡¯'";
 
 	template <class value_type>
 	class TextRank

@@ -570,7 +570,9 @@ void test_summary()
 	//std::wstring src_path = L"F:/sombra/confidential/2016년/임시 보관함/문서 임시 보관함/PM Team.docx";
 	//std::wstring src_path = L"F:/sombra/confidential/2016년/광고 부분.pptx";
 	//std::wstring src_path = L"F:/sombra/xlsx.xlsx";
-	std::wstring src_path = L"F:/sombra/오피스 2017 요금 및 혜택.xlsx";
+	//std::wstring src_path = L"F:/sombra/오피스 2017 요금 및 혜택.xlsx";
+	//std::wstring src_path = L"F:/sombra/오피스 2017 요금 및 혜택.xlsx";
+	std::wstring src_path = L"F:/sombra/프로젝트별 매출 현황_161013.xlsx";
 	
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
@@ -793,10 +795,10 @@ int main(int argc, char* argv[])
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
-		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
+		test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
 		//test_summary();
 		//test_docx();
-		//return 0;
+		return 0;
 
 		if (argc < 2)
 			return 0;
