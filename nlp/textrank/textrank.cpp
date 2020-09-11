@@ -344,8 +344,8 @@ namespace nlp
 				}
 			}
 		}
-		double dist = both_num / (log(n1) + log(n2));
-		return dist;
+		double similarity = both_num / (log(n1) + log(n2));
+		return similarity;
 	}
 
 	template <class value_type>
@@ -353,9 +353,7 @@ namespace nlp
 	{
 		if (i > j)
 		{
-			size_t tmp = i;
-			i = j;
-			j = tmp;
+			std::swap(i, j);
 		}
 		pair<size_t, size_t> key(i, j);
 		if (m_weight_map.find(key) != m_weight_map.end())
@@ -377,9 +375,9 @@ namespace nlp
 			advance(iter2, 1);
 			for (; iter2 != sentence_token_map.end(); ++iter2)
 			{
-				double dist = get_similarity(iter->second, iter2->second);
+				double similarity = get_similarity(iter->second, iter2->second);
 				pair<size_t, size_t> key(i, j);
-				m_weight_map.insert(make_pair(key, dist));
+				m_weight_map.insert(make_pair(key, similarity));
 				j++;
 			}
 		}
@@ -543,74 +541,8 @@ namespace nlp
 	public:
 		ngram_transform_t(){}
 		~ngram_transform_t(){}
-
-		size_t knuth_morris_pratt_count(value_type& corpus, const value_type& pattern)
-		{
-			size_t count = 0;
-			auto cur = corpus.begin();
-			while (cur != corpus.end())
-			{
-				auto search = boost::algorithm::knuth_morris_pratt_search(cur, corpus.end(), pattern.begin(), pattern.end());
-				if (search.first != corpus.end())
-				{
-					cur = search.second;
-					++count;
-				}
-				else
-				{
-					cur = search.second;
-				}
-			}
-			return count;
-		}
-
 		void ngram_to_keywords(std::map<value_type, double>& keywords, value_type& corpus,
-			std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns)
-		{
-			if (patterns.empty())
-				return;
-			auto n = patterns[0].first.first.size();
-			if (n < 2)
-				return;
-
-			for (size_t i = 0; i < corpus.size(); ++i)
-			{
-				if (i + n - 1 >= corpus.size())
-					return;
-
-				for (auto& pattern : patterns)
-				{
-					auto cur = pattern.first.second;
-
-					bool equal = true;
-					for (size_t j = 0; j < n; j++)
-					{
-						if (corpus[i + j] != *cur)
-							equal = false;
-						++cur;
-					}
-
-					if (equal)
-					{
-						expand_words_t expander(boost::is_any_of(word_delimiter));
-						auto big_gram_range = expander.expand(corpus, std::make_pair(pattern.first.second, cur));
-						std::vector<value_type> words;
-						boost::split(words, big_gram_range, boost::is_any_of(word_delimiter));
-						for (auto& word : words)
-						{
-							if (word.size() < 2)
-								continue;
-							auto keyword = keywords.find(word);
-							if (keyword == keywords.end())
-								keywords.insert(std::make_pair(word, pattern.second));
-							else
-								keyword->second += pattern.second;
-						}
-						
-					}
-				}
-			}		
-		}
+			std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns);
 		static void to_ngram(const value_type& text, size_t n, std::vector<value_type>& res);
 		static void to_ngram(value_type& text, size_t n, std::vector<std::pair<value_type, typename value_type::iterator> >& res, size_t limits)
 		{
@@ -659,11 +591,58 @@ namespace nlp
 				ss.clear();
 			}
 		}
-		
-
 	private:
 		typedef expand_words_t::locator_t locator_t;
 	};
+
+	template <class value_type>
+	void ngram_transform_t<value_type>::ngram_to_keywords(std::map<value_type, double>& keywords, value_type& corpus,
+		std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns)
+	{
+		if (patterns.empty())
+			return;
+		auto n = patterns[0].first.first.size();
+		if (n < 2)
+			return;
+
+		for (size_t i = 0; i < corpus.size(); ++i)
+		{
+			if (i + n - 1 >= corpus.size())
+				return;
+
+			for (auto& pattern : patterns)
+			{
+				auto cur = pattern.first.second;
+
+				bool equal = true;
+				for (size_t j = 0; j < n; j++)
+				{
+					if (corpus[i + j] != *cur)
+						equal = false;
+					++cur;
+				}
+
+				if (equal)
+				{
+					expand_words_t expander(boost::is_any_of(word_delimiter));
+					auto big_gram_range = expander.expand(corpus, std::make_pair(pattern.first.second, cur));
+					std::vector<value_type> words;
+					boost::split(words, big_gram_range, boost::is_any_of(word_delimiter));
+					for (auto& word : words)
+					{
+						if (word.size() < 2)
+							continue;
+						auto keyword = keywords.find(word);
+						if (keyword == keywords.end())
+							keywords.insert(std::make_pair(word, pattern.second));
+						else
+							keyword->second += pattern.second;
+					}
+
+				}
+			}
+		}
+	}
 
 	template <class value_type>
 	void ngram_transform_t<value_type>::to_ngram(const value_type& text, size_t n, std::vector<value_type>& res)
@@ -707,25 +686,21 @@ namespace nlp
 		}
 	}
 
-	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& tf_keywords, int topK)
+	bool text_ranker::key_words(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& tf_keywords, size_t topK)
 	{
-		//std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
-		std::vector<std::pair<std::wstring, std::wstring::iterator> > tokens;
-
-		static const int maxTextLen = 10000;
+		const size_t text_limit = 10000;
 		std::wstring input;
-		if ((int)texts.size() > maxTextLen) {
-			input = texts.substr(0, maxTextLen);
-		}
-		else {
+		if (texts.size() > text_limit)
+			input = texts.substr(0, text_limit);
+		else
 			input = texts;
-		}
 
-		ngram_transform_t<std::wstring>::to_ngram(input, 3, tokens, 3000);
+		const size_t token_limit = 3000;
+		std::vector<std::pair<std::wstring, std::wstring::iterator> > tokens;
+		ngram_transform_t<std::wstring>::to_ngram(input, 3, tokens, token_limit);
 
 		std::vector< std::pair< std::pair<std::wstring, std::wstring::iterator>,  double> > keywords;
 		text_rank_impl_t<std::wstring> ranker;
-		//ranker.ExtractKeyword(tokens, keywords, 1000);
 		ranker.extract_keywords(tokens, keywords, tokens.size());
 
 		boost::accumulators::accumulator_set<double, boost::accumulators::features<boost::accumulators::tag::mean> > acc;
@@ -757,44 +732,37 @@ namespace nlp
 				break;
 			tf_keywords.push_back(std::make_pair(i->second, i->first));
 		}
-		
-		//std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
-		//auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-		//std::cout << "tokens is " << keywords.size() << ", time : " << ms << " ms" << std::endl;
 
 		return true;
 	}
 
 
-	bool text_ranker::key_sentences(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& key_sentences, int topK)
+	bool text_ranker::key_sentences(const std::wstring& texts, std::vector< std::pair< std::wstring, double> >& key_sentences, size_t topK)
 	{
-		std::vector<std::wstring> raws;
-
-		static const int maxTextLen = 100000;
+		const size_t text_limit = 100000;
 		std::wstring input;
-		if ((int)texts.size() > maxTextLen) {
-			input = texts.substr(0, maxTextLen);
-		}
-		else {
+		if (texts.size() > text_limit)
+			input = texts.substr(0, text_limit);
+		else
 			input = texts;
-		}
 
-		boost::split(raws, input, boost::is_any_of(para_delimiter));
+		std::vector<std::wstring> raw_sentences;
+		boost::split(raw_sentences, input, boost::is_any_of(para_delimiter));
 		
-		static const int maxSentencesNum = 500;
+		const size_t sentences_limit = 500;
 		std::vector<std::wstring> sentences;
-		for (int i = 0; i < (int)raws.size(); ++i)
+		for (auto i = 0; i < raw_sentences.size(); ++i)
 		{
-			if (sentences.size() >= maxSentencesNum)
+			if (sentences.size() >= sentences_limit)
 				break;
-			if (!raws[i].empty() && (int)raws[i].size() > 3)
+			if (!raw_sentences[i].empty() && raw_sentences[i].size() > 3)
 			{
-				sentences.push_back(raws[i]);
+				sentences.push_back(raw_sentences[i]);
 			}
 		}
-
-		int complexity = 0;
-		static const int ngram_limit = 250000;
+		
+		const size_t ngram_limit = 250000;
+		size_t complexity = 0;
 		size_t count_of_tokens = 0;
 		vector<wstring> bigram_vec;
 		map<wstring, vector<wstring> > sentence_token_map;
@@ -802,7 +770,7 @@ namespace nlp
 		{
 			ngram_transform_t<std::wstring>::to_ngram(sentences[i], 3, bigram_vec);
 			count_of_tokens += bigram_vec.size();
-			complexity = sentence_token_map.size()* count_of_tokens;
+			complexity = sentence_token_map.size() * count_of_tokens;
 			if (complexity > ngram_limit)
 				break;
 			if (bigram_vec.empty())
@@ -814,9 +782,6 @@ namespace nlp
 			stop_words->remove_stop_words(bigram_vec, 2);
 			sentence_token_map.insert(make_pair(sentences[i], bigram_vec));
 		}
-
-		//std::cout << "sentences is " << sentence_token_map.size() << " , token is " << count_of_tokens << 
-		//	" = " << sentence_token_map.size() * count_of_tokens <<std::endl;
 
 		sentence_rank_impl_t<std::wstring> ranker;
 		ranker.extract_key_sentences(sentence_token_map, key_sentences, topK);

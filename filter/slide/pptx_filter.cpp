@@ -66,12 +66,12 @@ namespace pptx
 		{
 			sections_t sections;
 			const std::regex regex = section_name_regex();
-			for (auto& name : consumer->get_names())
+			for (auto& part : consumer->get_parts())
 			{
-				auto document = consumer->get_part(name);
+				auto document = part.second.get();
 				if (!document)
 					continue;
-				if (std::regex_match(name.string(), regex))
+				if (std::regex_match(part.first, regex))
 				{
 					editor_t editor;
 					editor.extract(text_tag_name(), para_tag_name())

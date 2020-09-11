@@ -381,7 +381,7 @@ void test_doc()
 }
 
 template <typename filter_t>
-void exract_text(const std::wstring& src_path, std::wstring& dest)
+void exract_text_impl(const std::wstring& src_path, std::wstring& dest)
 {
 	filter_t filter;
 	auto src = filter.open(to_utf8(src_path));
@@ -396,6 +396,44 @@ void exract_text(const std::wstring& src_path, std::wstring& dest)
 			}
 		}
 	}
+}
+
+bool extract_text(std::wstring& dest, const std::wstring& src_path)
+{
+	auto rules = filter::signature::builder_t::build_string_rules();
+	auto spec = rules->scan(to_utf8(src_path));
+
+	if (spec == "hwp30")
+	{
+		exract_text_impl<filter::hwp30::filter_t>(src_path, dest);
+	}
+	else if (spec == "hwp50")
+	{
+		exract_text_impl<filter::hwp50::filter_t>(src_path, dest);
+	}
+	else if (spec == "hwpx")
+	{
+		exract_text_impl<filter::hwpx::filter_t>(src_path, dest);
+	}
+	else if (spec == "hwpml")
+	{
+		exract_text_impl<filter::hml::filter_t>(src_path, dest);
+	}
+	else if (spec == "docx")
+	{
+		exract_text_impl<filter::docx::filter_t>(src_path, dest);
+	}
+	else if (spec == "pptx")
+	{
+		exract_text_impl<filter::pptx::filter_t>(src_path, dest);
+	}
+	else if (spec == "xlsx")
+	{
+		exract_text_impl<filter::xlsx::filter_t>(src_path, dest);
+	}
+	else
+		return false;
+	return true;
 }
 
 std::wstring normalize_texts(const std::wstring& src)
@@ -423,41 +461,9 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 {
 	try
 	{
-		auto rules = filter::signature::builder_t::build_string_rules();
-		auto spec = rules->scan(to_utf8(src_path));
-
 		std::wstring input;
-		if (spec == "hwp30")
-		{
-			exract_text<filter::hwp30::filter_t>(src_path, input);
-		}
-		else if (spec == "hwp50")
-		{
-			exract_text<filter::hwp50::filter_t>(src_path, input);
-		}
-		else if (spec == "hwpx")
-		{
-			exract_text<filter::hwpx::filter_t>(src_path, input);
-		}
-		else if (spec == "hwpml")
-		{
-			exract_text<filter::hml::filter_t>(src_path, input);
-		}
-		else if (spec == "docx")
-		{
-			exract_text<filter::docx::filter_t>(src_path, input);
-		}
-		else if (spec == "pptx")
-		{
-			exract_text<filter::pptx::filter_t>(src_path, input);
-		}
-		else if (spec == "xlsx")
-		{
-			exract_text<filter::xlsx::filter_t>(src_path, input);
-		}
-		else
+		if (!extract_text(input, src_path))
 			return;
-		
 
 		nlp::text_ranker text_ranker;
 		std::vector<std::string> stop_words_pathes;
@@ -525,7 +531,7 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 	std::vector<std::wstring> todo_pathes;
 	long long total = 0;
 	long long max = 0;
-	for (int i = 0; i < src_pathes.size(); ++i)
+	for (size_t i = 0; i < src_pathes.size(); ++i)
 	{
 		std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 		test_summary_file(src_pathes[i], dest_pathes[i]);
@@ -579,41 +585,9 @@ void test_summary()
 
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
-	auto rules = filter::signature::builder_t::build_string_rules();
-	auto spec = rules->scan(to_utf8(src_path));
-
 	std::wstring input;
-	if (spec == "hwp30")
-	{
-		exract_text<filter::hwp30::filter_t>(src_path, input);
-	}
-	else if (spec == "hwp50")
-	{
-		exract_text<filter::hwp50::filter_t>(src_path, input);
-	}
-	else if (spec == "hwpx")
-	{
-		exract_text<filter::hwpx::filter_t>(src_path, input);
-	}
-	else if (spec == "hwpml")
-	{
-		exract_text<filter::hml::filter_t>(src_path, input);
-	}
-	else if (spec == "docx")
-	{
-		exract_text<filter::docx::filter_t>(src_path, input);
-	}
-	else if (spec == "pptx")
-	{
-		exract_text<filter::pptx::filter_t>(src_path, input);
-	}
-	else if (spec == "xlsx")
-	{
-		exract_text<filter::xlsx::filter_t>(src_path, input);
-	}
-	else
+	if (!extract_text(input, src_path))
 		return;
-
 
 	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 
@@ -712,39 +686,9 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		std::wcout << src_path << std::endl;
 		std::wcout << dest_path << std::endl;
 		std::filesystem::remove(dest_path);
-		auto rules = filter::signature::builder_t::build_string_rules();
-		auto spec = rules->scan(to_utf8(src_path));
 
 		std::wstring input;
-		if (spec == "hwp30")
-		{
-			exract_text<filter::hwp30::filter_t>(src_path, input);
-		}
-		else if (spec == "hwp50")
-		{
-			exract_text<filter::hwp50::filter_t>(src_path, input);
-		}
-		else if (spec == "hwpx")
-		{
-			exract_text<filter::hwpx::filter_t>(src_path, input);
-		}
-		else if (spec == "hwpml")
-		{
-			exract_text<filter::hml::filter_t>(src_path, input);
-		}
-		else if (spec == "docx")
-		{
-			exract_text<filter::docx::filter_t>(src_path, input);
-		}
-		else if (spec == "pptx")
-		{
-			exract_text<filter::pptx::filter_t>(src_path, input);
-		}
-		else if (spec == "xlsx")
-		{
-			exract_text<filter::xlsx::filter_t>(src_path, input);
-		}
-		else
+		if (!extract_text(input, src_path))
 			return;
 
 		nlp::text_ranker text_ranker;
@@ -793,6 +737,163 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 	}
 }
 
+void test_directory()
+{
+	std::locale::global(std::locale(""));
+	std::wstring src_path = L"F:/주간보고/";
+
+	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+	std::wstring input;
+	input.reserve(100000);
+	for (auto& path : std::filesystem::recursive_directory_iterator(src_path))
+	{
+		if (path.is_directory())
+			continue;
+		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wstring document;
+		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+			continue;
+		if(!document.empty())
+			input += document;
+	}
+	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+	if (std::wcout.bad())
+		std::wcout.clear();
+	std::wcout << L"open & extract : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+	nlp::text_ranker text_ranker;
+	std::vector<std::string> stop_words_pathes;
+	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+	text_ranker.load_stop_words(stop_words_pathes);
+
+	end = std::chrono::system_clock::now();
+	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+	std::vector< std::pair< std::wstring, double> > keywords;
+	text_ranker.key_words(input, keywords, 100);
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+	std::vector< std::pair< std::wstring, double> > key_sentences;
+	text_ranker.key_sentences(input, key_sentences, 30);
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key sentences : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	std::ofstream out(L"f:/sombra/multiple_result.txt");
+
+	out << "[keywords]" << std::endl;
+	for (auto& keyword : keywords)
+	{
+		try
+		{
+			out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+
+	out << "[key sentences]" << std::endl;
+	for (auto& key_sentence : key_sentences)
+	{
+		try
+		{
+			out << to_utf8(key_sentence.first) << " : " << key_sentence.second << std::endl;
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+
+	out << std::endl << "[original texts]" << std::endl;
+	out << to_utf8(normalize_texts(input)) << std::endl;
+
+	out.close();
+}
+
+void test_directory2()
+{
+	std::locale::global(std::locale(""));
+	std::wstring src_path = L"F:/주간보고/";
+
+	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+	std::vector<std::wstring> input;
+	input.reserve(100000);
+	for (auto& path : std::filesystem::recursive_directory_iterator(src_path))
+	{
+		if (path.is_directory())
+			continue;
+		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wstring document;
+		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+			continue;
+		if (!document.empty())
+			input.push_back(document);
+	}
+	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+	if (std::wcout.bad())
+		std::wcout.clear();
+	std::wcout << L"open & extract : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+	nlp::text_ranker text_ranker;
+	std::vector<std::string> stop_words_pathes;
+	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+	text_ranker.load_stop_words(stop_words_pathes);
+
+	end = std::chrono::system_clock::now();
+	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+
+	std::wcout << L"total : " << input.size() << std::endl;
+	std::wstring input_keywords;
+	size_t id = 0;
+	for (auto& document : input)
+	{
+		++id;
+		std::wcout << L"[" << id << L"]";
+		start = std::chrono::system_clock::now();
+		std::vector< std::pair< std::wstring, double> > keywords;
+		text_ranker.key_words(document, keywords, 1000);
+		for (auto& keyword : keywords)
+		{
+			input_keywords += L' ';
+			input_keywords += keyword.first;
+		}
+		end = std::chrono::system_clock::now();
+		std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+	}
+	
+	std::wcout << input_keywords << std::endl;
+
+	start = std::chrono::system_clock::now();
+	std::vector< std::pair< std::wstring, double> > keywords;
+	text_ranker.key_words(input_keywords, keywords, 100);
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	std::ofstream out(L"f:/sombra/multiple_result2.txt");
+	out << "[keywords]" << std::endl;
+	for (auto& keyword : keywords)
+	{
+		try
+		{
+			out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+	out.close();
+}
+
 #include <atlstr.h>
 
 int main(int argc, char* argv[])
@@ -803,7 +904,8 @@ int main(int argc, char* argv[])
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
-		test_summary();
+		//test_summary();
+		test_directory2();
 		//test_docx();
 		return 0;
 
