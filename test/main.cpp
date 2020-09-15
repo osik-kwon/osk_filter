@@ -26,6 +26,9 @@
 #include <boost/algorithm/string.hpp> 
 #include <boost/algorithm/string/case_conv.hpp>
 
+#include <mecab/mecab.h>
+
+
 std::wostream& operator << (std::wostream& stream, const filter::editor_traits::sections_t& sections)
 {
 	stream.imbue(std::locale(""));
@@ -559,8 +562,8 @@ void test_summary()
 	//std::wstring src_path = L"d:/ci/hwp/2011충북대_정시모집요강.hwp";
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
-	std::wstring src_path = L"f:/sombra/article1.hwp";
-	//std::wstring src_path = L"f:/sombra/article4.hwp";
+	//std::wstring src_path = L"f:/sombra/article1.hwp";
+	std::wstring src_path = L"f:/sombra/article6.hwp";
 	//std::wstring src_path = L"d:/ci/hwp/(2) 무단방치 자전거 이동보관 현장 사진.hwp";
 	//std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
 	//std::wstring src_path = L"f:/sombra/중앙대_2011수시_100802.hwp";
@@ -819,7 +822,9 @@ void test_directory()
 void test_directory2()
 {
 	std::locale::global(std::locale(""));
-	std::wstring src_path = L"F:/주간보고/";
+	//std::wstring src_path = L"F:/주간보고/";
+	std::wstring src_path = L"F:/Weekly/";
+
 
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 	std::vector<std::wstring> input;
@@ -871,7 +876,7 @@ void test_directory2()
 		std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 	}
 	
-	std::wcout << input_keywords << std::endl;
+	//std::wcout << input_keywords << std::endl;
 
 	start = std::chrono::system_clock::now();
 	std::vector< std::pair< std::wstring, double> > keywords;
@@ -879,7 +884,7 @@ void test_directory2()
 	end = std::chrono::system_clock::now();
 	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
-	std::ofstream out(L"f:/sombra/multiple_result2.txt");
+	std::ofstream out(L"f:/sombra/multiple_result3.txt");
 	out << "[keywords]" << std::endl;
 	for (auto& keyword : keywords)
 	{
@@ -894,18 +899,196 @@ void test_directory2()
 	out.close();
 }
 
+void test_directory3()
+{
+	std::locale::global(std::locale(""));
+	std::wstring src_path = L"F:/주간보고/";
+	//std::wstring src_path = L"F:/Weekly/";
+
+
+	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+	std::vector<std::wstring> input;
+	input.reserve(100000);
+	for (auto& path : std::filesystem::recursive_directory_iterator(src_path))
+	{
+		if (path.is_directory())
+			continue;
+		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wstring document;
+		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+			continue;
+		if (!document.empty())
+			input.push_back(document);
+	}
+	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+	if (std::wcout.bad())
+		std::wcout.clear();
+	std::wcout << L"open & extract : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+	nlp::text_ranker text_ranker;
+	std::vector<std::string> stop_words_pathes;
+	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+	text_ranker.load_stop_words(stop_words_pathes);
+
+	end = std::chrono::system_clock::now();
+	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+
+	std::wcout << L"total : " << input.size() << std::endl;
+	std::wstring input_keywords;
+	size_t id = 0;
+	for (auto& document : input)
+	{
+		++id;
+		std::wcout << L"[" << id << L"]";
+		start = std::chrono::system_clock::now();
+
+		std::vector< std::pair< std::wstring, double> > key_sentences;
+		text_ranker.key_sentences(document, key_sentences, 100);
+
+		for (auto& sentence : key_sentences)
+		{
+			input_keywords += L'\n';
+			input_keywords += sentence.first;
+		}
+		end = std::chrono::system_clock::now();
+		std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+	}
+
+	//std::wcout << input_keywords << std::endl;
+
+	start = std::chrono::system_clock::now();
+	std::vector< std::pair< std::wstring, double> > key_sentences;
+	text_ranker.key_sentences(input_keywords, key_sentences, 100);
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	std::ofstream out(L"f:/sombra/multiple_result5.txt");
+	out << "[keywords]" << std::endl;
+	for (auto& sentence : key_sentences)
+	{
+		try
+		{
+			out << to_utf8(sentence.first) << " : " << sentence.second << std::endl;
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+	out.close();
+}
+
+
+#define CHECK(eval) if (! eval) { \
+   const char *e = tagger ? tagger->what() : MeCab::getTaggerError(); \
+   std::cerr << "Exception:" << e << std::endl; \
+   delete tagger; \
+   return ; }
+
+void test_mecab()
+{
+	std::wcout.imbue(std::locale(""));
+	//std::string input = to_utf8(L"트위터, 정보당국에 데이터 분석자료 팔지 않겠다. 트위터가 수많은 트윗을 분석해 정보를 판매하는 서비스를 미국 정보당국에는 제공하지 않기로 했다. 월스트리트저널은 미국 정보당국 관계자 등을 인용해 데이터마이너(Dataminer)가 정보당국에 대한 서비스는 중단하기로 했다고 9일(현지시간) 보도했다. 트위터가 5% 지분을 가진 데이터마이너는 소셜미디어상 자료를 분석해 고객이 의사결정을 하도록 정보를 제공하는 기업이다. 트위터에 올라오는 트윗에 실시간으로 접근해 분석한 자료를 고객에게 팔 수 있는 독점권을 갖고 있다. 정보당국은 이 회사로부터 구매한 자료로 테러나 정치적 불안정 등과 관련된 정보를 획득했다. 이 회사가 정보당국에 서비스를 판매하지 않기로 한 것은 트위터의 결정인 것으로 알려졌다. 데이터마이너 경영진은 최근 “트위터가 정보당국에 서비스하는 것을 원치 않는다”고 밝혔다고 이 신문은 전했다. 트위터도 성명을 내고 “정보당국 감시용으로 데이터를 팔지 않는 것은 트위터의 오래된 정책”이라며 “트위터 자료는 대체로 공개적이고 미국 정부도 다른 사용자처럼 공개된 어카운트를 살펴볼 수 있다”고 해명했다. 그러나 이는 이 회사가 2년 동안 정보당국에 서비스를 제공해 온 데 대해서는 타당한 설명이 되지 않는다. 트위터의 이번 결정은 미국의 정보기술(IT)기업과 정보당국 간 갈등의 연장 선상에서 이뤄진 것으로 여겨지고 있다. IT기업은 이용자 프라이버시에 무게 중심을 두는 데 비해 정보당국은 공공안전을 우선시해 차이가 있었다. 특히 애플은 캘리포니아 주 샌버너디노 총격범의 아이폰에 저장된 정보를 보겠다며 데이터 잠금장치 해제를 요구하는 미 연방수사국(FBI)과 소송까지 진행했다. 정보당국 고위 관계자도 “트위터가 정보당국과 너무 가까워 보이는 것을 우려하는 것 같다”고 말했다. 데이터마이너는 금융기관이나, 언론사 등 정보당국을 제외한 고객에 대한 서비스는 계속할 계획이다.");
+	//std::string input = to_utf8(L"러스트는 갓언어입니다. 똥바는 똥언어입니다. 알버트는 귀요미!?");
+	//std::string input = to_utf8(L"MeCabはC/C++のライブラリを提供しています。また, SWIGを通して Perl/Ruby/Python から利用することも可能です。");
+
+	std::string input = to_utf8(L"피고인은 소산입니다 없습니다 정치적·사회적·도덕적 도덕적으로 있는 대학생들이 두고 제출합니다 항소이유서");
+
+	//std::wcout << L"알버트는 누름틀 장인입니까? 에이먼은 전생에 프로토스 종족의 아비터였습니다. 마인드맵은 갓기능입니다." << std::endl;
+
+	//std::string input = to_utf8(L"알버트는 누름틀 장인입니까? 에이먼은 전생에 프로토스 종족의 아비터였습니다. 마인드맵은 갓기능입니다.");
+
+	//get_args("F:/project/hello_mecab/hello_mecab/lib/mecab-ko-dic");
+	// "F:/project/mecab/mecabrc"
+	//auto args = get_args("F:/project/mecab/mecab-ko-dic");
+	// 
+
+	MeCab::Tagger* tagger = MeCab::createTagger("mecab -r F:/project/mecab/mecabrc -d F:/project/mecab/mecab-ko-dic");
+	//MeCab::Tagger* tagger = MeCab::createTagger("mecab -r F:/project/mecab/mecabrc -d F:/project/mecab/mecab-ja-dic");
+	//MeCab::Tagger* tagger = MeCab::createTagger("mecab -r ./mecabrc -d F:/project/mecab/mecab-ko-dic");
+	CHECK(tagger);
+
+	// Gets tagged result in string format.
+	const char* result = tagger->parse(input.c_str());
+	CHECK(result);
+	auto test_result = to_wchar(result);
+	std::wcout << L"INPUT: " << to_wchar(input) << std::endl;
+	std::wcout << L"RESULT: " << std::endl << to_wchar(result) << std::endl;
+
+	// Gets N best results in string format.
+	result = tagger->parseNBest(3, input.c_str());
+	CHECK(result);
+	std::wcout << "NBEST: " << std::endl << to_wchar(result);
+
+	// Gets N best results in sequence.
+   // CHECK(tagger->parseNBestInit(input));
+	//for (int i = 0; i < 3; ++i) {
+	//    std::cout << i << ":" << std::endl << tagger->next();
+	//}
+
+	// Gets Node object.
+	const MeCab::Node* node = tagger->parseToNode(input.c_str());
+	CHECK(node);
+	for (; node; node = node->next) {
+		std::cout << node->id << ' ';
+		if (node->stat == MECAB_BOS_NODE)
+			std::cout << "BOS";
+		else if (node->stat == MECAB_EOS_NODE)
+			std::cout << "EOS";
+		else
+		{
+			auto test = to_wchar(std::string(node->surface, node->length));
+			std::wcout << to_wchar(std::string(node->surface, node->length));
+		}
+
+		auto feature = to_wchar(node->feature);
+
+		std::wcout << L' ' << to_wchar(node->feature)
+			<< ' ' << (int)(node->surface - input.c_str())
+			<< ' ' << (int)(node->surface - input.c_str() + node->length)
+			<< ' ' << node->rcAttr
+			<< ' ' << node->lcAttr
+			<< ' ' << node->posid
+			<< ' ' << (int)node->char_type
+			<< ' ' << (int)node->stat
+			<< ' ' << (int)node->isbest
+			<< ' ' << node->alpha
+			<< ' ' << node->beta
+			<< ' ' << node->prob
+			<< ' ' << node->cost << std::endl;
+	}
+
+	// Dictionary info.
+	const MeCab::DictionaryInfo* d = tagger->dictionary_info();
+	for (; d; d = d->next) {
+		std::cout << "filename: " << d->filename << std::endl;
+		std::cout << "charset: " << d->charset << std::endl;
+		std::cout << "size: " << d->size << std::endl;
+		std::cout << "type: " << d->type << std::endl;
+		std::cout << "lsize: " << d->lsize << std::endl;
+		std::cout << "rsize: " << d->rsize << std::endl;
+		std::cout << "version: " << d->version << std::endl;
+	}
+
+	delete tagger;
+}
+
 #include <atlstr.h>
 
 int main(int argc, char* argv[])
 {
 	try
 	{
+		test_mecab();
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
 		//test_summary();
-		test_directory2();
+		//test_directory3();
 		//test_docx();
 		return 0;
 
