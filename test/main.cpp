@@ -473,6 +473,8 @@ void test_summary_file(const std::wstring& src_path, const std::wstring& dest_pa
 		for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
 			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 		text_ranker.load_stop_words(stop_words_pathes);
+		text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+			std::filesystem::absolute("dictionary/mecab-ko-dic").string());
 
 		std::vector< std::pair< std::wstring, double> > keywords;
 		text_ranker.key_words(input, keywords, 10);
@@ -561,9 +563,11 @@ void test_summary()
 	std::locale::global(std::locale(""));
 	//std::wstring src_path = L"d:/ci/hwp/2011충북대_정시모집요강.hwp";
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
+	//std::wstring src_path = L"d:/ci/docx/3GPP-Spec-Titles.docx";
+	
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
 	//std::wstring src_path = L"f:/sombra/article1.hwp";
-	std::wstring src_path = L"f:/sombra/article6.hwp";
+	std::wstring src_path = L"f:/sombra/article5.hwp";
 	//std::wstring src_path = L"d:/ci/hwp/(2) 무단방치 자전거 이동보관 현장 사진.hwp";
 	//std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
 	//std::wstring src_path = L"f:/sombra/중앙대_2011수시_100802.hwp";
@@ -622,6 +626,9 @@ void test_summary()
 	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
 		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 	text_ranker.load_stop_words(stop_words_pathes);
+
+	text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+		std::filesystem::absolute("dictionary/mecab-ko-dic").string());
 
 	end = std::chrono::system_clock::now();
 	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
@@ -699,6 +706,8 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		for (auto& path : std::filesystem::directory_iterator(stop_words_path))
 			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 		text_ranker.load_stop_words(stop_words_pathes);
+		text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+			std::filesystem::absolute("dictionary/mecab-ko-dic").string());
 
 		std::vector< std::pair< std::wstring, double> > key_sentences;
 		text_ranker.key_sentences(input, key_sentences, 3);
@@ -771,6 +780,8 @@ void test_directory()
 	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
 		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 	text_ranker.load_stop_words(stop_words_pathes);
+	text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+		std::filesystem::absolute("dictionary/mecab-ko-dic").string());
 
 	end = std::chrono::system_clock::now();
 	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
@@ -852,6 +863,8 @@ void test_directory2()
 	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
 		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 	text_ranker.load_stop_words(stop_words_pathes);
+	text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+		std::filesystem::absolute("dictionary/mecab-ko-dic").string());
 
 	end = std::chrono::system_clock::now();
 	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
@@ -932,6 +945,8 @@ void test_directory3()
 	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
 		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 	text_ranker.load_stop_words(stop_words_pathes);
+	text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+		std::filesystem::absolute("dictionary/mecab-ko-dic").string());
 
 	end = std::chrono::system_clock::now();
 	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
@@ -995,7 +1010,10 @@ void test_mecab()
 	//std::string input = to_utf8(L"러스트는 갓언어입니다. 똥바는 똥언어입니다. 알버트는 귀요미!?");
 	//std::string input = to_utf8(L"MeCabはC/C++のライブラリを提供しています。また, SWIGを通して Perl/Ruby/Python から利用することも可能です。");
 
-	std::string input = to_utf8(L"피고인은 소산입니다 없습니다 정치적·사회적·도덕적 도덕적으로 있는 대학생들이 두고 제출합니다 항소이유서");
+	//std::string input = to_utf8(L"피고인은 소산입니다 없습니다 정치적·사회적·도덕적 도덕적으로 있는 대학생들이 두고 제출합니다 항소이유서");
+	//std::string input = to_utf8(L"이것은 형태소 분석기 입니다 아버지가방에들어가신다");
+	
+	std::string input = to_utf8(L"마인드세트의 코로나의");
 
 	//std::wcout << L"알버트는 누름틀 장인입니까? 에이먼은 전생에 프로토스 종족의 아비터였습니다. 마인드맵은 갓기능입니다." << std::endl;
 
@@ -1011,6 +1029,7 @@ void test_mecab()
 	//MeCab::Tagger* tagger = MeCab::createTagger("mecab -r ./mecabrc -d F:/project/mecab/mecab-ko-dic");
 	CHECK(tagger);
 
+	
 	// Gets tagged result in string format.
 	const char* result = tagger->parse(input.c_str());
 	CHECK(result);
@@ -1022,6 +1041,7 @@ void test_mecab()
 	result = tagger->parseNBest(3, input.c_str());
 	CHECK(result);
 	std::wcout << "NBEST: " << std::endl << to_wchar(result);
+	
 
 	// Gets N best results in sequence.
    // CHECK(tagger->parseNBestInit(input));
@@ -1033,32 +1053,41 @@ void test_mecab()
 	const MeCab::Node* node = tagger->parseToNode(input.c_str());
 	CHECK(node);
 	for (; node; node = node->next) {
-		std::cout << node->id << ' ';
-		if (node->stat == MECAB_BOS_NODE)
-			std::cout << "BOS";
-		else if (node->stat == MECAB_EOS_NODE)
-			std::cout << "EOS";
-		else
-		{
-			auto test = to_wchar(std::string(node->surface, node->length));
-			std::wcout << to_wchar(std::string(node->surface, node->length));
-		}
+		//std::cout << node->id << ' ';
+		//if (node->stat == MECAB_BOS_NODE)
+		//	std::cout << "BOS";
+		//else if (node->stat == MECAB_EOS_NODE)
+		//	std::cout << "EOS";
+		//else
+		//{
+		//	auto test = to_wchar(std::string(node->surface, node->length));
+		//	std::wcout << to_wchar(std::string(node->surface, node->length));
+		//}
 
 		auto feature = to_wchar(node->feature);
 
-		std::wcout << L' ' << to_wchar(node->feature)
-			<< ' ' << (int)(node->surface - input.c_str())
-			<< ' ' << (int)(node->surface - input.c_str() + node->length)
-			<< ' ' << node->rcAttr
-			<< ' ' << node->lcAttr
-			<< ' ' << node->posid
-			<< ' ' << (int)node->char_type
-			<< ' ' << (int)node->stat
-			<< ' ' << (int)node->isbest
-			<< ' ' << node->alpha
-			<< ' ' << node->beta
-			<< ' ' << node->prob
-			<< ' ' << node->cost << std::endl;
+		std::vector<std::wstring> tokens;
+		boost::split(tokens, feature, boost::is_any_of(L","));
+		if (!tokens.empty() && !tokens[0].empty() && tokens[0][0] == L'N')
+		{
+			std::cout << node->id << ' ';
+			std::wcout << to_wchar(std::string(node->surface, node->length));
+			std::wcout << L' ' << to_wchar(node->feature)
+				<< ' ' << (int)(node->surface - input.c_str())
+				<< ' ' << (int)(node->surface - input.c_str() + node->length)
+				<< ' ' << node->rcAttr
+				<< ' ' << node->lcAttr
+				<< ' ' << node->posid
+				<< ' ' << (int)node->char_type
+				<< ' ' << (int)node->stat
+				<< ' ' << (int)node->isbest
+				<< ' ' << node->alpha
+				<< ' ' << node->beta
+				<< ' ' << node->prob
+				<< ' ' << node->cost << std::endl;
+		}
+			
+		
 	}
 
 	// Dictionary info.
@@ -1082,12 +1111,12 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		test_mecab();
+		//test_mecab();
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
-		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/result/");
+		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/hwp/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
-		//test_summary();
+		test_summary();
 		//test_directory3();
 		//test_docx();
 		return 0;

@@ -7,13 +7,12 @@
 #include <boost/algorithm/string.hpp> 
 #include <boost/algorithm/string/case_conv.hpp>
 
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics.hpp>
 
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
-
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics.hpp>
 
 #include <regex>
 #include <string>
@@ -24,7 +23,6 @@
 #include <set>
 #include <map>
 #include <sstream>
-#include <chrono>
 
 using namespace std;
 
@@ -446,7 +444,7 @@ namespace nlp
 		m_out_sum_map.clear();
 	}
 
-	text_ranker::text_ranker() : stop_words(std::make_unique<stop_words_t>())
+	text_ranker::text_ranker() : stop_words(std::make_unique<stop_words_t>()), tagger(nullptr)
 	{}
 
 	void text_ranker::load_stop_words(const std::vector<std::string>& stop_words_pathes)
@@ -454,6 +452,21 @@ namespace nlp
 		for (auto& path : stop_words_pathes)
 		{
 			stop_words->load_dictionary(path);
+		}
+	}
+
+	void text_ranker::load_morphological_analyzer(const std::string& rc_path, const std::string& dic_path)
+	{
+		std::string command = "mecab";
+		command += " -r ";
+		command += rc_path;
+		command += " -d ";
+		command += dic_path;
+		tagger.reset(::MeCab::createTagger(command.c_str()));
+		if (!tagger)
+		{
+			const char* e = tagger ? tagger->what() : MeCab::getTaggerError();
+			std::cout << e << std::endl;
 		}
 	}
 
@@ -467,6 +480,13 @@ namespace nlp
 		typedef std::function<bool(wchar_t)> is_delimiter_t;
 		expand_words_t(is_delimiter_t is_delimiter) : is_delimiter(is_delimiter)
 		{}
+
+		inline container_t expand_paragraph(const container_t& corpus, locator_t loc) const
+		{
+			iterator left = loc.first;
+			iterator right = --loc.second;
+			return container_t(to_left(corpus, left), to_right(corpus, right));
+		}
 
 		inline container_t expand(const container_t& corpus, locator_t loc) const
 		{
@@ -542,7 +562,8 @@ namespace nlp
 		ngram_transform_t(){}
 		~ngram_transform_t(){}
 		void ngram_to_keywords(std::map<value_type, double>& keywords, value_type& corpus,
-			std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns);
+			std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns,
+			std::unique_ptr<::MeCab::Tagger>& tagger);
 		static void to_ngram(const value_type& text, size_t n, std::vector<value_type>& res);
 		static void to_ngram(value_type& text, size_t n, std::vector<std::pair<value_type, typename value_type::iterator> >& res, size_t limits)
 		{
@@ -597,7 +618,7 @@ namespace nlp
 
 	template <class value_type>
 	void ngram_transform_t<value_type>::ngram_to_keywords(std::map<value_type, double>& keywords, value_type& corpus,
-		std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns)
+		std::vector< std::pair< std::pair<value_type, typename value_type::iterator>, double> >& patterns, std::unique_ptr<::MeCab::Tagger>& tagger)
 	{
 		if (patterns.empty())
 			return;
@@ -638,7 +659,6 @@ namespace nlp
 						else
 							keyword->second += pattern.second;
 					}
-
 				}
 			}
 		}
@@ -719,10 +739,70 @@ namespace nlp
 		ngram_transform_t<std::wstring> ngram_transform;
 		std::map<std::wstring, double> ngram_keywords;
 
-		ngram_transform.ngram_to_keywords(ngram_keywords, input, keywords);
-
+		ngram_transform.ngram_to_keywords(ngram_keywords, input, keywords, tagger);
 		stop_words->remove_stop_words(ngram_keywords, 2);
 
+		if (tagger)
+		{
+			std::string src = to_utf8(input);
+			const MeCab::Node* root = tagger->parseToNode(src.c_str());
+
+			std::map < std::wstring, double> norms;
+			for (auto& ukeyword : ngram_keywords)
+			{
+				std::string keyword = to_utf8(ukeyword.first);
+
+				auto offset_begin = std::distance(src.begin(), src.end());
+				auto offset_end = std::distance(src.begin(), src.end());
+				auto search = boost::algorithm::knuth_morris_pratt_search(src.begin(), src.end(), keyword.begin(), keyword.end());
+				if (search.first != src.end())
+				{
+					offset_begin = std::distance(src.begin(), search.first);
+					offset_end = std::distance(src.begin(), search.second);
+				}
+				else
+				{
+					throw std::runtime_error("kmp search failed");
+				}
+
+				std::wstring norm_keyword;
+				const MeCab::Node* node = root;
+				bool has_noun = false;
+				for (; node; node = node->next)
+				{
+					auto begin = (int)(node->surface - src.c_str());
+					if (begin >= offset_end)
+						break;
+					auto feature = to_wchar(node->feature);
+					std::vector<std::wstring> tokens;
+					boost::split(tokens, feature, boost::is_any_of(L","));
+					if (
+						begin >= offset_begin && begin < offset_end &&
+						!tokens.empty() && !tokens[0].empty()
+						)
+					{
+						bool is_noun = tokens[0][0] == L'N';
+						bool is_numerals = tokens[0] == L"SN";
+						if (is_noun)
+							has_noun = true;
+						if(is_noun || is_numerals)
+							norm_keyword += to_wchar(std::string(node->surface, node->length));
+					}
+				}
+
+				if (norm_keyword.size() > 1 && has_noun)
+				{
+					auto cur = norms.find(norm_keyword);
+					if (cur == norms.end())
+						norms.insert(std::make_pair(norm_keyword, ukeyword.second));
+					else
+						cur->second += ukeyword.second;
+				}
+			}
+			if(!norms.empty())
+				std::swap(norms, ngram_keywords);
+		}
+		
 		std::multimap<double, std::wstring> sort_ngram_keywords;
 		flip_map(sort_ngram_keywords, ngram_keywords);
 		
@@ -751,7 +831,7 @@ namespace nlp
 		
 		const size_t sentences_limit = 500;
 		std::vector<std::wstring> sentences;
-		for (auto i = 0; i < raw_sentences.size(); ++i)
+		for (size_t i = 0; i < raw_sentences.size(); ++i)
 		{
 			if (sentences.size() >= sentences_limit)
 				break;
