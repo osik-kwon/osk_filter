@@ -564,11 +564,11 @@ void test_summary()
 	//std::wstring src_path = L"d:/ci/hwp/2011충북대_정시모집요강.hwp";
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
 	//std::wstring src_path = L"d:/ci/docx/3GPP-Spec-Titles.docx";
-	
+	std::wstring src_path = L"f:/sombra/legacy.hwp";
 	//std::wstring src_path = L"d:/ci/docx/2주차.docx";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
 	//std::wstring src_path = L"f:/sombra/article1.hwp";
-	std::wstring src_path = L"f:/sombra/article5.hwp";
+	//std::wstring src_path = L"f:/sombra/article5.hwp";
 	//std::wstring src_path = L"d:/ci/hwp/(2) 무단방치 자전거 이동보관 현장 사진.hwp";
 	//std::wstring src_path = L"f:/sombra/4.1 Medicine_Diseaseas of the Esophagus_2014A.docx";
 	//std::wstring src_path = L"f:/sombra/중앙대_2011수시_100802.hwp";
@@ -689,7 +689,8 @@ void test_docx()
 	auto sections = filter.extract_all_texts(src);
 }
 
-void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, const std::wstring& stop_words_path)
+void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, const std::wstring& stop_words_path,
+	const std::wstring& mecab_rc, const std::wstring& mecab_dic)
 {
 	try
 	{
@@ -707,8 +708,12 @@ void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, co
 		for (auto& path : std::filesystem::directory_iterator(stop_words_path))
 			stop_words_pathes.push_back(std::filesystem::absolute(path).string());
 		text_ranker.load_stop_words(stop_words_pathes);
-		text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
-			std::filesystem::absolute("dictionary/mecab-ko-dic").string());
+
+		if (!mecab_rc.empty() && !mecab_dic.empty())
+		{
+			text_ranker.load_morphological_analyzer(to_utf8(mecab_rc), to_utf8(mecab_dic));
+		}
+		
 
 		std::vector< std::pair< std::wstring, double> > key_sentences;
 		text_ranker.key_sentences(input, key_sentences, 3);
@@ -1201,12 +1206,12 @@ int main(int argc, char* argv[])
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/hwp/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
-		test_summary();
+		//test_summary();
 		//test_directory2();
 		//test_directory3();
 		//test_directory4();
 		//test_docx();
-		return 0;
+		//return 0;
 
 		if (argc < 2)
 			return 0;
@@ -1227,9 +1232,13 @@ int main(int argc, char* argv[])
 		std::getline(arg, result);
 		std::string stop_words;
 		std::getline(arg, stop_words);
+		std::string mecab_rc;
+		std::getline(arg, mecab_rc);
+		std::string mecab_dic;
+		std::getline(arg, mecab_dic);
 		arg.close();
 
-		cmd_summary(to_wchar(src), to_wchar(result), to_wchar(stop_words));
+		cmd_summary(to_wchar(src), to_wchar(result), to_wchar(stop_words), to_wchar(mecab_rc), to_wchar(mecab_dic));
 		//cmd_summary((wchar_t*)(argv[1]), (wchar_t*)(argv[2]), (wchar_t*)(argv[3]));
 		//cmd_summary(to_wchar(argv[1]), to_wchar(argv[2]), to_wchar(argv[3]));
 		//return 0 ;

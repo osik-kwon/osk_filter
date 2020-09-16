@@ -789,7 +789,8 @@ namespace nlp
 							|| tokens[0] == L"NNB"
 							|| tokens[0] == L"NNBC"
 							|| tokens[0] == L"NR"
-							|| tokens[0] == L"NP";
+							|| tokens[0] == L"NP"
+							|| tokens[0] == L"XPN"; // 체언 접두사
 						bool is_numerals = tokens[0] == L"SN";
 						bool is_noun_suffix = tokens[0] == L"XSN";
 						//bool is_noun_prefix = tokens[0] == L"ETN";
