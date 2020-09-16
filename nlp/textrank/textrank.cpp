@@ -746,7 +746,7 @@ namespace nlp
 		{
 			std::string src = to_utf8(input);
 			const MeCab::Node* root = tagger->parseToNode(src.c_str());
-
+			bool has_global_noun = false;
 			std::map < std::wstring, double> norms;
 			for (auto& ukeyword : ngram_keywords)
 			{
@@ -781,17 +781,28 @@ namespace nlp
 						!tokens.empty() && !tokens[0].empty()
 						)
 					{
-						bool is_noun = tokens[0][0] == L'N';
+						//bool is_noun = tokens[0][0] == L'N';
+						bool is_etc = tokens[0] == L"SL" || tokens[0] == L"SH";
+						bool is_noun = tokens[0] == L"NNG"
+							|| tokens[0] == L"NNP"
+							|| tokens[0] == L"NNG"
+							|| tokens[0] == L"NNB"
+							|| tokens[0] == L"NNBC"
+							|| tokens[0] == L"NR"
+							|| tokens[0] == L"NP";
 						bool is_numerals = tokens[0] == L"SN";
+						bool is_noun_suffix = tokens[0] == L"XSN";
+						//bool is_noun_prefix = tokens[0] == L"ETN";
 						if (is_noun)
 							has_noun = true;
-						if(is_noun || is_numerals)
+						if(is_noun || is_numerals || is_noun_suffix || is_etc)
 							norm_keyword += to_wchar(std::string(node->surface, node->length));
 					}
 				}
 
 				if (norm_keyword.size() > 1 && has_noun)
 				{
+					has_global_noun = true;
 					auto cur = norms.find(norm_keyword);
 					if (cur == norms.end())
 						norms.insert(std::make_pair(norm_keyword, ukeyword.second));
@@ -799,7 +810,7 @@ namespace nlp
 						cur->second += ukeyword.second;
 				}
 			}
-			if(!norms.empty())
+			if(!norms.empty() && has_global_noun)
 				std::swap(norms, ngram_keywords);
 		}
 		

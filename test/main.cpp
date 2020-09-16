@@ -565,6 +565,7 @@ void test_summary()
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
 	//std::wstring src_path = L"d:/ci/docx/3GPP-Spec-Titles.docx";
 	
+	//std::wstring src_path = L"d:/ci/docx/2주차.docx";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
 	//std::wstring src_path = L"f:/sombra/article1.hwp";
 	std::wstring src_path = L"f:/sombra/article5.hwp";
@@ -833,9 +834,11 @@ void test_directory()
 void test_directory2()
 {
 	std::locale::global(std::locale(""));
-	//std::wstring src_path = L"F:/주간보고/";
-	std::wstring src_path = L"F:/Weekly/";
+	std::wstring src_path = L"F:/주간보고/";
+	//std::wstring src_path = L"F:/Weekly/";
 
+	std::ofstream out(L"f:/sombra/multiple_result_team1.txt");
+	//std::ofstream out(L"f:/sombra/multiple_result_team2.txt");
 
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 	std::vector<std::wstring> input;
@@ -869,7 +872,6 @@ void test_directory2()
 	end = std::chrono::system_clock::now();
 	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
-
 	std::wcout << L"total : " << input.size() << std::endl;
 	std::wstring input_keywords;
 	size_t id = 0;
@@ -897,7 +899,7 @@ void test_directory2()
 	end = std::chrono::system_clock::now();
 	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
-	std::ofstream out(L"f:/sombra/multiple_result3.txt");
+	
 	out << "[keywords]" << std::endl;
 	for (auto& keyword : keywords)
 	{
@@ -915,10 +917,11 @@ void test_directory2()
 void test_directory3()
 {
 	std::locale::global(std::locale(""));
-	std::wstring src_path = L"F:/주간보고/";
-	//std::wstring src_path = L"F:/Weekly/";
+	//std::wstring src_path = L"F:/주간보고/";
+	std::wstring src_path = L"F:/Weekly/";
 
-
+	std::ofstream out(L"f:/sombra/multiple_result_team1.txt");
+	//std::ofstream out(L"f:/sombra/multiple_result_team2.txt");
 	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 	std::vector<std::wstring> input;
 	input.reserve(100000);
@@ -981,7 +984,7 @@ void test_directory3()
 	end = std::chrono::system_clock::now();
 	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
 
-	std::ofstream out(L"f:/sombra/multiple_result5.txt");
+	
 	out << "[keywords]" << std::endl;
 	for (auto& sentence : key_sentences)
 	{
@@ -996,6 +999,88 @@ void test_directory3()
 	out.close();
 }
 
+void test_directory4()
+{
+	std::locale::global(std::locale(""));
+	//std::wstring src_path = L"F:/주간보고/";
+	std::wstring src_path = L"F:/Weekly/";
+
+	//std::ofstream out(L"f:/sombra/multiple_result_team1.txt");
+	std::ofstream out(L"f:/sombra/multiple_result_team2.txt");
+
+	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+	std::vector<std::wstring> input;
+	input.reserve(100000);
+	for (auto& path : std::filesystem::recursive_directory_iterator(src_path))
+	{
+		if (path.is_directory())
+			continue;
+		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wstring document;
+		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+			continue;
+		if (!document.empty())
+			input.push_back(document);
+	}
+	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+
+	if (std::wcout.bad())
+		std::wcout.clear();
+	std::wcout << L"open & extract : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+	nlp::text_ranker text_ranker;
+	std::vector<std::string> stop_words_pathes;
+	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+	text_ranker.load_stop_words(stop_words_pathes);
+	text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+		std::filesystem::absolute("dictionary/mecab-ko-dic").string());
+
+	end = std::chrono::system_clock::now();
+	std::wcout << L"load stop words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	std::wcout << L"total : " << input.size() << std::endl;
+	std::wstring input_keywords;
+	size_t id = 0;
+	for (auto& document : input)
+	{
+		++id;
+		std::wcout << L"[" << id << L"]";
+		start = std::chrono::system_clock::now();
+		std::vector< std::pair< std::wstring, double> > keywords;
+		text_ranker.key_words(document, keywords, 1000);
+		for (auto& keyword : keywords)
+		{
+			input_keywords += L' ';
+			input_keywords += keyword.first;
+		}
+		end = std::chrono::system_clock::now();
+		std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+	}
+
+	//std::wcout << input_keywords << std::endl;
+
+	start = std::chrono::system_clock::now();
+	std::vector< std::pair< std::wstring, double> > keywords;
+	text_ranker.key_words(input_keywords, keywords, 100);
+	end = std::chrono::system_clock::now();
+	std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+
+	out << "[keywords]" << std::endl;
+	for (auto& keyword : keywords)
+	{
+		try
+		{
+			out << to_utf8(keyword.first) << " : " << keyword.second << std::endl;
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+	out.close();
+}
 
 #define CHECK(eval) if (! eval) { \
    const char *e = tagger ? tagger->what() : MeCab::getTaggerError(); \
@@ -1117,7 +1202,9 @@ int main(int argc, char* argv[])
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/hwp/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
 		test_summary();
+		//test_directory2();
 		//test_directory3();
+		//test_directory4();
 		//test_docx();
 		return 0;
 
