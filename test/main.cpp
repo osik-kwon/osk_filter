@@ -27,7 +27,11 @@
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include <mecab/mecab.h>
+#include <similarity/jaccard_similarity.h>
 
+
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics.hpp>
 
 std::wostream& operator << (std::wostream& stream, const filter::editor_traits::sections_t& sections)
 {
@@ -1195,12 +1199,149 @@ void test_mecab()
 	delete tagger;
 }
 
+void test_distance(const std::wstring& target, const std::wstring& root, const std::wstring& dest)
+{
+	std::locale::global(std::locale(""));
+
+	std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+	nlp::text_ranker text_ranker;
+	std::vector<std::string> stop_words_pathes;
+	for (auto& path : std::filesystem::directory_iterator("dictionary/stopwords"))
+		stop_words_pathes.push_back(std::filesystem::absolute(path).string());
+	text_ranker.load_stop_words(stop_words_pathes);
+	text_ranker.load_morphological_analyzer(std::filesystem::absolute("dictionary/mecabrc").string(),
+		std::filesystem::absolute("dictionary/mecab-ko-dic").string());
+
+	std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+	std::wcout << L"load analyzer : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+	start = std::chrono::system_clock::now();
+
+	std::vector<std::wstring> pathes;
+	for (auto& path : std::filesystem::recursive_directory_iterator(root))
+	{
+		if (path.is_directory())
+			continue;
+		auto absolute = std::filesystem::absolute(path).wstring();
+		std::replace(absolute.begin(), absolute.end(), L'\\', L'/');
+		if (absolute == target)
+			continue;
+		pathes.push_back(std::filesystem::absolute(path).wstring());
+	}
+
+	size_t id = 0;
+	std::vector< std::vector<std::wstring> > documents;
+	std::vector<std::wstring> target_document;
+
+	std::wcout << std::filesystem::absolute(target).wstring() << std::endl;
+	std::wstring document;
+	if (!extract_text(document, std::filesystem::absolute(target).wstring()))
+		return;
+	if (!document.empty())
+	{
+		auto local_start = std::chrono::system_clock::now();
+		std::vector< std::pair< std::wstring, double> > keywords;
+		std::vector<std::wstring> out_keywords;
+		text_ranker.key_words(document, keywords, 1000);
+		for (auto& keyword : keywords)
+		{
+			out_keywords.push_back(keyword.first);
+		}
+		target_document = out_keywords;
+		auto local_end = std::chrono::system_clock::now();
+		std::wcout << L"target : " << std::chrono::duration_cast<std::chrono::milliseconds>(local_end - local_start).count() << L"ms]" << std::endl;
+	}
+
+	for (auto& path : pathes)
+	{
+		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wstring document;
+		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+			continue;
+		if (!document.empty())
+		{
+			++id;
+			
+			auto local_start = std::chrono::system_clock::now();
+			std::vector< std::pair< std::wstring, double> > keywords;
+			std::vector<std::wstring> out_keywords;
+			text_ranker.key_words(document, keywords, 1000);
+			for (auto& keyword : keywords)
+			{
+				out_keywords.push_back(keyword.first);
+			}
+			documents.emplace_back(std::move(out_keywords));
+			auto local_end = std::chrono::system_clock::now();
+			std::wcout << L"[" << id << "/" << pathes.size() << L"]";
+			std::wcout << L"key words : " << std::chrono::duration_cast<std::chrono::milliseconds>(local_end - local_start).count() << L"ms]" << std::endl;			
+		}
+	}
+	end = std::chrono::system_clock::now();
+
+	if (std::wcout.bad())
+		std::wcout.clear();
+	std::wcout << L"open & extract & keywords : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << L"ms]" << std::endl;
+
+
+	std::map<double, std::wstring, std::greater<double> > sorted_doc;
+	for (size_t id = 0; id < documents.size(); ++id)
+	{
+		auto sim = nlp::jaccard_similarity_t<std::wstring>::index(target_document, documents[id]);
+		sorted_doc.insert(std::make_pair(sim, pathes[id]));
+	};
+	
+	std::ofstream out(dest);
+
+	out << "[target]" << std::endl;
+	out << to_utf8(target) << std::endl << std::endl;
+
+	out << "[jaccard similarity]" << std::endl;
+	for (auto& doc : sorted_doc)
+	{
+		try
+		{
+			out << doc.first << " : " << to_utf8(doc.second) << std::endl;
+		}
+		catch (const std::exception&)
+		{
+		}
+	}
+
+	out << std::endl;
+
+	boost::accumulators::accumulator_set<double, boost::accumulators::features<boost::accumulators::tag::mean> > acc;
+	for (auto& doc : sorted_doc)
+		acc(doc.first);
+
+	std::vector< std::pair< std::wstring, double> > means;
+	double mean = boost::accumulators::mean(acc) - std::numeric_limits<double>::epsilon();
+
+	out << "[extract means] : " << mean << std::endl;
+	for (auto& doc : sorted_doc)
+	{
+		if (doc.first > mean)
+		{
+			means.push_back(std::make_pair(doc.second, doc.first));
+			try
+			{
+				out << means.back().second << " : " << to_utf8(means.back().first) << std::endl;
+			}
+			catch (const std::exception&)
+			{
+			}
+		}
+	}
+	out.close();
+}
+
 #include <atlstr.h>
 
 int main(int argc, char* argv[])
 {
 	try
 	{
+		test_distance(L"F:/jaccard/머신러닝.hwp", L"F:/jaccard/", L"f:/sombra/jaccard.txt");
+		//test_distance(L"d:/ci/hwp/자전거안전사고예방수칙.hwp", L"d:/ci/hwp/", L"f:/sombra/jaccard_hwp.txt");
 		//test_mecab();
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
@@ -1211,7 +1352,7 @@ int main(int argc, char* argv[])
 		//test_directory3();
 		//test_directory4();
 		//test_docx();
-		//return 0;
+		return 0;
 
 		if (argc < 2)
 			return 0;

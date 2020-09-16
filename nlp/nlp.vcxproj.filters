@@ -11,6 +11,9 @@
     <ClCompile Include="similarity\text_similarity.cpp">
       <Filter>similarity</Filter>
     </ClCompile>
+    <ClCompile Include="similarity\jaccard_similarity.cpp">
+      <Filter>similarity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="textrank\textrank.h">
@@ -21,6 +24,9 @@
       <Filter>stopwords</Filter>
     </ClInclude>
     <ClInclude Include="similarity\text_similarity.h">
+      <Filter>similarity</Filter>
+    </ClInclude>
+    <ClInclude Include="similarity\jaccard_similarity.h">
       <Filter>similarity</Filter>
     </ClInclude>
   </ItemGroup>
