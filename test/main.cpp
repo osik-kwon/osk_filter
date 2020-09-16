@@ -532,8 +532,8 @@ void test_summary_directory(const std::wstring& src, const std::wstring& dest_ro
 	{
 		if (!path.is_directory())
 		{
-			src_pathes.push_back(std::filesystem::absolute(path).wstring());
-			dest_pathes.push_back(dest_root + std::filesystem::path(path).filename().wstring() + L".txt");
+			src_pathes.push_back(std::filesystem::absolute(path).generic_wstring());
+			dest_pathes.push_back(dest_root + std::filesystem::path(path).filename().generic_wstring() + L".txt");
 		}	
 	}
 
@@ -568,7 +568,10 @@ void test_summary()
 	//std::wstring src_path = L"d:/ci/hwp/2011충북대_정시모집요강.hwp";
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
 	//std::wstring src_path = L"d:/ci/docx/3GPP-Spec-Titles.docx";
-	std::wstring src_path = L"f:/sombra/legacy.hwp";
+	//std::wstring src_path = L"f:/notion/mindmap.hwp";
+	std::wstring src_path = L"f:/notion/인프라웨어_엔진(BWP)_구조품질_200721.pptx";
+	
+	//std::wstring src_path = L"f:/sombra/legacy.hwp";
 	//std::wstring src_path = L"d:/ci/docx/2주차.docx";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
 	//std::wstring src_path = L"f:/sombra/article1.hwp";
@@ -771,9 +774,9 @@ void test_directory()
 	{
 		if (path.is_directory())
 			continue;
-		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wcout << std::filesystem::absolute(path).generic_wstring() << std::endl;
 		std::wstring document;
-		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+		if (!extract_text(document, std::filesystem::absolute(path).generic_wstring()))
 			continue;
 		if(!document.empty())
 			input += document;
@@ -856,9 +859,9 @@ void test_directory2()
 	{
 		if (path.is_directory())
 			continue;
-		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wcout << std::filesystem::absolute(path).generic_wstring() << std::endl;
 		std::wstring document;
-		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+		if (!extract_text(document, std::filesystem::absolute(path).generic_wstring()))
 			continue;
 		if (!document.empty())
 			input.push_back(document);
@@ -938,9 +941,9 @@ void test_directory3()
 	{
 		if (path.is_directory())
 			continue;
-		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wcout << std::filesystem::absolute(path).generic_wstring() << std::endl;
 		std::wstring document;
-		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+		if (!extract_text(document, std::filesystem::absolute(path).generic_wstring()))
 			continue;
 		if (!document.empty())
 			input.push_back(document);
@@ -1024,9 +1027,9 @@ void test_directory4()
 	{
 		if (path.is_directory())
 			continue;
-		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wcout << std::filesystem::absolute(path).generic_wstring() << std::endl;
 		std::wstring document;
-		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+		if (!extract_text(document, std::filesystem::absolute(path).generic_wstring()))
 			continue;
 		if (!document.empty())
 			input.push_back(document);
@@ -1222,20 +1225,19 @@ void test_distance(const std::wstring& target, const std::wstring& root, const s
 	{
 		if (path.is_directory())
 			continue;
-		auto absolute = std::filesystem::absolute(path).wstring();
-		std::replace(absolute.begin(), absolute.end(), L'\\', L'/');
+		auto absolute = std::filesystem::absolute(path).generic_wstring();
 		if (absolute == target)
 			continue;
-		pathes.push_back(std::filesystem::absolute(path).wstring());
+		pathes.push_back(std::filesystem::absolute(path).generic_wstring());
 	}
 
 	size_t id = 0;
 	std::vector< std::vector<std::wstring> > documents;
 	std::vector<std::wstring> target_document;
 
-	std::wcout << std::filesystem::absolute(target).wstring() << std::endl;
+	std::wcout << std::filesystem::absolute(target).generic_wstring() << std::endl;
 	std::wstring document;
-	if (!extract_text(document, std::filesystem::absolute(target).wstring()))
+	if (!extract_text(document, std::filesystem::absolute(target).generic_wstring()))
 		return;
 	if (!document.empty())
 	{
@@ -1254,9 +1256,9 @@ void test_distance(const std::wstring& target, const std::wstring& root, const s
 
 	for (auto& path : pathes)
 	{
-		std::wcout << std::filesystem::absolute(path).wstring() << std::endl;
+		std::wcout << std::filesystem::absolute(path).generic_wstring() << std::endl;
 		std::wstring document;
-		if (!extract_text(document, std::filesystem::absolute(path).wstring()))
+		if (!extract_text(document, std::filesystem::absolute(path).generic_wstring()))
 			continue;
 		if (!document.empty())
 		{
