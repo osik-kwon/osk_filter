@@ -439,7 +439,14 @@ bool extract_text(std::wstring& dest, const std::wstring& src_path)
 		exract_text_impl<filter::xlsx::filter_t>(src_path, dest);
 	}
 	else
-		return false;
+	{
+		if (std::filesystem::path(src_path).extension().wstring() == L".txt")
+		{
+			exract_text_impl<filter::txt::filter_t>(src_path, dest);
+		}
+		else
+			return false;
+	}
 	return true;
 }
 
@@ -569,7 +576,8 @@ void test_summary()
 	//std::wstring src_path = L"f:/sombra/33차유네스코총회참가보고서_국문.hwp";
 	//std::wstring src_path = L"d:/ci/docx/3GPP-Spec-Titles.docx";
 	//std::wstring src_path = L"f:/notion/mindmap.hwp";
-	std::wstring src_path = L"f:/notion/인프라웨어_엔진(BWP)_구조품질_200721.pptx";
+	//std::wstring src_path = L"f:/notion/인프라웨어_엔진(BWP)_구조품질_200721.pptx";
+	std::wstring src_path = L"f:/sombra/twitter.txt";
 	
 	//std::wstring src_path = L"f:/sombra/legacy.hwp";
 	//std::wstring src_path = L"d:/ci/docx/2주차.docx";
@@ -1342,14 +1350,14 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		test_distance(L"F:/jaccard/머신러닝.hwp", L"F:/jaccard/", L"f:/sombra/jaccard.txt");
+		//test_distance(L"F:/jaccard/머신러닝.hwp", L"F:/jaccard/", L"f:/sombra/jaccard.txt");
 		//test_distance(L"d:/ci/hwp/자전거안전사고예방수칙.hwp", L"d:/ci/hwp/", L"f:/sombra/jaccard_hwp.txt");
 		//test_mecab();
 		//test_hwpx();
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/hwp/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
-		//test_summary();
+		test_summary();
 		//test_directory2();
 		//test_directory3();
 		//test_directory4();
