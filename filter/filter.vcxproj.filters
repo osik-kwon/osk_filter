@@ -55,6 +55,9 @@
     <Filter Include="sheet">
       <UniqueIdentifier>{8612399a-bf64-42f7-8b78-cc94e8f78658}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pdf">
+      <UniqueIdentifier>{fa0a3a62-1762-4b93-8acc-22ad9ffa7034}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pole\pole.cpp">
@@ -219,6 +222,9 @@
     </ClCompile>
     <ClCompile Include="sheet\xlsx_filter.cpp">
       <Filter>sheet</Filter>
+    </ClCompile>
+    <ClCompile Include="pdf\pdf_filter.cpp">
+      <Filter>pdf</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -429,6 +435,9 @@
     </ClInclude>
     <ClInclude Include="sheet\xlsx_filter.h">
       <Filter>sheet</Filter>
+    </ClInclude>
+    <ClInclude Include="pdf\pdf_filter.h">
+      <Filter>pdf</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,0 +1,1615 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="agg23">
+      <UniqueIdentifier>{4d0fe9f1-f18c-4d7c-b780-2740c1f5e186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{41c84cff-72c8-465d-8394-ac048737378b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bigint">
+      <UniqueIdentifier>{8be7fc6a-3359-4d1d-8031-bd0f52970df4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype">
+      <UniqueIdentifier>{33f9a5b9-8618-453a-8a7a-9d4a25d77235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lcms2-2.6">
+      <UniqueIdentifier>{6821ca77-d26c-4ca0-9756-aac15007eeac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libjpeg">
+      <UniqueIdentifier>{d5610952-405d-454a-bd5b-11bdccdea3a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libopenjpeg20">
+      <UniqueIdentifier>{14cf85e6-7242-4df0-890d-89751c26cf41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="numerics">
+      <UniqueIdentifier>{e72b356d-76a7-43d4-a762-bda39bece6be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib_v128">
+      <UniqueIdentifier>{5064dc31-edcf-4312-9f4e-e3d454b9a6d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\numerics">
+      <UniqueIdentifier>{bc8acc80-3163-4202-b39b-6a35dddc9b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\include">
+      <UniqueIdentifier>{46bf52c7-a8f5-4f56-90f7-b2f221e43e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src">
+      <UniqueIdentifier>{1e9c08bc-3dfd-4991-934a-057e98a92d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\include\config">
+      <UniqueIdentifier>{6b457e3d-8853-42a7-a31a-97c351eda49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\include\internal">
+      <UniqueIdentifier>{5afd35b6-22f6-419f-a115-ba1b24a5a455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\include\internal\services">
+      <UniqueIdentifier>{9e8c8603-1080-4c72-a31c-e882520a0414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\base">
+      <UniqueIdentifier>{aa628ea4-b250-4714-9941-813bb7d5f6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\cff">
+      <UniqueIdentifier>{c101244e-3179-4dfd-90a9-3f937af6f6e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\cid">
+      <UniqueIdentifier>{cb4a3f62-37c4-4dad-90a5-479c171229a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\psaux">
+      <UniqueIdentifier>{692a5318-549f-4fa5-a541-6bb8f8082b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\pshinter">
+      <UniqueIdentifier>{3902cc5e-7d1b-45a3-b24b-9967fb1eb4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\psnames">
+      <UniqueIdentifier>{213ac875-6375-4d01-938e-eb05d824df7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\raster">
+      <UniqueIdentifier>{8db1f926-2aa4-4943-b223-bf006744630c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\sfnt">
+      <UniqueIdentifier>{d02ff4ac-b43d-4bc5-9bd8-aab006a3f985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\smooth">
+      <UniqueIdentifier>{75742933-628b-4ddc-af66-aba1e9224b3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\truetype">
+      <UniqueIdentifier>{4d0a1889-2c55-46b9-ade8-ab2f14c6d5ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype\src\type1">
+      <UniqueIdentifier>{90e5136b-6cf6-411d-9d47-946f8fcc9bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lcms2-2.6\include">
+      <UniqueIdentifier>{84b5c656-2f88-47df-85b8-8b9e9d6ac70d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lcms2-2.6\src">
+      <UniqueIdentifier>{48b7bc44-638b-4fdc-b3cd-1bcdfbda4b7e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="logging.h" />
+    <ClInclude Include="macros.h" />
+    <ClInclude Include="template_util.h" />
+    <ClInclude Include="agg23\agg_array.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_basics.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_clip_liang_barsky.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_color_gray.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_conv_adaptor_vcgen.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_conv_dash.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_conv_stroke.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_curves.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_math.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_math_stroke.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_path_storage.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_pixfmt_gray.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_rasterizer_scanline_aa.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_render_scanlines.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_renderer_base.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_renderer_scanline.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_rendering_buffer.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_scanline_u.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_shorten_path.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_vcgen_dash.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_vcgen_stroke.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="agg23\agg_vertex_sequence.h">
+      <Filter>agg23</Filter>
+    </ClInclude>
+    <ClInclude Include="base\logging.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\macros.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\nonstd_unique_ptr.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\template_util.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\numerics\safe_conversions.h">
+      <Filter>base\numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="base\numerics\safe_conversions_impl.h">
+      <Filter>base\numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="base\numerics\safe_math.h">
+      <Filter>base\numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="base\numerics\safe_math_impl.h">
+      <Filter>base\numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="bigint\BigInteger.hh">
+      <Filter>bigint</Filter>
+    </ClInclude>
+    <ClInclude Include="bigint\BigIntegerLibrary.hh">
+      <Filter>bigint</Filter>
+    </ClInclude>
+    <ClInclude Include="bigint\BigIntegerUtils.hh">
+      <Filter>bigint</Filter>
+    </ClInclude>
+    <ClInclude Include="bigint\BigUnsigned.hh">
+      <Filter>bigint</Filter>
+    </ClInclude>
+    <ClInclude Include="bigint\BigUnsignedInABase.hh">
+      <Filter>bigint</Filter>
+    </ClInclude>
+    <ClInclude Include="bigint\NumberlikeArray.hh">
+      <Filter>bigint</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\freetype.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ft2build.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftadvanc.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftautoh.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftbbox.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftbdf.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftbitmap.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftbzip2.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftcache.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftcffdrv.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftcid.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\fterrdef.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\fterrors.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftgasp.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftglyph.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftgxval.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftgzip.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftimage.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftincrem.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftlcdfil.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftlist.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftlzw.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftmm.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftmodapi.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftmoderr.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftotval.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftoutln.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftpfr.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftrender.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftsizes.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftsnames.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftstroke.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftsynth.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftsystem.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\fttrigon.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftttdrv.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\fttypes.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftwinfnt.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ftxf86.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\t1tables.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ttnameid.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\tttables.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\tttags.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ttunpat.h">
+      <Filter>freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\config\ftconfig.h">
+      <Filter>freetype\include\config</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\config\ftheader.h">
+      <Filter>freetype\include\config</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\config\ftmodule.h">
+      <Filter>freetype\include\config</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\config\ftoption.h">
+      <Filter>freetype\include\config</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\config\ftstdlib.h">
+      <Filter>freetype\include\config</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\autohint.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftcalc.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftdebug.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftdriver.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftgloadr.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftmemory.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftobjs.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftpic.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftrfork.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftserv.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftstream.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\fttrace.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\ftvalid.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\internal.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\psaux.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\pshints.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\sfnt.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\t1types.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\tttypes.h">
+      <Filter>freetype\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svbdf.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svcid.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svgldict.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svgxval.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svkern.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svmm.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svotval.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svpfr.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svpostnm.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svprop.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svpscmap.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svpsinfo.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svsfnt.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svttcmap.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svtteng.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svttglyf.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svwinfnt.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\internal\services\svxf86nm.h">
+      <Filter>freetype\include\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\base\basepic.h">
+      <Filter>freetype\src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\base\ftbase.h">
+      <Filter>freetype\src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\base\md5.h">
+      <Filter>freetype\src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2arrst.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2blues.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2error.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2fixed.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2font.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2ft.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2glue.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2hints.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2intrp.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2read.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2stack.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cf2types.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffcmap.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffdrivr.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cfferrs.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffgload.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffload.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffobjs.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffparse.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cffpic.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cfftoken.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cff\cfftypes.h">
+      <Filter>freetype\src\cff</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\ciderrs.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\cidgload.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\cidload.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\cidobjs.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\cidparse.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\cidriver.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\cid\cidtoken.h">
+      <Filter>freetype\src\cid</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1afm.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1driver.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1errors.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1gload.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1load.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1objs.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1parse.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\type1\t1tokens.h">
+      <Filter>freetype\src\type1</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttdriver.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\tterrors.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttgload.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttinterp.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttobjs.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttpic.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttpload.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\truetype\ttsubpix.h">
+      <Filter>freetype\src\truetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\smooth\ftgrays.h">
+      <Filter>freetype\src\smooth</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\smooth\ftsmerrs.h">
+      <Filter>freetype\src\smooth</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\smooth\ftsmooth.h">
+      <Filter>freetype\src\smooth</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\smooth\ftspic.h">
+      <Filter>freetype\src\smooth</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\pngshim.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\sfdriver.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\sferrors.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\sfntpic.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\sfobjs.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttbdf.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttcmap.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttcmapc.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttkern.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttload.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttmtx.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttpost.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\sfnt\ttsbit.h">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\raster\ftmisc.h">
+      <Filter>freetype\src\raster</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\raster\ftraster.h">
+      <Filter>freetype\src\raster</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\raster\ftrend1.h">
+      <Filter>freetype\src\raster</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\raster\rasterrs.h">
+      <Filter>freetype\src\raster</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\raster\rastpic.h">
+      <Filter>freetype\src\raster</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psnames\psmodule.h">
+      <Filter>freetype\src\psnames</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psnames\psnamerr.h">
+      <Filter>freetype\src\psnames</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psnames\pspic.h">
+      <Filter>freetype\src\psnames</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psnames\pstables.h">
+      <Filter>freetype\src\psnames</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\pshinter\pshalgo.h">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\pshinter\pshglob.h">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\pshinter\pshmod.h">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\pshinter\pshnterr.h">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\pshinter\pshpic.h">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\pshinter\pshrec.h">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\afmparse.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\psauxerr.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\psauxmod.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\psconv.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\psobjs.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\t1cmap.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\src\psaux\t1decode.h">
+      <Filter>freetype\src\psaux</Filter>
+    </ClInclude>
+    <ClInclude Include="lcms2-2.6\include\lcms2.h">
+      <Filter>lcms2-2.6\include</Filter>
+    </ClInclude>
+    <ClInclude Include="lcms2-2.6\include\lcms2_plugin.h">
+      <Filter>lcms2-2.6\include</Filter>
+    </ClInclude>
+    <ClInclude Include="lcms2-2.6\src\lcms2_internal.h">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\cderror.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\cdjpeg.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jchuff.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jconfig.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jdct.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jdhuff.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jerror.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jinclude.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jmemsys.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jmorecfg.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jpegint.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jpeglib.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\jversion.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libjpeg\transupp.h">
+      <Filter>libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\bio.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\cio.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\dwt.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\event.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\function_list.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\image.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\indexbox_manager.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\invert.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\j2k.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\jp2.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\mct.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\mqc.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\openjpeg.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_clock.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_codec.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_config.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_config_private.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_includes.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_intmath.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_inttypes.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_malloc.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\opj_stdint.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\pi.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\raw.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\t1.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\t1_luts.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\t2.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\tcd.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="libopenjpeg20\tgt.h">
+      <Filter>libopenjpeg20</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\crc32.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\deflate.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\gzguts.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\inffast.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\inffixed.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\inflate.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\inftrees.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\trees.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\zconf.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\zlib.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_v128\zutil.h">
+      <Filter>zlib_v128</Filter>
+    </ClInclude>
+    <ClInclude Include="numerics\safe_conversions.h">
+      <Filter>numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="numerics\safe_conversions_impl.h">
+      <Filter>numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="numerics\safe_math.h">
+      <Filter>numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="numerics\safe_math_impl.h">
+      <Filter>numerics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="agg23\agg_curves.cpp">
+      <Filter>agg23</Filter>
+    </ClCompile>
+    <ClCompile Include="agg23\agg_path_storage.cpp">
+      <Filter>agg23</Filter>
+    </ClCompile>
+    <ClCompile Include="agg23\agg_rasterizer_scanline_aa.cpp">
+      <Filter>agg23</Filter>
+    </ClCompile>
+    <ClCompile Include="agg23\agg_vcgen_dash.cpp">
+      <Filter>agg23</Filter>
+    </ClCompile>
+    <ClCompile Include="agg23\agg_vcgen_stroke.cpp">
+      <Filter>agg23</Filter>
+    </ClCompile>
+    <ClCompile Include="bigint\BigInteger.cc">
+      <Filter>bigint</Filter>
+    </ClCompile>
+    <ClCompile Include="bigint\BigIntegerUtils.cc">
+      <Filter>bigint</Filter>
+    </ClCompile>
+    <ClCompile Include="bigint\BigUnsigned.cc">
+      <Filter>bigint</Filter>
+    </ClCompile>
+    <ClCompile Include="bigint\BigUnsignedInABase.cc">
+      <Filter>bigint</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\basepic.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftadvanc.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftapi.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbase.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbbox.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbdf.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbitmap.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftcalc.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftcid.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftdbgmem.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftdebug.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftfstype.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftgasp.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftgloadr.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftglyph.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftgxval.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftinit.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftlcdfil.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftmm.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftobjs.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftotval.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftoutln.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftpatent.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftpfr.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftpic.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftrfork.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftsnames.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftstream.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftstroke.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftsynth.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftsystem.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\fttrigon.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\fttype1.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftutil.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftwinfnt.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftxf86.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\md5.c">
+      <Filter>freetype\src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2arrst.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2blues.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2error.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2font.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2ft.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2hints.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2intrp.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2read.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cf2stack.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cff.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffcmap.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffdrivr.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffgload.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffload.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffobjs.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffparse.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cffpic.c">
+      <Filter>freetype\src\cff</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\cidgload.c">
+      <Filter>freetype\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\cidload.c">
+      <Filter>freetype\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\cidobjs.c">
+      <Filter>freetype\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\cidparse.c">
+      <Filter>freetype\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\cidriver.c">
+      <Filter>freetype\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\type1cid.c">
+      <Filter>freetype\src\cid</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\t1afm.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\t1driver.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\t1gload.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\t1load.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\t1objs.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\t1parse.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\type1.c">
+      <Filter>freetype\src\type1</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\truetype.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttdriver.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttgload.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttinterp.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttobjs.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttpic.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttpload.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\ttsubpix.c">
+      <Filter>freetype\src\truetype</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\smooth\ftgrays.c">
+      <Filter>freetype\src\smooth</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\smooth\ftsmooth.c">
+      <Filter>freetype\src\smooth</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\smooth\ftspic.c">
+      <Filter>freetype\src\smooth</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\smooth\smooth.c">
+      <Filter>freetype\src\smooth</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\pngshim.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\sfdriver.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\sfnt.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\sfntpic.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\sfobjs.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttbdf.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttcmap.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttkern.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttload.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttmtx.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttpost.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\ttsbit.c">
+      <Filter>freetype\src\sfnt</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\raster\ftraster.c">
+      <Filter>freetype\src\raster</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\raster\ftrend1.c">
+      <Filter>freetype\src\raster</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\raster\raster.c">
+      <Filter>freetype\src\raster</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\raster\rastpic.c">
+      <Filter>freetype\src\raster</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psnames\psmodule.c">
+      <Filter>freetype\src\psnames</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psnames\psnames.c">
+      <Filter>freetype\src\psnames</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psnames\pspic.c">
+      <Filter>freetype\src\psnames</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshalgo.c">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshglob.c">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshinter.c">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshmod.c">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshpic.c">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshrec.c">
+      <Filter>freetype\src\pshinter</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\afmparse.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\psaux.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\psauxmod.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\psconv.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\psobjs.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\t1cmap.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\t1decode.c">
+      <Filter>freetype\src\psaux</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmscam02.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmscgats.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmscnvrt.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmserr.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsgamma.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsgmt.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmshalf.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsintrp.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsio0.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsio1.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmslut.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsmd5.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsmtrx.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsnamed.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsopt.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmspack.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmspcs.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsplugin.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsps2.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmssamp.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmssm.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmstypes.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsvirt.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmswtpnt.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lcms2-2.6\src\cmsxform.c">
+      <Filter>lcms2-2.6\src</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcapimin.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcapistd.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jccoefct.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jccolor.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcdctmgr.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jchuff.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcinit.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcmainct.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcmarker.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcmaster.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcomapi.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcparam.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcphuff.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcprepct.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jcsample.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jctrans.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdapimin.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdapistd.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdcoefct.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdcolor.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jddctmgr.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdhuff.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdinput.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdmainct.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdmarker.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdmaster.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdmerge.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdphuff.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdpostct.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdsample.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jdtrans.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jerror.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jfdctfst.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jfdctint.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jidctfst.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jidctint.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jidctred.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jmemmgr.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jmemnobs.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libjpeg\fpdfapi_jutils.c">
+      <Filter>libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\bio.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\cio.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\dwt.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\event.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\function_list.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\image.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\invert.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\j2k.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\jp2.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\mct.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\mqc.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\openjpeg.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\opj_clock.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\pi.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\raw.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\t1.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\t1_generate_luts.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\t2.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\tcd.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="libopenjpeg20\tgt.c">
+      <Filter>libopenjpeg20</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\adler32.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\compress.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\crc32.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\deflate.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\gzclose.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\gzlib.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\gzread.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\gzwrite.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\infback.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\inffast.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\inflate.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\inftrees.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\trees.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\uncompr.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_v128\zutil.c">
+      <Filter>zlib_v128</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bigint\LICENSE">
+      <Filter>bigint</Filter>
+    </None>
+    <None Include="freetype\src\base\Jamfile">
+      <Filter>freetype\src\base</Filter>
+    </None>
+    <None Include="freetype\src\cff\Jamfile">
+      <Filter>freetype\src\cff</Filter>
+    </None>
+    <None Include="freetype\src\cid\Jamfile">
+      <Filter>freetype\src\cid</Filter>
+    </None>
+    <None Include="freetype\src\type1\Jamfile">
+      <Filter>freetype\src\type1</Filter>
+    </None>
+    <None Include="freetype\src\truetype\Jamfile">
+      <Filter>freetype\src\truetype</Filter>
+    </None>
+    <None Include="freetype\src\smooth\Jamfile">
+      <Filter>freetype\src\smooth</Filter>
+    </None>
+    <None Include="freetype\src\sfnt\Jamfile">
+      <Filter>freetype\src\sfnt</Filter>
+    </None>
+    <None Include="freetype\src\raster\Jamfile">
+      <Filter>freetype\src\raster</Filter>
+    </None>
+    <None Include="freetype\src\psnames\Jamfile">
+      <Filter>freetype\src\psnames</Filter>
+    </None>
+    <None Include="freetype\src\pshinter\Jamfile">
+      <Filter>freetype\src\pshinter</Filter>
+    </None>
+    <None Include="freetype\src\psaux\Jamfile">
+      <Filter>freetype\src\psaux</Filter>
+    </None>
+    <None Include="libopenjpeg20\opj_config.h.cmake.in">
+      <Filter>libopenjpeg20</Filter>
+    </None>
+    <None Include="numerics\OWNERS">
+      <Filter>numerics</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="libopenjpeg20\CMakeLists.txt">
+      <Filter>libopenjpeg20</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

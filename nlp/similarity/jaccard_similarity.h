@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <iterator>
 
 namespace nlp
 {

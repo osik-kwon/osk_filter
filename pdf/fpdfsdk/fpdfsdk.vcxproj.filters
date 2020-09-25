@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{ba5b0bed-57cf-434d-a23f-f1a118ad5bef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3bb9dd61-a650-420b-acac-9f4f53cbd542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\formfiller">
+      <UniqueIdentifier>{0a070409-694f-4ea9-8f2c-f79ba9081f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fxedit">
+      <UniqueIdentifier>{9110e27f-d2fe-4a32-b252-a9e1cba8aedf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pdfwindow">
+      <UniqueIdentifier>{f15c6a33-77ed-4d15-853e-712daa3ca068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\formfiller">
+      <UniqueIdentifier>{7e5fa8f0-508b-4e2f-abb1-9fd600ccccff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxedit">
+      <UniqueIdentifier>{60e45b15-6314-439b-b035-6b6ab90012e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pdfwindow">
+      <UniqueIdentifier>{2bc70286-7d71-4571-b0e2-fc9a84a1664d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public">
+      <UniqueIdentifier>{7fa32646-d71d-42fe-a4f1-13675e3d3b65}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\public\fpdf_dataavail.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_doc.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_edit.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_ext.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_flatten.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_formfill.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_fwlevent.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_ppo.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_progressive.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_save.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_searchex.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_sysfontinfo.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_text.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdf_transformpage.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\fpdfview.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_actionhandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_annothandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_baseannot.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_baseform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_common.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_define.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_mgr.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fsdk_rendercontext.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fx_systemhandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_CBA_Fontmap.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_CheckBox.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_ComboBox.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_FormFiller.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_IFormFiller.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_ListBox.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_Notify.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_PushButton.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_RadioButton.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_TextField.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FFL_Utils.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\formfiller\FormFiller.h">
+      <Filter>include\formfiller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxedit\fx_edit.h">
+      <Filter>include\fxedit</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxedit\fxet_edit.h">
+      <Filter>include\fxedit</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxedit\fxet_list.h">
+      <Filter>include\fxedit</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxedit\fxet_stub.h">
+      <Filter>include\fxedit</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\IPDFWindow.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PDFWindow.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Button.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Caret.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_ComboBox.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Edit.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_EditCtrl.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_FontMap.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Icon.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_IconList.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Label.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_ListBox.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_ListCtrl.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Note.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_ScrollBar.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Signature.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_SpecialButton.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Utils.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pdfwindow\PWL_Wnd.h">
+      <Filter>include\pdfwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfview_c_api_test.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\public\README">
+      <Filter>public</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\fpdf_dataavail.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdf_ext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdf_flatten.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdf_progressive.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdf_searchex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdf_sysfontinfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdf_transformpage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfeditimg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfeditpage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfformfill.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfppo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfsave.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdftext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfview.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfview_c_api_test.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsdk_actionhandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsdk_annothandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsdk_baseannot.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsdk_baseform.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsdk_mgr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsdk_rendercontext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_CBA_Fontmap.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_CheckBox.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_ComboBox.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_FormFiller.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_IFormFiller.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_ListBox.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_Notify.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_PushButton.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_RadioButton.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_TextField.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formfiller\FFL_Utils.cpp">
+      <Filter>src\formfiller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxedit\fxet_ap.cpp">
+      <Filter>src\fxedit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxedit\fxet_edit.cpp">
+      <Filter>src\fxedit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxedit\fxet_list.cpp">
+      <Filter>src\fxedit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxedit\fxet_module.cpp">
+      <Filter>src\fxedit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxedit\fxet_pageobjs.cpp">
+      <Filter>src\fxedit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Button.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Caret.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_ComboBox.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Edit.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_EditCtrl.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_FontMap.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Icon.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_IconList.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Label.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_ListBox.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_ListCtrl.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Note.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_ScrollBar.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Signature.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_SpecialButton.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Utils.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfwindow\PWL_Wnd.cpp">
+      <Filter>src\pdfwindow</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\fpdfsdkdll.rc">
+      <Filter>src</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

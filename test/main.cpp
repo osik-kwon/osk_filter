@@ -12,6 +12,7 @@
 #include "word/docx_filter.h"
 #include "slide/pptx_filter.h"
 #include "sheet/xlsx_filter.h"
+#include "pdf/pdf_filter.h"
 #include "locale/charset_encoder.h"
 #include "traits/editor_traits.h"
 
@@ -438,6 +439,10 @@ bool extract_text(std::wstring& dest, const std::wstring& src_path)
 	{
 		exract_text_impl<filter::xlsx::filter_t>(src_path, dest);
 	}
+	else if (spec == "pdf")
+	{
+		exract_text_impl<filter::pdf::filter_t>(src_path, dest);
+	}
 	else
 	{
 		if (std::filesystem::path(src_path).extension().wstring() == L".txt")
@@ -577,8 +582,9 @@ void test_summary()
 	//std::wstring src_path = L"d:/ci/docx/3GPP-Spec-Titles.docx";
 	//std::wstring src_path = L"f:/notion/mindmap.hwp";
 	//std::wstring src_path = L"f:/notion/인프라웨어_엔진(BWP)_구조품질_200721.pptx";
-	std::wstring src_path = L"f:/sombra/twitter.txt";
-	
+	//std::wstring src_path = L"f:/sombra/twitter.txt";
+	//std::wstring src_path = L"f:/pdf/sample/방콕_가이드북_한쪽_v4.0_150306.pdf";
+	std::wstring src_path = L"f:/pdf/sample/2.pdf";
 	//std::wstring src_path = L"f:/sombra/legacy.hwp";
 	//std::wstring src_path = L"d:/ci/docx/2주차.docx";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
@@ -702,6 +708,14 @@ void test_docx()
 	filter_t filter;
 	auto src = filter.open(to_utf8(L"F:/sombra/0212.docx"));
 	auto sections = filter.extract_all_texts(src);
+}
+
+void test_pdf()
+{
+	std::wcout.imbue(std::locale(""));
+	using namespace filter::pdf;
+	filter_t filter;
+	auto sections = filter.extract_all_texts(to_utf8(L"F:/pdf/sample/simple2.pdf"));
 }
 
 void cmd_summary(const std::wstring& src_path, const std::wstring& dest_path, const std::wstring& stop_words_path,
@@ -1350,6 +1364,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
+		//test_pdf();
 		//test_distance(L"F:/jaccard/머신러닝.hwp", L"F:/jaccard/", L"f:/sombra/jaccard.txt");
 		//test_distance(L"d:/ci/hwp/자전거안전사고예방수칙.hwp", L"d:/ci/hwp/", L"f:/sombra/jaccard_hwp.txt");
 		//test_mecab();
@@ -1362,7 +1377,7 @@ int main(int argc, char* argv[])
 		//test_directory3();
 		//test_directory4();
 		//test_docx();
-		return 0;
+		//return 0;
 
 		if (argc < 2)
 			return 0;

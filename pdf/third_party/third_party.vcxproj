@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="agg23\agg_array.h" />
+    <ClInclude Include="agg23\agg_basics.h" />
+    <ClInclude Include="agg23\agg_clip_liang_barsky.h" />
+    <ClInclude Include="agg23\agg_color_gray.h" />
+    <ClInclude Include="agg23\agg_conv_adaptor_vcgen.h" />
+    <ClInclude Include="agg23\agg_conv_dash.h" />
+    <ClInclude Include="agg23\agg_conv_stroke.h" />
+    <ClInclude Include="agg23\agg_curves.h" />
+    <ClInclude Include="agg23\agg_math.h" />
+    <ClInclude Include="agg23\agg_math_stroke.h" />
+    <ClInclude Include="agg23\agg_path_storage.h" />
+    <ClInclude Include="agg23\agg_pixfmt_gray.h" />
+    <ClInclude Include="agg23\agg_rasterizer_scanline_aa.h" />
+    <ClInclude Include="agg23\agg_renderer_base.h" />
+    <ClInclude Include="agg23\agg_renderer_scanline.h" />
+    <ClInclude Include="agg23\agg_rendering_buffer.h" />
+    <ClInclude Include="agg23\agg_render_scanlines.h" />
+    <ClInclude Include="agg23\agg_scanline_u.h" />
+    <ClInclude Include="agg23\agg_shorten_path.h" />
+    <ClInclude Include="agg23\agg_vcgen_dash.h" />
+    <ClInclude Include="agg23\agg_vcgen_stroke.h" />
+    <ClInclude Include="agg23\agg_vertex_sequence.h" />
+    <ClInclude Include="base\logging.h" />
+    <ClInclude Include="base\macros.h" />
+    <ClInclude Include="base\nonstd_unique_ptr.h" />
+    <ClInclude Include="base\numerics\safe_conversions.h" />
+    <ClInclude Include="base\numerics\safe_conversions_impl.h" />
+    <ClInclude Include="base\numerics\safe_math.h" />
+    <ClInclude Include="base\numerics\safe_math_impl.h" />
+    <ClInclude Include="base\template_util.h" />
+    <ClInclude Include="bigint\BigInteger.hh" />
+    <ClInclude Include="bigint\BigIntegerLibrary.hh" />
+    <ClInclude Include="bigint\BigIntegerUtils.hh" />
+    <ClInclude Include="bigint\BigUnsigned.hh" />
+    <ClInclude Include="bigint\BigUnsignedInABase.hh" />
+    <ClInclude Include="bigint\NumberlikeArray.hh" />
+    <ClInclude Include="freetype\include\config\ftconfig.h" />
+    <ClInclude Include="freetype\include\config\ftheader.h" />
+    <ClInclude Include="freetype\include\config\ftmodule.h" />
+    <ClInclude Include="freetype\include\config\ftoption.h" />
+    <ClInclude Include="freetype\include\config\ftstdlib.h" />
+    <ClInclude Include="freetype\include\freetype.h" />
+    <ClInclude Include="freetype\include\ft2build.h" />
+    <ClInclude Include="freetype\include\ftadvanc.h" />
+    <ClInclude Include="freetype\include\ftautoh.h" />
+    <ClInclude Include="freetype\include\ftbbox.h" />
+    <ClInclude Include="freetype\include\ftbdf.h" />
+    <ClInclude Include="freetype\include\ftbitmap.h" />
+    <ClInclude Include="freetype\include\ftbzip2.h" />
+    <ClInclude Include="freetype\include\ftcache.h" />
+    <ClInclude Include="freetype\include\ftcffdrv.h" />
+    <ClInclude Include="freetype\include\ftcid.h" />
+    <ClInclude Include="freetype\include\fterrdef.h" />
+    <ClInclude Include="freetype\include\fterrors.h" />
+    <ClInclude Include="freetype\include\ftgasp.h" />
+    <ClInclude Include="freetype\include\ftglyph.h" />
+    <ClInclude Include="freetype\include\ftgxval.h" />
+    <ClInclude Include="freetype\include\ftgzip.h" />
+    <ClInclude Include="freetype\include\ftimage.h" />
+    <ClInclude Include="freetype\include\ftincrem.h" />
+    <ClInclude Include="freetype\include\ftlcdfil.h" />
+    <ClInclude Include="freetype\include\ftlist.h" />
+    <ClInclude Include="freetype\include\ftlzw.h" />
+    <ClInclude Include="freetype\include\ftmm.h" />
+    <ClInclude Include="freetype\include\ftmodapi.h" />
+    <ClInclude Include="freetype\include\ftmoderr.h" />
+    <ClInclude Include="freetype\include\ftotval.h" />
+    <ClInclude Include="freetype\include\ftoutln.h" />
+    <ClInclude Include="freetype\include\ftpfr.h" />
+    <ClInclude Include="freetype\include\ftrender.h" />
+    <ClInclude Include="freetype\include\ftsizes.h" />
+    <ClInclude Include="freetype\include\ftsnames.h" />
+    <ClInclude Include="freetype\include\ftstroke.h" />
+    <ClInclude Include="freetype\include\ftsynth.h" />
+    <ClInclude Include="freetype\include\ftsystem.h" />
+    <ClInclude Include="freetype\include\fttrigon.h" />
+    <ClInclude Include="freetype\include\ftttdrv.h" />
+    <ClInclude Include="freetype\include\fttypes.h" />
+    <ClInclude Include="freetype\include\ftwinfnt.h" />
+    <ClInclude Include="freetype\include\ftxf86.h" />
+    <ClInclude Include="freetype\include\internal\autohint.h" />
+    <ClInclude Include="freetype\include\internal\ftcalc.h" />
+    <ClInclude Include="freetype\include\internal\ftdebug.h" />
+    <ClInclude Include="freetype\include\internal\ftdriver.h" />
+    <ClInclude Include="freetype\include\internal\ftgloadr.h" />
+    <ClInclude Include="freetype\include\internal\ftmemory.h" />
+    <ClInclude Include="freetype\include\internal\ftobjs.h" />
+    <ClInclude Include="freetype\include\internal\ftpic.h" />
+    <ClInclude Include="freetype\include\internal\ftrfork.h" />
+    <ClInclude Include="freetype\include\internal\ftserv.h" />
+    <ClInclude Include="freetype\include\internal\ftstream.h" />
+    <ClInclude Include="freetype\include\internal\fttrace.h" />
+    <ClInclude Include="freetype\include\internal\ftvalid.h" />
+    <ClInclude Include="freetype\include\internal\internal.h" />
+    <ClInclude Include="freetype\include\internal\psaux.h" />
+    <ClInclude Include="freetype\include\internal\pshints.h" />
+    <ClInclude Include="freetype\include\internal\services\svbdf.h" />
+    <ClInclude Include="freetype\include\internal\services\svcid.h" />
+    <ClInclude Include="freetype\include\internal\services\svgldict.h" />
+    <ClInclude Include="freetype\include\internal\services\svgxval.h" />
+    <ClInclude Include="freetype\include\internal\services\svkern.h" />
+    <ClInclude Include="freetype\include\internal\services\svmm.h" />
+    <ClInclude Include="freetype\include\internal\services\svotval.h" />
+    <ClInclude Include="freetype\include\internal\services\svpfr.h" />
+    <ClInclude Include="freetype\include\internal\services\svpostnm.h" />
+    <ClInclude Include="freetype\include\internal\services\svprop.h" />
+    <ClInclude Include="freetype\include\internal\services\svpscmap.h" />
+    <ClInclude Include="freetype\include\internal\services\svpsinfo.h" />
+    <ClInclude Include="freetype\include\internal\services\svsfnt.h" />
+    <ClInclude Include="freetype\include\internal\services\svttcmap.h" />
+    <ClInclude Include="freetype\include\internal\services\svtteng.h" />
+    <ClInclude Include="freetype\include\internal\services\svttglyf.h" />
+    <ClInclude Include="freetype\include\internal\services\svwinfnt.h" />
+    <ClInclude Include="freetype\include\internal\services\svxf86nm.h" />
+    <ClInclude Include="freetype\include\internal\sfnt.h" />
+    <ClInclude Include="freetype\include\internal\t1types.h" />
+    <ClInclude Include="freetype\include\internal\tttypes.h" />
+    <ClInclude Include="freetype\include\t1tables.h" />
+    <ClInclude Include="freetype\include\ttnameid.h" />
+    <ClInclude Include="freetype\include\tttables.h" />
+    <ClInclude Include="freetype\include\tttags.h" />
+    <ClInclude Include="freetype\include\ttunpat.h" />
+    <ClInclude Include="freetype\src\base\basepic.h" />
+    <ClInclude Include="freetype\src\base\ftbase.h" />
+    <ClInclude Include="freetype\src\base\md5.h" />
+    <ClInclude Include="freetype\src\cff\cf2arrst.h" />
+    <ClInclude Include="freetype\src\cff\cf2blues.h" />
+    <ClInclude Include="freetype\src\cff\cf2error.h" />
+    <ClInclude Include="freetype\src\cff\cf2fixed.h" />
+    <ClInclude Include="freetype\src\cff\cf2font.h" />
+    <ClInclude Include="freetype\src\cff\cf2ft.h" />
+    <ClInclude Include="freetype\src\cff\cf2glue.h" />
+    <ClInclude Include="freetype\src\cff\cf2hints.h" />
+    <ClInclude Include="freetype\src\cff\cf2intrp.h" />
+    <ClInclude Include="freetype\src\cff\cf2read.h" />
+    <ClInclude Include="freetype\src\cff\cf2stack.h" />
+    <ClInclude Include="freetype\src\cff\cf2types.h" />
+    <ClInclude Include="freetype\src\cff\cffcmap.h" />
+    <ClInclude Include="freetype\src\cff\cffdrivr.h" />
+    <ClInclude Include="freetype\src\cff\cfferrs.h" />
+    <ClInclude Include="freetype\src\cff\cffgload.h" />
+    <ClInclude Include="freetype\src\cff\cffload.h" />
+    <ClInclude Include="freetype\src\cff\cffobjs.h" />
+    <ClInclude Include="freetype\src\cff\cffparse.h" />
+    <ClInclude Include="freetype\src\cff\cffpic.h" />
+    <ClInclude Include="freetype\src\cff\cfftoken.h" />
+    <ClInclude Include="freetype\src\cff\cfftypes.h" />
+    <ClInclude Include="freetype\src\cid\ciderrs.h" />
+    <ClInclude Include="freetype\src\cid\cidgload.h" />
+    <ClInclude Include="freetype\src\cid\cidload.h" />
+    <ClInclude Include="freetype\src\cid\cidobjs.h" />
+    <ClInclude Include="freetype\src\cid\cidparse.h" />
+    <ClInclude Include="freetype\src\cid\cidriver.h" />
+    <ClInclude Include="freetype\src\cid\cidtoken.h" />
+    <ClInclude Include="freetype\src\psaux\afmparse.h" />
+    <ClInclude Include="freetype\src\psaux\psauxerr.h" />
+    <ClInclude Include="freetype\src\psaux\psauxmod.h" />
+    <ClInclude Include="freetype\src\psaux\psconv.h" />
+    <ClInclude Include="freetype\src\psaux\psobjs.h" />
+    <ClInclude Include="freetype\src\psaux\t1cmap.h" />
+    <ClInclude Include="freetype\src\psaux\t1decode.h" />
+    <ClInclude Include="freetype\src\pshinter\pshalgo.h" />
+    <ClInclude Include="freetype\src\pshinter\pshglob.h" />
+    <ClInclude Include="freetype\src\pshinter\pshmod.h" />
+    <ClInclude Include="freetype\src\pshinter\pshnterr.h" />
+    <ClInclude Include="freetype\src\pshinter\pshpic.h" />
+    <ClInclude Include="freetype\src\pshinter\pshrec.h" />
+    <ClInclude Include="freetype\src\psnames\psmodule.h" />
+    <ClInclude Include="freetype\src\psnames\psnamerr.h" />
+    <ClInclude Include="freetype\src\psnames\pspic.h" />
+    <ClInclude Include="freetype\src\psnames\pstables.h" />
+    <ClInclude Include="freetype\src\raster\ftmisc.h" />
+    <ClInclude Include="freetype\src\raster\ftraster.h" />
+    <ClInclude Include="freetype\src\raster\ftrend1.h" />
+    <ClInclude Include="freetype\src\raster\rasterrs.h" />
+    <ClInclude Include="freetype\src\raster\rastpic.h" />
+    <ClInclude Include="freetype\src\sfnt\pngshim.h" />
+    <ClInclude Include="freetype\src\sfnt\sfdriver.h" />
+    <ClInclude Include="freetype\src\sfnt\sferrors.h" />
+    <ClInclude Include="freetype\src\sfnt\sfntpic.h" />
+    <ClInclude Include="freetype\src\sfnt\sfobjs.h" />
+    <ClInclude Include="freetype\src\sfnt\ttbdf.h" />
+    <ClInclude Include="freetype\src\sfnt\ttcmap.h" />
+    <ClInclude Include="freetype\src\sfnt\ttcmapc.h" />
+    <ClInclude Include="freetype\src\sfnt\ttkern.h" />
+    <ClInclude Include="freetype\src\sfnt\ttload.h" />
+    <ClInclude Include="freetype\src\sfnt\ttmtx.h" />
+    <ClInclude Include="freetype\src\sfnt\ttpost.h" />
+    <ClInclude Include="freetype\src\sfnt\ttsbit.h" />
+    <ClInclude Include="freetype\src\smooth\ftgrays.h" />
+    <ClInclude Include="freetype\src\smooth\ftsmerrs.h" />
+    <ClInclude Include="freetype\src\smooth\ftsmooth.h" />
+    <ClInclude Include="freetype\src\smooth\ftspic.h" />
+    <ClInclude Include="freetype\src\truetype\ttdriver.h" />
+    <ClInclude Include="freetype\src\truetype\tterrors.h" />
+    <ClInclude Include="freetype\src\truetype\ttgload.h" />
+    <ClInclude Include="freetype\src\truetype\ttinterp.h" />
+    <ClInclude Include="freetype\src\truetype\ttobjs.h" />
+    <ClInclude Include="freetype\src\truetype\ttpic.h" />
+    <ClInclude Include="freetype\src\truetype\ttpload.h" />
+    <ClInclude Include="freetype\src\truetype\ttsubpix.h" />
+    <ClInclude Include="freetype\src\type1\t1afm.h" />
+    <ClInclude Include="freetype\src\type1\t1driver.h" />
+    <ClInclude Include="freetype\src\type1\t1errors.h" />
+    <ClInclude Include="freetype\src\type1\t1gload.h" />
+    <ClInclude Include="freetype\src\type1\t1load.h" />
+    <ClInclude Include="freetype\src\type1\t1objs.h" />
+    <ClInclude Include="freetype\src\type1\t1parse.h" />
+    <ClInclude Include="freetype\src\type1\t1tokens.h" />
+    <ClInclude Include="lcms2-2.6\include\lcms2.h" />
+    <ClInclude Include="lcms2-2.6\include\lcms2_plugin.h" />
+    <ClInclude Include="lcms2-2.6\src\lcms2_internal.h" />
+    <ClInclude Include="libjpeg\cderror.h" />
+    <ClInclude Include="libjpeg\cdjpeg.h" />
+    <ClInclude Include="libjpeg\jchuff.h" />
+    <ClInclude Include="libjpeg\jconfig.h" />
+    <ClInclude Include="libjpeg\jdct.h" />
+    <ClInclude Include="libjpeg\jdhuff.h" />
+    <ClInclude Include="libjpeg\jerror.h" />
+    <ClInclude Include="libjpeg\jinclude.h" />
+    <ClInclude Include="libjpeg\jmemsys.h" />
+    <ClInclude Include="libjpeg\jmorecfg.h" />
+    <ClInclude Include="libjpeg\jpegint.h" />
+    <ClInclude Include="libjpeg\jpeglib.h" />
+    <ClInclude Include="libjpeg\jversion.h" />
+    <ClInclude Include="libjpeg\transupp.h" />
+    <ClInclude Include="libopenjpeg20\bio.h" />
+    <ClInclude Include="libopenjpeg20\cio.h" />
+    <ClInclude Include="libopenjpeg20\dwt.h" />
+    <ClInclude Include="libopenjpeg20\event.h" />
+    <ClInclude Include="libopenjpeg20\function_list.h" />
+    <ClInclude Include="libopenjpeg20\image.h" />
+    <ClInclude Include="libopenjpeg20\indexbox_manager.h" />
+    <ClInclude Include="libopenjpeg20\invert.h" />
+    <ClInclude Include="libopenjpeg20\j2k.h" />
+    <ClInclude Include="libopenjpeg20\jp2.h" />
+    <ClInclude Include="libopenjpeg20\mct.h" />
+    <ClInclude Include="libopenjpeg20\mqc.h" />
+    <ClInclude Include="libopenjpeg20\openjpeg.h" />
+    <ClInclude Include="libopenjpeg20\opj_clock.h" />
+    <ClInclude Include="libopenjpeg20\opj_codec.h" />
+    <ClInclude Include="libopenjpeg20\opj_config.h" />
+    <ClInclude Include="libopenjpeg20\opj_config_private.h" />
+    <ClInclude Include="libopenjpeg20\opj_includes.h" />
+    <ClInclude Include="libopenjpeg20\opj_intmath.h" />
+    <ClInclude Include="libopenjpeg20\opj_inttypes.h" />
+    <ClInclude Include="libopenjpeg20\opj_malloc.h" />
+    <ClInclude Include="libopenjpeg20\opj_stdint.h" />
+    <ClInclude Include="libopenjpeg20\pi.h" />
+    <ClInclude Include="libopenjpeg20\raw.h" />
+    <ClInclude Include="libopenjpeg20\t1.h" />
+    <ClInclude Include="libopenjpeg20\t1_luts.h" />
+    <ClInclude Include="libopenjpeg20\t2.h" />
+    <ClInclude Include="libopenjpeg20\tcd.h" />
+    <ClInclude Include="libopenjpeg20\tgt.h" />
+    <ClInclude Include="logging.h" />
+    <ClInclude Include="macros.h" />
+    <ClInclude Include="numerics\safe_conversions.h" />
+    <ClInclude Include="numerics\safe_conversions_impl.h" />
+    <ClInclude Include="numerics\safe_math.h" />
+    <ClInclude Include="numerics\safe_math_impl.h" />
+    <ClInclude Include="template_util.h" />
+    <ClInclude Include="zlib_v128\crc32.h" />
+    <ClInclude Include="zlib_v128\deflate.h" />
+    <ClInclude Include="zlib_v128\gzguts.h" />
+    <ClInclude Include="zlib_v128\inffast.h" />
+    <ClInclude Include="zlib_v128\inffixed.h" />
+    <ClInclude Include="zlib_v128\inflate.h" />
+    <ClInclude Include="zlib_v128\inftrees.h" />
+    <ClInclude Include="zlib_v128\trees.h" />
+    <ClInclude Include="zlib_v128\zconf.h" />
+    <ClInclude Include="zlib_v128\zlib.h" />
+    <ClInclude Include="zlib_v128\zutil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="agg23\agg_curves.cpp" />
+    <ClCompile Include="agg23\agg_path_storage.cpp" />
+    <ClCompile Include="agg23\agg_rasterizer_scanline_aa.cpp" />
+    <ClCompile Include="agg23\agg_vcgen_dash.cpp" />
+    <ClCompile Include="agg23\agg_vcgen_stroke.cpp" />
+    <ClCompile Include="bigint\BigInteger.cc" />
+    <ClCompile Include="bigint\BigIntegerUtils.cc" />
+    <ClCompile Include="bigint\BigUnsigned.cc" />
+    <ClCompile Include="bigint\BigUnsignedInABase.cc" />
+    <ClCompile Include="freetype\src\base\basepic.c" />
+    <ClCompile Include="freetype\src\base\ftadvanc.c" />
+    <ClCompile Include="freetype\src\base\ftapi.c" />
+    <ClCompile Include="freetype\src\base\ftbase.c" />
+    <ClCompile Include="freetype\src\base\ftbbox.c" />
+    <ClCompile Include="freetype\src\base\ftbdf.c" />
+    <ClCompile Include="freetype\src\base\ftbitmap.c" />
+    <ClCompile Include="freetype\src\base\ftcalc.c" />
+    <ClCompile Include="freetype\src\base\ftcid.c" />
+    <ClCompile Include="freetype\src\base\ftdbgmem.c" />
+    <ClCompile Include="freetype\src\base\ftdebug.c" />
+    <ClCompile Include="freetype\src\base\ftfstype.c" />
+    <ClCompile Include="freetype\src\base\ftgasp.c" />
+    <ClCompile Include="freetype\src\base\ftgloadr.c" />
+    <ClCompile Include="freetype\src\base\ftglyph.c" />
+    <ClCompile Include="freetype\src\base\ftgxval.c" />
+    <ClCompile Include="freetype\src\base\ftinit.c" />
+    <ClCompile Include="freetype\src\base\ftlcdfil.c" />
+    <ClCompile Include="freetype\src\base\ftmm.c" />
+    <ClCompile Include="freetype\src\base\ftobjs.c" />
+    <ClCompile Include="freetype\src\base\ftotval.c" />
+    <ClCompile Include="freetype\src\base\ftoutln.c" />
+    <ClCompile Include="freetype\src\base\ftpatent.c" />
+    <ClCompile Include="freetype\src\base\ftpfr.c" />
+    <ClCompile Include="freetype\src\base\ftpic.c" />
+    <ClCompile Include="freetype\src\base\ftrfork.c" />
+    <ClCompile Include="freetype\src\base\ftsnames.c" />
+    <ClCompile Include="freetype\src\base\ftstream.c" />
+    <ClCompile Include="freetype\src\base\ftstroke.c" />
+    <ClCompile Include="freetype\src\base\ftsynth.c" />
+    <ClCompile Include="freetype\src\base\ftsystem.c" />
+    <ClCompile Include="freetype\src\base\fttrigon.c" />
+    <ClCompile Include="freetype\src\base\fttype1.c" />
+    <ClCompile Include="freetype\src\base\ftutil.c" />
+    <ClCompile Include="freetype\src\base\ftwinfnt.c" />
+    <ClCompile Include="freetype\src\base\ftxf86.c" />
+    <ClCompile Include="freetype\src\base\md5.c" />
+    <ClCompile Include="freetype\src\cff\cf2arrst.c" />
+    <ClCompile Include="freetype\src\cff\cf2blues.c" />
+    <ClCompile Include="freetype\src\cff\cf2error.c" />
+    <ClCompile Include="freetype\src\cff\cf2font.c" />
+    <ClCompile Include="freetype\src\cff\cf2ft.c" />
+    <ClCompile Include="freetype\src\cff\cf2hints.c" />
+    <ClCompile Include="freetype\src\cff\cf2intrp.c" />
+    <ClCompile Include="freetype\src\cff\cf2read.c" />
+    <ClCompile Include="freetype\src\cff\cf2stack.c" />
+    <ClCompile Include="freetype\src\cff\cff.c" />
+    <ClCompile Include="freetype\src\cff\cffcmap.c" />
+    <ClCompile Include="freetype\src\cff\cffdrivr.c" />
+    <ClCompile Include="freetype\src\cff\cffgload.c" />
+    <ClCompile Include="freetype\src\cff\cffload.c" />
+    <ClCompile Include="freetype\src\cff\cffobjs.c" />
+    <ClCompile Include="freetype\src\cff\cffparse.c" />
+    <ClCompile Include="freetype\src\cff\cffpic.c" />
+    <ClCompile Include="freetype\src\cid\cidgload.c" />
+    <ClCompile Include="freetype\src\cid\cidload.c" />
+    <ClCompile Include="freetype\src\cid\cidobjs.c" />
+    <ClCompile Include="freetype\src\cid\cidparse.c" />
+    <ClCompile Include="freetype\src\cid\cidriver.c" />
+    <ClCompile Include="freetype\src\cid\type1cid.c" />
+    <ClCompile Include="freetype\src\psaux\afmparse.c" />
+    <ClCompile Include="freetype\src\psaux\psaux.c" />
+    <ClCompile Include="freetype\src\psaux\psauxmod.c" />
+    <ClCompile Include="freetype\src\psaux\psconv.c" />
+    <ClCompile Include="freetype\src\psaux\psobjs.c" />
+    <ClCompile Include="freetype\src\psaux\t1cmap.c" />
+    <ClCompile Include="freetype\src\psaux\t1decode.c" />
+    <ClCompile Include="freetype\src\pshinter\pshalgo.c" />
+    <ClCompile Include="freetype\src\pshinter\pshglob.c" />
+    <ClCompile Include="freetype\src\pshinter\pshinter.c" />
+    <ClCompile Include="freetype\src\pshinter\pshmod.c" />
+    <ClCompile Include="freetype\src\pshinter\pshpic.c" />
+    <ClCompile Include="freetype\src\pshinter\pshrec.c" />
+    <ClCompile Include="freetype\src\psnames\psmodule.c" />
+    <ClCompile Include="freetype\src\psnames\psnames.c" />
+    <ClCompile Include="freetype\src\psnames\pspic.c" />
+    <ClCompile Include="freetype\src\raster\ftraster.c" />
+    <ClCompile Include="freetype\src\raster\ftrend1.c" />
+    <ClCompile Include="freetype\src\raster\raster.c" />
+    <ClCompile Include="freetype\src\raster\rastpic.c" />
+    <ClCompile Include="freetype\src\sfnt\pngshim.c" />
+    <ClCompile Include="freetype\src\sfnt\sfdriver.c" />
+    <ClCompile Include="freetype\src\sfnt\sfnt.c" />
+    <ClCompile Include="freetype\src\sfnt\sfntpic.c" />
+    <ClCompile Include="freetype\src\sfnt\sfobjs.c" />
+    <ClCompile Include="freetype\src\sfnt\ttbdf.c" />
+    <ClCompile Include="freetype\src\sfnt\ttcmap.c" />
+    <ClCompile Include="freetype\src\sfnt\ttkern.c" />
+    <ClCompile Include="freetype\src\sfnt\ttload.c" />
+    <ClCompile Include="freetype\src\sfnt\ttmtx.c" />
+    <ClCompile Include="freetype\src\sfnt\ttpost.c" />
+    <ClCompile Include="freetype\src\sfnt\ttsbit.c" />
+    <ClCompile Include="freetype\src\smooth\ftgrays.c" />
+    <ClCompile Include="freetype\src\smooth\ftsmooth.c" />
+    <ClCompile Include="freetype\src\smooth\ftspic.c" />
+    <ClCompile Include="freetype\src\smooth\smooth.c" />
+    <ClCompile Include="freetype\src\truetype\truetype.c" />
+    <ClCompile Include="freetype\src\truetype\ttdriver.c" />
+    <ClCompile Include="freetype\src\truetype\ttgload.c" />
+    <ClCompile Include="freetype\src\truetype\ttinterp.c" />
+    <ClCompile Include="freetype\src\truetype\ttobjs.c" />
+    <ClCompile Include="freetype\src\truetype\ttpic.c" />
+    <ClCompile Include="freetype\src\truetype\ttpload.c" />
+    <ClCompile Include="freetype\src\truetype\ttsubpix.c" />
+    <ClCompile Include="freetype\src\type1\t1afm.c" />
+    <ClCompile Include="freetype\src\type1\t1driver.c" />
+    <ClCompile Include="freetype\src\type1\t1gload.c" />
+    <ClCompile Include="freetype\src\type1\t1load.c" />
+    <ClCompile Include="freetype\src\type1\t1objs.c" />
+    <ClCompile Include="freetype\src\type1\t1parse.c" />
+    <ClCompile Include="freetype\src\type1\type1.c" />
+    <ClCompile Include="lcms2-2.6\src\cmscam02.c" />
+    <ClCompile Include="lcms2-2.6\src\cmscgats.c" />
+    <ClCompile Include="lcms2-2.6\src\cmscnvrt.c" />
+    <ClCompile Include="lcms2-2.6\src\cmserr.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsgamma.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsgmt.c" />
+    <ClCompile Include="lcms2-2.6\src\cmshalf.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsintrp.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsio0.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsio1.c" />
+    <ClCompile Include="lcms2-2.6\src\cmslut.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsmd5.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsmtrx.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsnamed.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsopt.c" />
+    <ClCompile Include="lcms2-2.6\src\cmspack.c" />
+    <ClCompile Include="lcms2-2.6\src\cmspcs.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsplugin.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsps2.c" />
+    <ClCompile Include="lcms2-2.6\src\cmssamp.c" />
+    <ClCompile Include="lcms2-2.6\src\cmssm.c" />
+    <ClCompile Include="lcms2-2.6\src\cmstypes.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsvirt.c" />
+    <ClCompile Include="lcms2-2.6\src\cmswtpnt.c" />
+    <ClCompile Include="lcms2-2.6\src\cmsxform.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcapimin.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcapistd.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jccoefct.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jccolor.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcdctmgr.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jchuff.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcinit.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcmainct.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcmarker.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcmaster.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcomapi.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcparam.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcphuff.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcprepct.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jcsample.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jctrans.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdapimin.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdapistd.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdcoefct.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdcolor.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jddctmgr.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdhuff.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdinput.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdmainct.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdmarker.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdmaster.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdmerge.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdphuff.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdpostct.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdsample.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jdtrans.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jerror.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jfdctfst.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jfdctint.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jidctfst.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jidctint.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jidctred.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jmemmgr.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jmemnobs.c" />
+    <ClCompile Include="libjpeg\fpdfapi_jutils.c" />
+    <ClCompile Include="libopenjpeg20\bio.c" />
+    <ClCompile Include="libopenjpeg20\cio.c" />
+    <ClCompile Include="libopenjpeg20\dwt.c" />
+    <ClCompile Include="libopenjpeg20\event.c" />
+    <ClCompile Include="libopenjpeg20\function_list.c" />
+    <ClCompile Include="libopenjpeg20\image.c" />
+    <ClCompile Include="libopenjpeg20\invert.c" />
+    <ClCompile Include="libopenjpeg20\j2k.c" />
+    <ClCompile Include="libopenjpeg20\jp2.c" />
+    <ClCompile Include="libopenjpeg20\mct.c" />
+    <ClCompile Include="libopenjpeg20\mqc.c" />
+    <ClCompile Include="libopenjpeg20\openjpeg.c" />
+    <ClCompile Include="libopenjpeg20\opj_clock.c" />
+    <ClCompile Include="libopenjpeg20\pi.c" />
+    <ClCompile Include="libopenjpeg20\raw.c" />
+    <ClCompile Include="libopenjpeg20\t1.c" />
+    <ClCompile Include="libopenjpeg20\t1_generate_luts.c" />
+    <ClCompile Include="libopenjpeg20\t2.c" />
+    <ClCompile Include="libopenjpeg20\tcd.c" />
+    <ClCompile Include="libopenjpeg20\tgt.c" />
+    <ClCompile Include="zlib_v128\adler32.c" />
+    <ClCompile Include="zlib_v128\compress.c" />
+    <ClCompile Include="zlib_v128\crc32.c" />
+    <ClCompile Include="zlib_v128\deflate.c" />
+    <ClCompile Include="zlib_v128\gzclose.c" />
+    <ClCompile Include="zlib_v128\gzlib.c" />
+    <ClCompile Include="zlib_v128\gzread.c" />
+    <ClCompile Include="zlib_v128\gzwrite.c" />
+    <ClCompile Include="zlib_v128\infback.c" />
+    <ClCompile Include="zlib_v128\inffast.c" />
+    <ClCompile Include="zlib_v128\inflate.c" />
+    <ClCompile Include="zlib_v128\inftrees.c" />
+    <ClCompile Include="zlib_v128\trees.c" />
+    <ClCompile Include="zlib_v128\uncompr.c" />
+    <ClCompile Include="zlib_v128\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bigint\LICENSE" />
+    <None Include="freetype\src\base\Jamfile" />
+    <None Include="freetype\src\cff\Jamfile" />
+    <None Include="freetype\src\cid\Jamfile" />
+    <None Include="freetype\src\psaux\Jamfile" />
+    <None Include="freetype\src\pshinter\Jamfile" />
+    <None Include="freetype\src\psnames\Jamfile" />
+    <None Include="freetype\src\raster\Jamfile" />
+    <None Include="freetype\src\sfnt\Jamfile" />
+    <None Include="freetype\src\smooth\Jamfile" />
+    <None Include="freetype\src\truetype\Jamfile" />
+    <None Include="freetype\src\type1\Jamfile" />
+    <None Include="libopenjpeg20\opj_config.h.cmake.in" />
+    <None Include="numerics\OWNERS" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="libopenjpeg20\CMakeLists.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{664258a4-291c-4c5e-9768-6cd4aae7e298}</ProjectGuid>
+    <RootNamespace>thirdparty</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;OPJ_STATIC;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/pdf/third_party/freetype/include;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;OPJ_STATIC;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/pdf/third_party/freetype/include;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;OPJ_STATIC;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/pdf/third_party/freetype/include;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;OPJ_STATIC;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)/pdf/third_party/freetype/include;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\public\fpdfview.h" />
+    <ClInclude Include="..\public\fpdf_dataavail.h" />
+    <ClInclude Include="..\public\fpdf_doc.h" />
+    <ClInclude Include="..\public\fpdf_edit.h" />
+    <ClInclude Include="..\public\fpdf_ext.h" />
+    <ClInclude Include="..\public\fpdf_flatten.h" />
+    <ClInclude Include="..\public\fpdf_formfill.h" />
+    <ClInclude Include="..\public\fpdf_fwlevent.h" />
+    <ClInclude Include="..\public\fpdf_ppo.h" />
+    <ClInclude Include="..\public\fpdf_progressive.h" />
+    <ClInclude Include="..\public\fpdf_save.h" />
+    <ClInclude Include="..\public\fpdf_searchex.h" />
+    <ClInclude Include="..\public\fpdf_sysfontinfo.h" />
+    <ClInclude Include="..\public\fpdf_text.h" />
+    <ClInclude Include="..\public\fpdf_transformpage.h" />
+    <ClInclude Include="include\formfiller\FFL_CBA_Fontmap.h" />
+    <ClInclude Include="include\formfiller\FFL_CheckBox.h" />
+    <ClInclude Include="include\formfiller\FFL_ComboBox.h" />
+    <ClInclude Include="include\formfiller\FFL_FormFiller.h" />
+    <ClInclude Include="include\formfiller\FFL_IFormFiller.h" />
+    <ClInclude Include="include\formfiller\FFL_ListBox.h" />
+    <ClInclude Include="include\formfiller\FFL_Notify.h" />
+    <ClInclude Include="include\formfiller\FFL_PushButton.h" />
+    <ClInclude Include="include\formfiller\FFL_RadioButton.h" />
+    <ClInclude Include="include\formfiller\FFL_TextField.h" />
+    <ClInclude Include="include\formfiller\FFL_Utils.h" />
+    <ClInclude Include="include\formfiller\FormFiller.h" />
+    <ClInclude Include="include\fsdk_actionhandler.h" />
+    <ClInclude Include="include\fsdk_annothandler.h" />
+    <ClInclude Include="include\fsdk_baseannot.h" />
+    <ClInclude Include="include\fsdk_baseform.h" />
+    <ClInclude Include="include\fsdk_common.h" />
+    <ClInclude Include="include\fsdk_define.h" />
+    <ClInclude Include="include\fsdk_mgr.h" />
+    <ClInclude Include="include\fsdk_rendercontext.h" />
+    <ClInclude Include="include\fxedit\fxet_edit.h" />
+    <ClInclude Include="include\fxedit\fxet_list.h" />
+    <ClInclude Include="include\fxedit\fxet_stub.h" />
+    <ClInclude Include="include\fxedit\fx_edit.h" />
+    <ClInclude Include="include\fx_systemhandler.h" />
+    <ClInclude Include="include\pdfwindow\IPDFWindow.h" />
+    <ClInclude Include="include\pdfwindow\PDFWindow.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Button.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Caret.h" />
+    <ClInclude Include="include\pdfwindow\PWL_ComboBox.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Edit.h" />
+    <ClInclude Include="include\pdfwindow\PWL_EditCtrl.h" />
+    <ClInclude Include="include\pdfwindow\PWL_FontMap.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Icon.h" />
+    <ClInclude Include="include\pdfwindow\PWL_IconList.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Label.h" />
+    <ClInclude Include="include\pdfwindow\PWL_ListBox.h" />
+    <ClInclude Include="include\pdfwindow\PWL_ListCtrl.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Note.h" />
+    <ClInclude Include="include\pdfwindow\PWL_ScrollBar.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Signature.h" />
+    <ClInclude Include="include\pdfwindow\PWL_SpecialButton.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Utils.h" />
+    <ClInclude Include="include\pdfwindow\PWL_Wnd.h" />
+    <ClInclude Include="src\fpdfview_c_api_test.h" />
+    <ClInclude Include="src\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\public\README" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\formfiller\FFL_CBA_Fontmap.cpp" />
+    <ClCompile Include="src\formfiller\FFL_CheckBox.cpp" />
+    <ClCompile Include="src\formfiller\FFL_ComboBox.cpp" />
+    <ClCompile Include="src\formfiller\FFL_FormFiller.cpp" />
+    <ClCompile Include="src\formfiller\FFL_IFormFiller.cpp" />
+    <ClCompile Include="src\formfiller\FFL_ListBox.cpp" />
+    <ClCompile Include="src\formfiller\FFL_Notify.cpp" />
+    <ClCompile Include="src\formfiller\FFL_PushButton.cpp" />
+    <ClCompile Include="src\formfiller\FFL_RadioButton.cpp" />
+    <ClCompile Include="src\formfiller\FFL_TextField.cpp" />
+    <ClCompile Include="src\formfiller\FFL_Utils.cpp" />
+    <ClCompile Include="src\fpdfdoc.cpp" />
+    <ClCompile Include="src\fpdfeditimg.cpp" />
+    <ClCompile Include="src\fpdfeditpage.cpp" />
+    <ClCompile Include="src\fpdfformfill.cpp" />
+    <ClCompile Include="src\fpdfppo.cpp" />
+    <ClCompile Include="src\fpdfsave.cpp" />
+    <ClCompile Include="src\fpdftext.cpp" />
+    <ClCompile Include="src\fpdfview.cpp" />
+    <ClCompile Include="src\fpdfview_c_api_test.c" />
+    <ClCompile Include="src\fpdf_dataavail.cpp" />
+    <ClCompile Include="src\fpdf_ext.cpp" />
+    <ClCompile Include="src\fpdf_flatten.cpp" />
+    <ClCompile Include="src\fpdf_progressive.cpp" />
+    <ClCompile Include="src\fpdf_searchex.cpp" />
+    <ClCompile Include="src\fpdf_sysfontinfo.cpp" />
+    <ClCompile Include="src\fpdf_transformpage.cpp" />
+    <ClCompile Include="src\fsdk_actionhandler.cpp" />
+    <ClCompile Include="src\fsdk_annothandler.cpp" />
+    <ClCompile Include="src\fsdk_baseannot.cpp" />
+    <ClCompile Include="src\fsdk_baseform.cpp" />
+    <ClCompile Include="src\fsdk_mgr.cpp" />
+    <ClCompile Include="src\fsdk_rendercontext.cpp" />
+    <ClCompile Include="src\fxedit\fxet_ap.cpp" />
+    <ClCompile Include="src\fxedit\fxet_edit.cpp" />
+    <ClCompile Include="src\fxedit\fxet_list.cpp" />
+    <ClCompile Include="src\fxedit\fxet_module.cpp" />
+    <ClCompile Include="src\fxedit\fxet_pageobjs.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Button.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Caret.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_ComboBox.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Edit.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_EditCtrl.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_FontMap.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Icon.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_IconList.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Label.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_ListBox.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_ListCtrl.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Note.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_ScrollBar.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Signature.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_SpecialButton.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Utils.cpp" />
+    <ClCompile Include="src\pdfwindow\PWL_Wnd.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\fpdfsdkdll.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{d0564c7c-e1df-40d2-a4db-1db2cb6683c5}</ProjectGuid>
+    <RootNamespace>fpdfsdk</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

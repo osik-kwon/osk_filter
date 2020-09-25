@@ -1,0 +1,1038 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{f21a6404-0586-42f8-a16b-d98acb5ca1a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{85135232-f1f5-41cd-b06d-f0f0ccc36886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fdrm">
+      <UniqueIdentifier>{eaf4f853-5403-49ea-aa67-c65870c98d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fdrm">
+      <UniqueIdentifier>{52e4bdd4-bce9-4d81-a3df-244423844529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fpdfapi">
+      <UniqueIdentifier>{450025b9-4542-4fe3-bdb9-ed1d0dedd494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi">
+      <UniqueIdentifier>{90bf830e-1e49-4777-97b8-a6e246aa5315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fpdfdoc">
+      <UniqueIdentifier>{783632b0-0476-43ee-ad6f-3601561bb530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfdoc">
+      <UniqueIdentifier>{3170c392-fce6-4e10-b564-9035a3b94ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fpdftext">
+      <UniqueIdentifier>{5d12cfea-617b-46d8-9c9b-67e2c0968fef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdftext">
+      <UniqueIdentifier>{c1a8ff47-121f-44c8-bdc6-c5ac9ad2de43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fxcodec">
+      <UniqueIdentifier>{174d9f94-6b29-4683-b346-2c396f26d67e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxcodec">
+      <UniqueIdentifier>{f4019ea1-fccb-4575-9e1b-b7055bcf57c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fxcrt">
+      <UniqueIdentifier>{d40d560f-8eb3-457e-be3d-99f16ae3dbb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxcrt">
+      <UniqueIdentifier>{c58c6a7a-0a21-40b2-941f-f5dffc2feaec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fxge">
+      <UniqueIdentifier>{d11d91d2-6de3-4cf6-b88e-4e5384fbee7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge">
+      <UniqueIdentifier>{0e1d638c-1115-4a47-9234-62cd30d35448}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\thirdparties">
+      <UniqueIdentifier>{3cd7db89-9a3c-4fc1-953e-65c22eb15fff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\thirdparties\zlib">
+      <UniqueIdentifier>{924dddb6-02a0-43e2-bf3e-1d22b3f9afd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\thirdparties\libjpeg">
+      <UniqueIdentifier>{9fbcaa8c-6163-46c6-b239-a28ca5622a9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fdrm\crypto">
+      <UniqueIdentifier>{4700d57f-709a-415f-bf9e-b310deb3f31b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_cmaps">
+      <UniqueIdentifier>{1577443c-d204-4783-a642-d288d3ff54d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_edit">
+      <UniqueIdentifier>{ba659975-d17a-485d-a14b-27fd595619b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_font">
+      <UniqueIdentifier>{996b1270-8405-4229-ba04-ef29843e4169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_page">
+      <UniqueIdentifier>{71ed381d-8a9c-4153-85b2-b11e66dd4023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_parser">
+      <UniqueIdentifier>{f9aa5949-7a55-4b63-8bc6-d063b3a3b0da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_render">
+      <UniqueIdentifier>{582d12d6-6343-48b0-822a-9d0cc411e375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_cmaps\CNS1">
+      <UniqueIdentifier>{de02b6d2-39c0-488f-bb6f-571120d3ef06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_cmaps\GB1">
+      <UniqueIdentifier>{51683b70-63e5-4392-b1ad-1900247502bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_cmaps\Japan1">
+      <UniqueIdentifier>{5149a61d-489c-4d0a-a244-85026f54bbef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fpdfapi\fpdf_cmaps\Korea1">
+      <UniqueIdentifier>{adb8f0ee-9142-4c44-bf0d-5d5109cd3de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxcodec\codec">
+      <UniqueIdentifier>{024bba66-73fc-4f07-89b7-f35b344a7214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxcodec\jbig2">
+      <UniqueIdentifier>{907f1a48-518d-4b40-b0ec-79448eb90d32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\agg">
+      <UniqueIdentifier>{33a84fb6-60f3-4fe8-a247-cf0f163f3c2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\android">
+      <UniqueIdentifier>{e9df465b-622a-4f8d-a766-c2dc337ef27b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\apple">
+      <UniqueIdentifier>{ca1e987a-b32e-4fed-87d1-c0fcb8c1ca8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\dib">
+      <UniqueIdentifier>{6283c5e4-59b6-45d6-a8a8-7b8e39b78ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\fontdata">
+      <UniqueIdentifier>{6a2792e6-3e3c-4cb6-8b0a-4033b0382846}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\ge">
+      <UniqueIdentifier>{342e5668-1b55-4769-ae6b-2b8cd14d2d54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\skia">
+      <UniqueIdentifier>{f003b3fd-9948-472e-83ae-982736e130e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\win32">
+      <UniqueIdentifier>{de793c8b-11da-415a-9f9d-89102dd86016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\agg\include">
+      <UniqueIdentifier>{a18b3425-958f-40a2-9389-030b28898a5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\agg\src">
+      <UniqueIdentifier>{2bcb332e-934f-442f-8803-ce61c171b6aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\fontdata\chromefontdata">
+      <UniqueIdentifier>{b75bb416-ab92-4727-bc12-4cccff3be508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fxge\freetype">
+      <UniqueIdentifier>{334c3a5d-7e33-4565-8202-4fdb9dc3b3d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\fdrm\fx_crypt.h">
+      <Filter>include\fdrm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_module.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_objects.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_page.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_pageobj.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_parser.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_render.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_resource.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdf_serial.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfapi\fpdfapi.h">
+      <Filter>include\fpdfapi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfdoc\fpdf_ap.h">
+      <Filter>include\fpdfdoc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfdoc\fpdf_doc.h">
+      <Filter>include\fpdfdoc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfdoc\fpdf_tagged.h">
+      <Filter>include\fpdfdoc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdfdoc\fpdf_vt.h">
+      <Filter>include\fpdfdoc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpdftext\fpdf_text.h">
+      <Filter>include\fpdftext</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcodec\fx_codec.h">
+      <Filter>include\fxcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcodec\fx_codec_def.h">
+      <Filter>include\fxcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcodec\fx_codec_provider.h">
+      <Filter>include\fxcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_arb.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_basic.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_coordinates.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_ext.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_memory.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_stream.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_string.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_system.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_ucd.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxcrt\fx_xml.h">
+      <Filter>include\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fpf.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fx_dib.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fx_font.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fx_freetype.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fx_ge.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fx_ge_apple.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fxge\fx_ge_win32.h">
+      <Filter>include\fxge</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\zlib\zconf.h">
+      <Filter>include\thirdparties\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\zlib\zlib.h">
+      <Filter>include\thirdparties\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\libjpeg\jconfig.h">
+      <Filter>include\thirdparties\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\libjpeg\jerror.h">
+      <Filter>include\thirdparties\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\libjpeg\jmorecfg.h">
+      <Filter>include\thirdparties\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\libjpeg\jpegint.h">
+      <Filter>include\thirdparties\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="include\thirdparties\libjpeg\jpeglib.h">
+      <Filter>include\thirdparties\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_cmaps\cmap_int.h">
+      <Filter>src\fpdfapi\fpdf_cmaps</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_edit\editint.h">
+      <Filter>src\fpdfapi\fpdf_edit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_font\common.h">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_font\font_int.h">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_font\ttgsubtable.h">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_page\pageint.h">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_parser\filters_int.h">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfapi\fpdf_render\render_int.h">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfdoc\pdf_vt.h">
+      <Filter>src\fpdfdoc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdfdoc\tagged_int.h">
+      <Filter>src\fpdfdoc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdftext\text_int.h">
+      <Filter>src\fpdftext</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fpdftext\txtproc.h">
+      <Filter>src\fpdftext</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\codec\codec_int.h">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_ArithDecoder.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_ArithIntDecoder.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_ArithQe.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_BitStream.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Context.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Define.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_GeneralDecoder.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_HuffmanDecoder.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_HuffmanTable.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_HuffmanTable_Standard.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Image.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_List.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Module.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Object.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Page.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_PatternDict.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_Segment.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcodec\jbig2\JBig2_SymbolDict.h">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\extension.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\fx_arabic.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\fxcrt_platforms.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\fxcrt_posix.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\fxcrt_windows.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\plex.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxcrt\xml_int.h">
+      <Filter>src\fxcrt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\android\fpf_skiafont.h">
+      <Filter>src\fxge\android</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\android\fpf_skiafontmgr.h">
+      <Filter>src\fxge\android</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\android\fpf_skiamodule.h">
+      <Filter>src\fxge\android</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\android\fx_android_font.h">
+      <Filter>src\fxge\android</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\android\fx_fpf.h">
+      <Filter>src\fxge\android</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\apple\apple_int.h">
+      <Filter>src\fxge\apple</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\dib\dib_int.h">
+      <Filter>src\fxge\dib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\ge\text_int.h">
+      <Filter>src\fxge\ge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\skia\fx_skia_blitter_new.h">
+      <Filter>src\fxge\skia</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\skia\fx_skia_device.h">
+      <Filter>src\fxge\skia</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\win32\dwrite_int.h">
+      <Filter>src\fxge\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\win32\win32_int.h">
+      <Filter>src\fxge\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fxge\agg\include\fx_agg_driver.h">
+      <Filter>src\fxge\agg\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\fdrm\crypto\fx_crypt.cpp">
+      <Filter>src\fdrm\crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fdrm\crypto\fx_crypt_aes.cpp">
+      <Filter>src\fdrm\crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fdrm\crypto\fx_crypt_sha.cpp">
+      <Filter>src\fdrm\crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_basic_module.cpp">
+      <Filter>src\fpdfapi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\fpdf_cmaps.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\Adobe-CNS1-UCS2_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\B5pc-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\B5pc-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\cmaps_cns1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\CNS-EUC-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\CNS-EUC-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\ETen-B5-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\ETen-B5-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\ETenms-B5-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\ETenms-B5-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\HKscs-B5-H_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\HKscs-B5-V_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\UniCNS-UCS2-H_3.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\UniCNS-UCS2-V_3.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\CNS1\UniCNS-UTF16-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\CNS1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\Adobe-GB1-UCS2_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\cmaps_gb1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GB-EUC-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GB-EUC-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBK2K-H_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBK2K-V_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBK-EUC-H_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBK-EUC-V_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBKp-EUC-H_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBKp-EUC-V_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBpc-EUC-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\GBpc-EUC-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\UniGB-UCS2-H_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\GB1\UniGB-UCS2-V_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\GB1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\83pv-RKSJ-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\90msp-RKSJ-H_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\90msp-RKSJ-V_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\90ms-RKSJ-H_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\90ms-RKSJ-V_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\90pv-RKSJ-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\Add-RKSJ-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\Add-RKSJ-V_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\Adobe-Japan1-UCS2_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\cmaps_japan1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\EUC-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\EUC-V_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\Ext-RKSJ-H_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\Ext-RKSJ-V_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\UniJIS-UCS2-H_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\UniJIS-UCS2-HW-H_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\UniJIS-UCS2-HW-V_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\UniJIS-UCS2-V_4.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\UniJIS-UTF16-H_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\UniJIS-UTF16-V_5.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Japan1\V_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Japan1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\Adobe-Korea1-UCS2_2.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\cmaps_korea1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSC-EUC-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSC-EUC-V_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSCms-UHC-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSCms-UHC-HW-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSCms-UHC-HW-V_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSCms-UHC-V_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\KSCpc-EUC-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\UniKS-UCS2-H_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\UniKS-UCS2-V_1.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_cmaps\Korea1\UniKS-UTF16-H_0.cpp">
+      <Filter>src\fpdfapi\fpdf_cmaps\Korea1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_edit\fpdf_edit_content.cpp">
+      <Filter>src\fpdfapi\fpdf_edit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_edit\fpdf_edit_create.cpp">
+      <Filter>src\fpdfapi\fpdf_edit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_edit\fpdf_edit_doc.cpp">
+      <Filter>src\fpdfapi\fpdf_edit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_edit\fpdf_edit_image.cpp">
+      <Filter>src\fpdfapi\fpdf_edit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_font\fpdf_font.cpp">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_font\fpdf_font_charset.cpp">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_font\fpdf_font_cid.cpp">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_font\ttgsubtable.cpp">
+      <Filter>src\fpdfapi\fpdf_font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_colors.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_doc.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_func.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_graph_state.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_image.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_parser.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_parser_old.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_path.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_page\fpdf_page_pattern.cpp">
+      <Filter>src\fpdfapi\fpdf_page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_decode.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_document.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_encrypt.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_fdf.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_filters.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_objects.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_parser.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_parser\fpdf_parser_utility.cpp">
+      <Filter>src\fpdfapi\fpdf_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_render\fpdf_render.cpp">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_render\fpdf_render_cache.cpp">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_render\fpdf_render_image.cpp">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_render\fpdf_render_loadimage.cpp">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_render\fpdf_render_pattern.cpp">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfapi\fpdf_render\fpdf_render_text.cpp">
+      <Filter>src\fpdfapi\fpdf_render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_action.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_annot.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_ap.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_basic.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_bookmark.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_form.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_formcontrol.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_formfield.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_link.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_metadata.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_ocg.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_tagged.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_utils.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_viewerPreferences.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_vt.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdfdoc\doc_vtmodule.cpp">
+      <Filter>src\fpdfdoc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdftext\fpdf_text.cpp">
+      <Filter>src\fpdftext</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdftext\fpdf_text_int.cpp">
+      <Filter>src\fpdftext</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdftext\fpdf_text_search.cpp">
+      <Filter>src\fpdftext</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdftext\unicodenormalization.cpp">
+      <Filter>src\fpdftext</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpdftext\unicodenormalizationdata.cpp">
+      <Filter>src\fpdftext</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_fax.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_flate.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_icc.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_jbig.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_jbig_enc.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_jpeg.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\codec\fx_codec_jpx_opj.cpp">
+      <Filter>src\fxcodec\codec</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_ArithIntDecoder.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_Context.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_GeneralDecoder.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_HuffmanDecoder.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_HuffmanTable.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_Image.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_Object.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_PatternDict.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_Segment.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcodec\jbig2\JBig2_SymbolDict.cpp">
+      <Filter>src\fxcodec\jbig2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_arabic.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_array.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_bstring.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_buffer.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_coords.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_gcc.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_list.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_maps.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_memmgr.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_plex.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_utf.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_util.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_basic_wstring.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_extension.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_ucddata.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_unicode.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_xml_composer.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fx_xml_parser.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fxcrt_platforms.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fxcrt_posix.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxcrt\fxcrt_windows.cpp">
+      <Filter>src\fxcrt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\android\fpf_skiafont.cpp">
+      <Filter>src\fxge\android</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\android\fpf_skiafontmgr.cpp">
+      <Filter>src\fxge\android</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\android\fpf_skiamodule.cpp">
+      <Filter>src\fxge\android</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\android\fx_android_font.cpp">
+      <Filter>src\fxge\android</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\android\fx_android_imp.cpp">
+      <Filter>src\fxge\android</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\apple\fx_apple_platform.cpp">
+      <Filter>src\fxge\apple</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\apple\fx_mac_imp.cpp">
+      <Filter>src\fxge\apple</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\apple\fx_quartz_device.cpp">
+      <Filter>src\fxge\apple</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\dib\fx_dib_composite.cpp">
+      <Filter>src\fxge\dib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\dib\fx_dib_convert.cpp">
+      <Filter>src\fxge\dib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\dib\fx_dib_engine.cpp">
+      <Filter>src\fxge\dib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\dib\fx_dib_main.cpp">
+      <Filter>src\fxge\dib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\dib\fx_dib_transform.cpp">
+      <Filter>src\fxge\dib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitDingbats.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitFixed.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitFixedBold.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitFixedBoldItalic.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitFixedItalic.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSans.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSansBold.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSansBoldItalic.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSansItalic.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSansMM.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSerif.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSerifBold.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSerifBoldItalic.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSerifItalic.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSerifMM.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\fontdata\chromefontdata\FoxitSymbol.c">
+      <Filter>src\fxge\fontdata\chromefontdata</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_device.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_font.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_fontmap.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_linux.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_path.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_ps.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\ge\fx_ge_text.cpp">
+      <Filter>src\fxge\ge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\skia\fx_skia_blitter_new.cpp">
+      <Filter>src\fxge\skia</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\skia\fx_skia_device.cpp">
+      <Filter>src\fxge\skia</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\win32\fx_win32_device.cpp">
+      <Filter>src\fxge\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\win32\fx_win32_dib.cpp">
+      <Filter>src\fxge\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\win32\fx_win32_dwrite.cpp">
+      <Filter>src\fxge\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\win32\fx_win32_gdipext.cpp">
+      <Filter>src\fxge\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\win32\fx_win32_print.cpp">
+      <Filter>src\fxge\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\freetype\fx_freetype.c">
+      <Filter>src\fxge\freetype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fxge\agg\src\fx_agg_driver.cpp">
+      <Filter>src\fxge\agg\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
