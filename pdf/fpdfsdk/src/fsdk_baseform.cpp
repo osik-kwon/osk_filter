@@ -1943,7 +1943,13 @@ CFX_WideString CPDFSDK_InterForm::OnFormat(CPDF_FormField* pFormField, FX_BOOL& 
 
     IFXJS_Runtime* pRuntime = m_pDocument->GetJsRuntime();
     ASSERT(pRuntime != NULL);
-
+#ifndef _V8_SUPPORT_
+    if (!pRuntime) // [larry]
+    {
+        bFormated = FALSE;
+        return sValue;
+    }
+#endif
     pRuntime->SetReaderDocument(m_pDocument);
 
     if (pFormField->GetFieldType() == FIELDTYPE_COMBOBOX)

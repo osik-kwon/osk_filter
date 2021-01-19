@@ -584,7 +584,14 @@ void test_summary()
 	//std::wstring src_path = L"f:/notion/인프라웨어_엔진(BWP)_구조품질_200721.pptx";
 	//std::wstring src_path = L"f:/sombra/twitter.txt";
 	//std::wstring src_path = L"f:/pdf/sample/방콕_가이드북_한쪽_v4.0_150306.pdf";
-	std::wstring src_path = L"f:/pdf/sample/2.pdf";
+	//std::wstring src_path = L"f:/sombra/TextRank알고리즘을이용한문서범주화.pdf";
+	//std::wstring src_path = L"f:/pdf/sample/유지보수하기 어렵게 코딩하는 방법 - 로에디 그린.pdf";
+	std::wstring src_path = L"f:/sombra/crash1.docx";
+	//std::wstring src_path = L"f:/sombra/docx_.docx";
+	//std::wstring src_path = L"f:/sombra/docx_.docx";
+	
+	//std::wstring src_path = L"f:/pdf/sample/1.pdf";
+	//std::wstring src_path = L"f:/sombra/n4296.pdf";
 	//std::wstring src_path = L"f:/sombra/legacy.hwp";
 	//std::wstring src_path = L"d:/ci/docx/2주차.docx";
 	//std::wstring src_path = L"f:/sombra/english1.hwp";
@@ -1369,6 +1376,7 @@ int main(int argc, char* argv[])
 		//test_distance(L"d:/ci/hwp/자전거안전사고예방수칙.hwp", L"d:/ci/hwp/", L"f:/sombra/jaccard_hwp.txt");
 		//test_mecab();
 		//test_hwpx();
+		//test_summary_directory(L"d:/ci/pdf/PDF_PO/", L"f:/sombra/pdf/");
 		//test_summary_directory(L"D:/ci/docx/", L"F:/sombra/docx/");
 		//test_summary_directory(L"D:/ci/hwp/", L"F:/sombra/hwp/");
 		//test_summary_directory(L"F:/sombra/confidential/", L"F:/sombra/result_confidential/");
@@ -1377,7 +1385,7 @@ int main(int argc, char* argv[])
 		//test_directory3();
 		//test_directory4();
 		//test_docx();
-		//return 0;
+		return 0;
 
 		if (argc < 2)
 			return 0;
